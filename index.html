@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F1 League — Лига прогнозов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --carbon:#0B0E14;--carbon-2:#121826;--carbon-3:#1A2233;--line:#23304A;
+    --chrome:#8A93A6;--ice:#E8EEF7;--hot:#FF2E63;--volt:#00E5FF;
+    --gold:#E7C66B;--radius:14px;--pool-h:560px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(0,229,255,.06), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(255,46,99,.07), transparent 55%),
+      var(--carbon);
+    color:var(--ice);font-family:'Inter',system-ui,sans-serif;min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:20px 18px 70px}
+
+  /* header */
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:14px 18px;margin-bottom:14px;
+    background:linear-gradient(180deg,var(--carbon-2),rgba(18,24,38,.6));
+    border:1px solid var(--line);border-radius:var(--radius);position:relative;overflow:hidden}
+  header.top::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+    background:linear-gradient(180deg,var(--volt),var(--hot))}
+  .brand{display:flex;flex-direction:column;gap:2px}
+  .brand .eyebrow{font-family:'Saira Condensed';font-weight:700;letter-spacing:.18em;
+    text-transform:uppercase;font-size:11px;color:var(--volt)}
+  .brand .name{font-family:'Saira Condensed';font-weight:800;font-size:24px;line-height:1}
+  .brand .sub{color:var(--chrome);font-size:12px;font-weight:500}
+  .season{text-align:right;flex-shrink:0}
+  .season .s1{font-family:'Saira Condensed';font-weight:800;font-size:26px;line-height:1;color:var(--gold)}
+  .season .s2{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--chrome);font-weight:600}
+
+  /* tabs */
+  nav.tabs{display:flex;gap:6px;margin-bottom:18px;background:var(--carbon-2);
+    border:1px solid var(--line);border-radius:12px;padding:6px}
+  nav.tabs button{flex:1;font-family:'Saira Condensed';font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;font-size:14px;padding:11px 10px;border:none;border-radius:8px;
+    background:transparent;color:var(--chrome);cursor:pointer;transition:.15s;position:relative}
+  nav.tabs button:hover{color:var(--ice)}
+  nav.tabs button.active{background:var(--carbon-3);color:var(--ice)}
+  nav.tabs button.active::after{content:"";position:absolute;left:14px;right:14px;bottom:5px;height:2px;
+    background:linear-gradient(90deg,var(--volt),var(--hot));border-radius:2px}
+  nav.tabs button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+
+  .view{display:none}.view.active{display:block}
+
+  .panel{background:var(--carbon-2);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:12px 14px;border-bottom:1px solid var(--line)}
+  .panel-title{font-family:'Saira Condensed';font-weight:700;font-size:14px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--chrome)}
+  .counter{font-family:'Saira Condensed';font-weight:700;font-size:14px;color:var(--ice)}
+  .counter b{color:var(--volt)}
+  .demo-tag{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);
+    font-weight:700;border:1px solid var(--gold);border-radius:5px;padding:2px 6px;opacity:.85}
+
+  /* ===== PREDICT VIEW ===== */
+  .race-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:12px 16px;margin-bottom:14px;background:var(--carbon-2);
+    border:1px solid var(--line);border-radius:var(--radius);position:relative;overflow:hidden}
+  .race-bar::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--hot)}
+  .race-bar .rl{display:flex;flex-direction:column;gap:2px}
+  .race-bar .open{font-family:'Saira Condensed';font-weight:700;letter-spacing:.16em;
+    text-transform:uppercase;font-size:11px;color:var(--volt);display:flex;align-items:center;gap:8px}
+  .live-dot{width:7px;height:7px;border-radius:50%;background:var(--hot);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,46,99,.55)}70%{box-shadow:0 0 0 8px rgba(255,46,99,0)}100%{box-shadow:0 0 0 0 rgba(255,46,99,0)}}
+  .race-bar .rn{font-family:'Saira Condensed';font-weight:800;font-size:22px;line-height:1}
+  .race-bar .rr{color:var(--chrome);font-size:12px;font-weight:500}
+  .race-bar .dl{text-align:right;flex-shrink:0}
+  .race-bar .dl .lbl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--chrome);font-weight:600}
+  .race-bar .dl .cd{font-family:'Saira Condensed';font-weight:700;font-size:20px;
+    font-variant-numeric:tabular-nums}
+
+  .board{display:grid;grid-template-columns:300px 1fr;gap:18px}
+  .pool-body{padding:8px;max-height:var(--pool-h);overflow-y:auto;scrollbar-width:thin}
+  .pool-body::-webkit-scrollbar{width:8px}
+  .pool-body::-webkit-scrollbar-thumb{background:var(--carbon-3);border-radius:8px}
+  .car{--c:#888;display:flex;align-items:center;gap:10px;padding:9px 10px 9px 8px;margin:5px 3px;
+    border-radius:10px;background:var(--carbon-3);border:1px solid transparent;cursor:pointer;
+    user-select:none;transition:transform .12s,border-color .12s,background .12s,opacity .12s;position:relative}
+  .car:hover{background:#202a3f;transform:translateX(2px)}
+  .car:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+  .car .spine{width:5px;align-self:stretch;border-radius:3px;background:var(--c);flex-shrink:0;box-shadow:0 0 10px -1px var(--c)}
+  .car .body{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+  .car .code{font-family:'Saira Condensed';font-weight:800;font-size:18px;line-height:1;letter-spacing:.04em}
+  .car .who{font-size:11px;color:var(--chrome);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .car .team{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--c);font-weight:700;opacity:.9}
+  .car.selected{border-color:var(--volt);background:#16263a;box-shadow:0 0 0 1px var(--volt),0 0 22px -6px var(--volt)}
+  .car.placed{opacity:.32;pointer-events:none;filter:grayscale(.4)}
+  .car .grab{margin-left:auto;color:var(--chrome);opacity:.4;font-size:14px;flex-shrink:0}
+
+  .grid-body{padding:10px 12px}
+  .slot{--c:transparent;display:flex;align-items:center;gap:12px;padding:7px 10px;margin:7px 0;
+    border-radius:12px;border:1px dashed var(--line);background:rgba(26,34,51,.4);min-height:56px;
+    transition:border-color .14s,background .14s,box-shadow .14s}
+  .slot.over{border-color:var(--volt);background:rgba(0,229,255,.06);box-shadow:inset 0 0 0 1px var(--volt)}
+  .slot.filled{border-style:solid;border-color:var(--line);background:var(--carbon-3)}
+  .slot.filled.snap{animation:snap .45s ease}
+  @keyframes snap{0%{box-shadow:0 0 0 0 var(--c)}40%{box-shadow:0 0 26px -4px var(--c)}100%{box-shadow:0 0 0 0 transparent}}
+  .pos{display:flex;flex-direction:column;align-items:center;width:42px;flex-shrink:0}
+  .pos .n{font-family:'Saira Condensed';font-weight:800;font-size:30px;line-height:.9;color:var(--chrome);font-variant-numeric:tabular-nums;transition:color .14s}
+  .slot.filled .pos .n{color:var(--c)}
+  .pos .pts{font-size:9px;color:var(--chrome);font-weight:600;letter-spacing:.05em;margin-top:1px}
+  .slot .placed-car{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+  .slot .placed-car .spine{width:5px;height:30px;border-radius:3px;background:var(--c);box-shadow:0 0 12px -1px var(--c)}
+  .slot .placed-car .code{font-family:'Saira Condensed';font-weight:800;font-size:20px;letter-spacing:.04em}
+  .slot .placed-car .who{font-size:11px;color:var(--chrome);font-weight:500}
+  .slot .hint{color:var(--chrome);font-size:12px;font-weight:500;opacity:.65;flex:1}
+  .slot .remove{margin-left:auto;background:none;border:none;color:var(--chrome);cursor:pointer;
+    font-size:18px;padding:4px 8px;border-radius:8px;line-height:1;transition:color .12s,background .12s}
+  .slot .remove:hover{color:var(--hot);background:rgba(255,46,99,.1)}
+
+  .actions{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+  .btn{font-family:'Saira Condensed';font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    font-size:14px;padding:13px 22px;border-radius:11px;border:1px solid var(--line);
+    background:var(--carbon-2);color:var(--ice);cursor:pointer;transition:.15s}
+  .btn:hover{border-color:var(--chrome)}
+  .btn:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+  .btn.save{background:linear-gradient(180deg,var(--hot),#d81b4d);border-color:transparent;color:#fff;box-shadow:0 6px 20px -8px var(--hot)}
+  .btn.save:disabled{background:var(--carbon-3);color:var(--chrome);box-shadow:none;cursor:not-allowed;opacity:.7}
+  .hint-line{color:var(--chrome);font-size:12.5px}.hint-line b{color:var(--ice)}
+
+  /* ===== STANDINGS VIEW ===== */
+  .lead{padding:6px}
+  .lead-row{display:grid;grid-template-columns:48px 1fr 86px 76px 92px;align-items:center;gap:8px;
+    padding:13px 14px;margin:5px 4px;border-radius:11px;background:var(--carbon-3);
+    border:1px solid transparent;transition:.12s}
+  .lead-row.head{background:transparent;padding:6px 14px;margin-bottom:2px}
+  .lead-row.head span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--chrome);font-weight:700}
+  .lead-row.me{border-color:var(--volt);box-shadow:0 0 0 1px var(--volt),0 0 24px -10px var(--volt)}
+  .lead-row .rank{font-family:'Saira Condensed';font-weight:800;font-size:24px;text-align:center;color:var(--chrome);font-variant-numeric:tabular-nums}
+  .lead-row.p1 .rank{color:var(--gold)}.lead-row.p2 .rank{color:#C7CDD6}.lead-row.p3 .rank{color:#CD7F47}
+  .lead-row .who{display:flex;flex-direction:column;gap:1px;min-width:0}
+  .lead-row .who .nm{font-weight:700;font-size:15px}
+  .lead-row .who .me-tag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--volt);font-weight:700}
+  .lead-row .pts{font-family:'Saira Condensed';font-weight:800;font-size:22px;text-align:right;font-variant-numeric:tabular-nums}
+  .lead-row .ex,.lead-row .best{text-align:right;color:var(--chrome);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+  .lead-row .ex b{color:var(--ice)}
+
+  /* ===== RESULTS VIEW ===== */
+  .race-pills{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 10px;scrollbar-width:none}
+  .race-pills::-webkit-scrollbar{display:none}
+  .race-pills button{flex-shrink:0;font-family:'Saira Condensed';font-weight:700;font-size:13px;
+    letter-spacing:.04em;padding:9px 14px;border-radius:9px;border:1px solid var(--line);
+    background:var(--carbon-2);color:var(--chrome);cursor:pointer;transition:.13s;white-space:nowrap}
+  .race-pills button:hover{color:var(--ice);border-color:var(--chrome)}
+  .race-pills button.active{background:var(--carbon-3);color:var(--ice);border-color:var(--volt)}
+  .race-pills button:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+
+  .res-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .result-list{padding:8px}
+  .rl-row{display:flex;align-items:center;gap:11px;padding:8px 10px;margin:4px 3px;border-radius:9px;background:var(--carbon-3)}
+  .rl-row .rp{font-family:'Saira Condensed';font-weight:800;font-size:18px;width:26px;text-align:center;color:var(--chrome);flex-shrink:0;font-variant-numeric:tabular-nums}
+  .rl-row.podium .rp{color:var(--gold)}
+  .rl-row .spine{width:4px;height:24px;border-radius:3px;background:var(--c,#888);box-shadow:0 0 10px -1px var(--c,#888)}
+  .rl-row .code{font-family:'Saira Condensed';font-weight:800;font-size:17px;letter-spacing:.03em}
+  .rl-row .who{font-size:11px;color:var(--chrome);font-weight:500;margin-left:auto}
+
+  .scoreboard .sb-row{display:grid;grid-template-columns:1fr 64px 70px;align-items:center;gap:8px;
+    padding:11px 13px;margin:4px 3px;border-radius:9px;background:var(--carbon-3)}
+  .scoreboard .sb-row.head{background:transparent;padding:4px 13px}
+  .scoreboard .sb-row.head span{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--chrome);font-weight:700}
+  .scoreboard .sb-row.me{border:1px solid var(--volt)}
+  .scoreboard .sb-row .nm{font-weight:600;font-size:14px}
+  .scoreboard .sb-row .rpts{font-family:'Saira Condensed';font-weight:800;font-size:19px;text-align:right;color:var(--volt);font-variant-numeric:tabular-nums}
+  .scoreboard .sb-row .rex{text-align:right;color:var(--chrome);font-size:12px;font-weight:600}
+
+  /* compare strip */
+  .compare{margin-top:16px;background:var(--carbon-2);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+  .compare h4{margin:0 0 12px;font-family:'Saira Condensed';font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--chrome)}
+  .cmp-track{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+  .cmp-cell{background:var(--carbon-3);border-radius:8px;padding:7px 4px;text-align:center;border-top:3px solid var(--c,#888)}
+  .cmp-cell .cy{font-size:9px;color:var(--chrome);font-weight:600}
+  .cmp-cell .cc{font-family:'Saira Condensed';font-weight:800;font-size:14px;margin:2px 0}
+  .cmp-cell .cp{font-size:10px;font-weight:700}
+  .cmp-cell .cp.good{color:var(--volt)}.cmp-cell .cp.mid{color:var(--gold)}.cmp-cell .cp.bad{color:var(--chrome)}
+  .cmp-cell .cp.exact{color:#4ade80}
+  .cmp-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:11px;font-size:11px;color:var(--chrome)}
+  .cmp-legend span{display:flex;align-items:center;gap:5px}
+  .dot{width:8px;height:8px;border-radius:2px;display:inline-block}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+    background:var(--carbon-3);border:1px solid var(--volt);color:var(--ice);padding:13px 20px;
+    border-radius:12px;font-weight:600;font-size:14px;box-shadow:0 10px 40px -10px rgba(0,229,255,.4);
+    opacity:0;pointer-events:none;transition:.3s;z-index:50}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast .tcode{font-family:'Saira Condensed';font-weight:800;color:var(--volt)}
+
+  @media (max-width:760px){
+    :root{--pool-h:none}
+    .board{grid-template-columns:1fr}
+    .pool-body{max-height:none;display:grid;grid-template-columns:1fr 1fr;gap:0}
+    .res-grid{grid-template-columns:1fr}
+    .cmp-track{grid-template-columns:repeat(5,1fr)}
+    .lead-row{grid-template-columns:40px 1fr 70px 60px;}
+    .lead-row .best,.lead-row.head .best{display:none}
+    .brand .name{font-size:20px}
+  }
+  @media (max-width:420px){.pool-body{grid-template-columns:1fr}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <span class="eyebrow">Private League</span>
+      <span class="name">F1 Predict</span>
+      <span class="sub">Лига прогнозов · сезон 2026</span>
+    </div>
+    <div class="season">
+      <div class="s1" id="leaderName">—</div>
+      <div class="s2">лидер сезона</div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="predict" class="active">Прогноз</button>
+    <button data-tab="standings">Зачёт</button>
+    <button data-tab="results">Результаты</button>
+  </nav>
+
+  <!-- ===== PREDICT ===== -->
+  <section class="view active" id="view-predict">
+    <div class="race-bar">
+      <div class="rl">
+        <span class="open"><span class="live-dot"></span>Приём прогнозов открыт</span>
+        <span class="rn">Гран-при Великобритании</span>
+        <span class="rr">Раунд 11 · Сильверстоун · первая зачётная гонка</span>
+      </div>
+      <div class="dl">
+        <div class="lbl">До дедлайна (чт 20:00)</div>
+        <div class="cd" id="countdown">—</div>
+      </div>
+    </div>
+    <div class="board">
+      <section class="panel">
+        <div class="panel-head"><span class="panel-title">Пилоты</span><span class="counter"><b id="poolCount">22</b> в пуле</span></div>
+        <div class="pool-body" id="pool"></div>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><span class="panel-title">Твой топ-10</span><span class="counter"><b id="filled">0</b>/10</span></div>
+        <div class="grid-body" id="grid"></div>
+      </section>
+    </div>
+    <div class="actions">
+      <button class="btn save" id="save" disabled>Сохранить прогноз</button>
+      <button class="btn" id="clear">Очистить</button>
+      <span class="hint-line" id="hint">Тапни пилота, затем тапни слот. На компьютере можно перетаскивать мышью.</span>
+    </div>
+  </section>
+
+  <!-- ===== STANDINGS ===== -->
+  <section class="view" id="view-standings">
+    <section class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Общий зачёт сезона</span>
+        <span class="demo-tag">демо-данные</span>
+      </div>
+      <div class="lead" id="leaderboard"></div>
+    </section>
+    <p class="hint-line" style="margin-top:12px">
+      Сумма очков за все зачётные гонки. Тайбрейкер: число точных попаданий, затем лучшая гонка.
+      Реальный зачёт начнётся с первой зачётной гонки — пока показаны демо-цифры.
+    </p>
+  </section>
+
+  <!-- ===== RESULTS ===== -->
+  <section class="view" id="view-results">
+    <div class="race-pills" id="racePills"></div>
+    <div class="res-grid">
+      <section class="panel">
+        <div class="panel-head"><span class="panel-title" id="resTitle">Результат гонки</span><span class="demo-tag">демо</span></div>
+        <div class="result-list" id="resultList"></div>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><span class="panel-title">Очки за гонку</span><span class="counter" id="resCount"></span></div>
+        <div class="scoreboard" id="scoreboard"></div>
+      </section>
+    </div>
+    <div class="compare" id="compare"></div>
+  </section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- 2026 grid ---------- */
+const DRIVERS=[
+  {id:'NOR',name:'Норрис',team:'McLaren',c:'#FF8000'},{id:'PIA',name:'Пиастри',team:'McLaren',c:'#FF8000'},
+  {id:'LEC',name:'Леклер',team:'Ferrari',c:'#FF2D3C'},{id:'HAM',name:'Хэмилтон',team:'Ferrari',c:'#FF2D3C'},
+  {id:'RUS',name:'Расселл',team:'Mercedes',c:'#00D7B6'},{id:'ANT',name:'Антонелли',team:'Mercedes',c:'#00D7B6'},
+  {id:'VER',name:'Ферстаппен',team:'Red Bull',c:'#4B7BEC'},{id:'HAD',name:'Хаджар',team:'Red Bull',c:'#4B7BEC'},
+  {id:'ALB',name:'Албон',team:'Williams',c:'#5AA9FF'},{id:'SAI',name:'Сайнс',team:'Williams',c:'#5AA9FF'},
+  {id:'ALO',name:'Алонсо',team:'Aston Martin',c:'#2BD589'},{id:'STR',name:'Стролл',team:'Aston Martin',c:'#2BD589'},
+  {id:'GAS',name:'Гасли',team:'Alpine',c:'#2AA7E0'},{id:'COL',name:'Колапинто',team:'Alpine',c:'#2AA7E0'},
+  {id:'LAW',name:'Лоусон',team:'Racing Bulls',c:'#8AA0FF'},{id:'LIN',name:'Линдблад',team:'Racing Bulls',c:'#8AA0FF'},
+  {id:'HUL',name:'Хюлькенберг',team:'Audi',c:'#19B3A6'},{id:'BOR',name:'Бортолето',team:'Audi',c:'#19B3A6'},
+  {id:'OCO',name:'Окон',team:'Haas',c:'#C5CAD2'},{id:'BEA',name:'Бирман',team:'Haas',c:'#C5CAD2'},
+  {id:'BOT',name:'Боттас',team:'Cadillac',c:'#C7A35A'},{id:'PER',name:'Перес',team:'Cadillac',c:'#C7A35A'},
+];
+const byId=Object.fromEntries(DRIVERS.map(d=>[d.id,d]));
+const WEIGHTS=[25,18,15,12,10,8,6,4,2,1];
+
+/* ---------- scoring engine (наша формула: вес(Y) − 2·|X−Y|, +3 за точное) ---------- */
+function scorePrediction(pred, actual){
+  let pts=0, exacts=0, perSlot=[];
+  for(let i=0;i<10;i++){
+    const Y=i+1, code=pred[i];
+    const xi=actual.indexOf(code), X=xi+1;
+    let p=0, kind='bad';
+    if(xi!==-1){
+      p=Math.max(0, WEIGHTS[i]-2*Math.abs(X-Y));
+      if(X===Y){p+=3;exacts++;kind='exact';}
+      else if(Math.abs(X-Y)<=1)kind='good';
+      else if(p>0)kind='mid';
+    }
+    pts+=p; perSlot.push({code,Y,X:xi===-1?null:X,p,kind});
+  }
+  return {pts,exacts,perSlot};
+}
+
+/* ---------- DEMO data: прошлые гонки + прогнозы друзей ---------- */
+const RACES=[
+  {key:'AUS',name:'Австралия',round:1,
+   actual:['RUS','ANT','LEC','NOR','VER','PIA','HAM','ALB','SAI','HAD']},
+  {key:'CHN',name:'Китай',round:2,
+   actual:['ANT','RUS','NOR','PIA','VER','LEC','HAM','SAI','ALO','GAS']},
+  {key:'ESP',name:'Испания',round:7,
+   actual:['NOR','PIA','VER','LEC','HAM','RUS','ANT','ALO','GAS','SAI']},
+];
+const PLAYERS=['Дима','Кирилл','Андрей','Паша','Лёша'];
+const ME='Дима';
+// прогнозы: player -> raceKey -> [10 codes]
+const PREDS={
+ 'Дима':{AUS:['VER','NOR','LEC','RUS','PIA','HAM','ANT','SAI','ALB','ALO'],
+         CHN:['ANT','NOR','RUS','VER','PIA','LEC','HAM','ALO','SAI','GAS'],
+         ESP:['NOR','PIA','VER','LEC','RUS','HAM','ANT','GAS','ALO','SAI']},
+ 'Кирилл':{AUS:['RUS','LEC','ANT','NOR','PIA','VER','HAM','HAD','ALB','GAS'],
+         CHN:['RUS','ANT','NOR','PIA','LEC','VER','SAI','HAM','GAS','ALO'],
+         ESP:['NOR','VER','PIA','HAM','LEC','ANT','RUS','SAI','ALO','GAS']},
+ 'Андрей':{AUS:['NOR','VER','RUS','PIA','ANT','LEC','HAM','SAI','ALO','ALB'],
+         CHN:['NOR','RUS','ANT','VER','PIA','HAM','LEC','GAS','SAI','ALO'],
+         ESP:['PIA','NOR','LEC','VER','RUS','HAM','GAS','ANT','SAI','ALO']},
+ 'Паша':{AUS:['VER','RUS','NOR','ANT','LEC','HAM','PIA','GAS','SAI','STR'],
+         CHN:['ANT','RUS','VER','NOR','LEC','PIA','HAM','SAI','GAS','HAD'],
+         ESP:['NOR','PIA','VER','RUS','LEC','ANT','HAM','ALO','SAI','GAS']},
+ 'Лёша':{AUS:['LEC','NOR','VER','RUS','HAM','PIA','ANT','ALO','ALB','OCO'],
+         CHN:['RUS','NOR','ANT','LEC','VER','PIA','SAI','HAM','ALO','HAD'],
+         ESP:['VER','NOR','PIA','LEC','RUS','HAM','ANT','SAI','GAS','BOR']},
+};
+
+/* compute scores */
+const raceScores={}; // raceKey -> [{player,pts,exacts,perSlot}] sorted
+const totals={};     // player -> {total,exacts,best}
+PLAYERS.forEach(p=>totals[p]={total:0,exacts:0,best:0});
+RACES.forEach(r=>{
+  const rows=PLAYERS.map(p=>{
+    const s=scorePrediction(PREDS[p][r.key], r.actual);
+    totals[p].total+=s.pts; totals[p].exacts+=s.exacts;
+    if(s.pts>totals[p].best)totals[p].best=s.pts;
+    return {player:p,...s};
+  }).sort((a,b)=>b.pts-a.pts||b.exacts-a.exacts);
+  raceScores[r.key]=rows;
+});
+const standings=PLAYERS.map(p=>({player:p,...totals[p]}))
+  .sort((a,b)=>b.total-a.total||b.exacts-a.exacts||b.best-a.best);
+
+/* ---------- tabs ---------- */
+document.querySelectorAll('nav.tabs button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('nav.tabs button').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('view-'+b.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------- PREDICT view ---------- */
+let slots=Array(10).fill(null), selected=null;
+const poolEl=document.getElementById('pool'),gridEl=document.getElementById('grid'),
+      filledEl=document.getElementById('filled'),poolCountEl=document.getElementById('poolCount'),
+      saveBtn=document.getElementById('save'),hintEl=document.getElementById('hint');
+function renderPool(){
+  poolEl.innerHTML='';
+  DRIVERS.forEach(d=>{
+    const placed=slots.includes(d.id);
+    const el=document.createElement('div');
+    el.className='car'+(placed?' placed':'')+(selected===d.id?' selected':'');
+    el.style.setProperty('--c',d.c);el.tabIndex=placed?-1:0;el.setAttribute('role','button');
+    el.setAttribute('aria-label',`${d.name}, ${d.team}`);el.draggable=!placed;el.dataset.id=d.id;
+    el.innerHTML=`<div class="spine"></div><div class="body"><span class="code">${d.id}</span>
+      <span class="who">${d.name}</span><span class="team">${d.team}</span></div><span class="grab">⠿</span>`;
+    el.addEventListener('click',()=>pickDriver(d.id));
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pickDriver(d.id);}});
+    el.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',d.id);selected=null;renderPool();});
+    poolEl.appendChild(el);
+  });
+  poolCountEl.textContent=DRIVERS.length-slots.filter(Boolean).length;
+}
+function renderGrid(snapIdx=-1){
+  gridEl.innerHTML='';
+  slots.forEach((did,i)=>{
+    const d=did?byId[did]:null;
+    const slot=document.createElement('div');
+    slot.className='slot'+(d?' filled':'')+(i===snapIdx?' snap':'');
+    if(d)slot.style.setProperty('--c',d.c);slot.dataset.idx=i;
+    slot.innerHTML=`<div class="pos"><span class="n">${i+1}</span><span class="pts">${WEIGHTS[i]} б</span></div>
+      ${d?`<div class="placed-car"><div class="spine"></div><div><div class="code">${d.id}</div>
+        <div class="who">${d.name} · ${d.team}</div></div></div>
+        <button class="remove" aria-label="Убрать из P${i+1}">✕</button>`
+       :`<span class="hint">${selected?'Тапни, чтобы поставить '+selected:'Пусто'}</span>`}`;
+    slot.addEventListener('click',e=>{if(e.target.closest('.remove')){removeFromSlot(i);return;}if(selected)placeDriver(selected,i);});
+    slot.addEventListener('dragover',e=>{e.preventDefault();slot.classList.add('over');});
+    slot.addEventListener('dragleave',()=>slot.classList.remove('over'));
+    slot.addEventListener('drop',e=>{e.preventDefault();slot.classList.remove('over');const id=e.dataTransfer.getData('text/plain');if(id)placeDriver(id,i);});
+    gridEl.appendChild(slot);
+  });
+  const n=slots.filter(Boolean).length;filledEl.textContent=n;saveBtn.disabled=n<10;
+  hintEl.innerHTML=n<10?`Заполни все 10 слотов — осталось <b>${10-n}</b>. Тапни пилота, потом слот; на ПК можно тащить мышью.`
+    :`Готово: <b>10/10</b>. Можно сохранять прогноз.`;
+}
+function pickDriver(id){if(slots.includes(id))return;selected=(selected===id)?null:id;renderPool();renderGrid();}
+function placeDriver(id,idx){if(slots.includes(id))slots[slots.indexOf(id)]=null;slots[idx]=id;selected=null;renderPool();renderGrid(idx);}
+function removeFromSlot(idx){slots[idx]=null;renderPool();renderGrid();}
+saveBtn.addEventListener('click',()=>{
+  if(slots.filter(Boolean).length<10)return;
+  const top3=slots.slice(0,3).map(id=>id).join(' · ');
+  showToast(`Прогноз принят (демо) — твой подиум: <span class="tcode">${top3}</span>`);
+});
+document.getElementById('clear').addEventListener('click',()=>{slots=Array(10).fill(null);selected=null;renderPool();renderGrid();});
+
+/* ---------- STANDINGS view ---------- */
+function renderStandings(){
+  const box=document.getElementById('leaderboard');
+  let html=`<div class="lead-row head"><span></span><span>Игрок</span><span style="text-align:right">Очки</span><span style="text-align:right">Точных</span><span class="best" style="text-align:right">Лучшая</span></div>`;
+  standings.forEach((s,i)=>{
+    const me=s.player===ME;
+    html+=`<div class="lead-row p${i+1}${me?' me':''}">
+      <span class="rank">${i+1}</span>
+      <span class="who"><span class="nm">${s.player}</span>${me?'<span class="me-tag">ты</span>':''}</span>
+      <span class="pts">${s.total}</span>
+      <span class="ex"><b>${s.exacts}</b></span>
+      <span class="best">${s.best}</span></div>`;
+  });
+  box.innerHTML=html;
+  document.getElementById('leaderName').textContent=standings[0].player;
+}
+
+/* ---------- RESULTS view ---------- */
+let curRace=RACES[RACES.length-1].key;
+function renderRacePills(){
+  const box=document.getElementById('racePills');box.innerHTML='';
+  RACES.forEach(r=>{
+    const b=document.createElement('button');
+    b.textContent=`Р${r.round} · ${r.name}`;
+    if(r.key===curRace)b.classList.add('active');
+    b.addEventListener('click',()=>{curRace=r.key;renderRacePills();renderResults();});
+    box.appendChild(b);
+  });
+}
+function renderResults(){
+  const race=RACES.find(r=>r.key===curRace);
+  document.getElementById('resTitle').textContent=`${race.name} · топ-10`;
+  // actual result list
+  const rl=document.getElementById('resultList');rl.innerHTML='';
+  race.actual.forEach((code,i)=>{
+    const d=byId[code];const row=document.createElement('div');
+    row.className='rl-row'+(i<3?' podium':'');row.style.setProperty('--c',d.c);
+    row.innerHTML=`<span class="rp">${i+1}</span><span class="spine"></span>
+      <span class="code">${code}</span><span class="who">${d.name}</span>`;
+    rl.appendChild(row);
+  });
+  // scoreboard for race
+  const rows=raceScores[race.key];
+  const sb=document.getElementById('scoreboard');
+  let h=`<div class="sb-row head"><span>Игрок</span><span style="text-align:right">Очки</span><span style="text-align:right">Точных</span></div>`;
+  rows.forEach(r=>{h+=`<div class="sb-row${r.player===ME?' me':''}"><span class="nm">${r.player}</span>
+    <span class="rpts">${r.pts}</span><span class="rex">${r.exacts}</span></div>`;});
+  sb.innerHTML=h;
+  document.getElementById('resCount').textContent=`лидер гонки: ${rows[0].player}`;
+  // compare strip (your prediction vs actual)
+  const mine=rows.find(r=>r.player===ME);
+  const cmp=document.getElementById('compare');
+  let c=`<h4>Твой прогноз vs факт · ${race.name} — ${mine.pts} очков</h4><div class="cmp-track">`;
+  mine.perSlot.forEach(s=>{
+    const label=s.X?('P'+s.X):'—';
+    c+=`<div class="cmp-cell" style="--c:${byId[s.code].c}">
+      <div class="cy">P${s.Y} → ${label}</div>
+      <div class="cc">${s.code}</div>
+      <div class="cp ${s.kind}">+${s.p}</div></div>`;
+  });
+  c+=`</div><div class="cmp-legend">
+    <span><i class="dot" style="background:#4ade80"></i>точно</span>
+    <span><i class="dot" style="background:var(--volt)"></i>±1 позиция</span>
+    <span><i class="dot" style="background:var(--gold)"></i>близко</span>
+    <span><i class="dot" style="background:var(--chrome)"></i>мимо / вне топ-10</span></div>`;
+  cmp.innerHTML=c;
+}
+
+/* ---------- countdown ---------- */
+function nextThu(){const now=new Date();const d=new Date(now);d.setHours(20,0,0,0);
+  let diff=(4-d.getDay()+7)%7;if(diff===0&&now>d)diff=7;d.setDate(d.getDate()+diff);return d;}
+const target=nextThu();
+function tick(){const ms=target-new Date();const el=document.getElementById('countdown');
+  if(ms<=0){el.textContent='Приём закрыт';return;}
+  const dd=Math.floor(ms/86400000),hh=Math.floor(ms/3600000)%24,mm=Math.floor(ms/60000)%60,ss=Math.floor(ms/1000)%60;
+  const p=n=>String(n).padStart(2,'0');el.textContent=(dd>0?dd+'д ':'')+`${p(hh)}:${p(mm)}:${p(ss)}`;}
+setInterval(tick,1000);tick();
+
+let toastT;function showToast(html){const t=document.getElementById('toast');t.innerHTML=html;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3200);}
+
+renderPool();renderGrid();renderStandings();renderRacePills();renderResults();
+</script>
+</body>
+</html>
