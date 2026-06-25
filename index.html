@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F1 League — Прогноз на гонку</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --carbon:#0B0E14;
+    --carbon-2:#121826;
+    --carbon-3:#1A2233;
+    --line:#23304A;
+    --chrome:#8A93A6;
+    --ice:#E8EEF7;
+    --hot:#FF2E63;
+    --volt:#00E5FF;
+    --radius:14px;
+    --pool-h:560px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(0,229,255,.06), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(255,46,99,.07), transparent 55%),
+      var(--carbon);
+    color:var(--ice);
+    font-family:'Inter',system-ui,sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:20px 18px 60px}
+
+  /* ---------- header ---------- */
+  header.top{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:14px 18px;margin-bottom:18px;
+    background:linear-gradient(180deg,var(--carbon-2),rgba(18,24,38,.6));
+    border:1px solid var(--line);border-radius:var(--radius);
+    position:relative;overflow:hidden;
+  }
+  header.top::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+    background:linear-gradient(180deg,var(--volt),var(--hot));
+  }
+  .race-meta{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .eyebrow{
+    font-family:'Saira Condensed';font-weight:700;letter-spacing:.18em;
+    text-transform:uppercase;font-size:11px;color:var(--volt);
+    display:flex;align-items:center;gap:8px;
+  }
+  .live-dot{width:7px;height:7px;border-radius:50%;background:var(--hot);
+    box-shadow:0 0 0 0 rgba(255,46,99,.6);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,46,99,.55)}70%{box-shadow:0 0 0 8px rgba(255,46,99,0)}100%{box-shadow:0 0 0 0 rgba(255,46,99,0)}}
+  .race-name{font-family:'Saira Condensed';font-weight:800;font-size:26px;line-height:1;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .race-round{color:var(--chrome);font-size:12px;font-weight:500}
+
+  .deadline{text-align:right;display:flex;flex-direction:column;gap:3px;flex-shrink:0}
+  .deadline .lbl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--chrome);font-weight:600}
+  .countdown{font-family:'Saira Condensed';font-weight:700;font-size:22px;color:var(--ice);
+    font-variant-numeric:tabular-nums;letter-spacing:.02em}
+
+  /* ---------- layout ---------- */
+  .board{display:grid;grid-template-columns:300px 1fr;gap:18px}
+
+  .panel{background:var(--carbon-2);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .panel-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 14px;border-bottom:1px solid var(--line);
+  }
+  .panel-title{font-family:'Saira Condensed';font-weight:700;font-size:14px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--chrome)}
+  .counter{font-family:'Saira Condensed';font-weight:700;font-size:14px;color:var(--ice)}
+  .counter b{color:var(--volt)}
+
+  /* ---------- driver pool ---------- */
+  .pool-body{padding:8px;max-height:var(--pool-h);overflow-y:auto;scrollbar-width:thin}
+  .pool-body::-webkit-scrollbar{width:8px}
+  .pool-body::-webkit-scrollbar-thumb{background:var(--carbon-3);border-radius:8px}
+
+  .car{
+    --c:#888;
+    display:flex;align-items:center;gap:10px;
+    padding:9px 10px 9px 8px;margin:5px 3px;border-radius:10px;
+    background:var(--carbon-3);border:1px solid transparent;
+    cursor:pointer;user-select:none;transition:transform .12s ease,border-color .12s ease,background .12s ease,opacity .12s ease;
+    position:relative;
+  }
+  .car:hover{background:#202a3f;transform:translateX(2px)}
+  .car:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+  .car .spine{width:5px;align-self:stretch;border-radius:3px;background:var(--c);flex-shrink:0;
+    box-shadow:0 0 10px -1px var(--c)}
+  .car .body{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+  .car .code{font-family:'Saira Condensed';font-weight:800;font-size:18px;line-height:1;letter-spacing:.04em}
+  .car .who{font-size:11px;color:var(--chrome);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .car .team{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--c);font-weight:700;opacity:.9}
+  .car.selected{border-color:var(--volt);background:#16263a;box-shadow:0 0 0 1px var(--volt),0 0 22px -6px var(--volt)}
+  .car.placed{opacity:.32;pointer-events:none;filter:grayscale(.4)}
+  .car .grab{margin-left:auto;color:var(--chrome);opacity:.4;font-size:14px;flex-shrink:0}
+
+  /* ---------- grid slots ---------- */
+  .grid-body{padding:10px 12px}
+  .slot{
+    --c:transparent;
+    display:flex;align-items:center;gap:12px;
+    padding:7px 10px;margin:7px 0;border-radius:12px;
+    border:1px dashed var(--line);background:rgba(26,34,51,.4);
+    min-height:56px;transition:border-color .14s ease,background .14s ease,box-shadow .14s ease;
+  }
+  .slot.over{border-color:var(--volt);background:rgba(0,229,255,.06);box-shadow:inset 0 0 0 1px var(--volt)}
+  .slot.filled{border-style:solid;border-color:var(--line);background:var(--carbon-3)}
+  .slot.filled.snap{animation:snap .45s ease}
+  @keyframes snap{0%{box-shadow:0 0 0 0 var(--c)}40%{box-shadow:0 0 26px -4px var(--c)}100%{box-shadow:0 0 0 0 transparent}}
+
+  .pos{display:flex;flex-direction:column;align-items:center;width:42px;flex-shrink:0}
+  .pos .n{font-family:'Saira Condensed';font-weight:800;font-size:30px;line-height:.9;color:var(--chrome);
+    font-variant-numeric:tabular-nums;transition:color .14s ease}
+  .slot.filled .pos .n{color:var(--c)}
+  .pos .pts{font-size:9px;color:var(--chrome);font-weight:600;letter-spacing:.05em;margin-top:1px}
+
+  .slot .placed-car{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+  .slot .placed-car .spine{width:5px;height:30px;border-radius:3px;background:var(--c);box-shadow:0 0 12px -1px var(--c)}
+  .slot .placed-car .code{font-family:'Saira Condensed';font-weight:800;font-size:20px;letter-spacing:.04em}
+  .slot .placed-car .who{font-size:11px;color:var(--chrome);font-weight:500}
+  .slot .hint{color:var(--chrome);font-size:12px;font-weight:500;opacity:.65;flex:1}
+  .slot .remove{margin-left:auto;background:none;border:none;color:var(--chrome);cursor:pointer;
+    font-size:18px;padding:4px 8px;border-radius:8px;line-height:1;transition:color .12s,background .12s}
+  .slot .remove:hover{color:var(--hot);background:rgba(255,46,99,.1)}
+  .slot .remove:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+
+  /* ---------- footer actions ---------- */
+  .actions{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+  .btn{font-family:'Saira Condensed';font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    font-size:14px;padding:13px 22px;border-radius:11px;border:1px solid var(--line);
+    background:var(--carbon-2);color:var(--ice);cursor:pointer;transition:.15s}
+  .btn:hover{border-color:var(--chrome)}
+  .btn:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+  .btn.save{background:linear-gradient(180deg,var(--hot),#d81b4d);border-color:transparent;color:#fff;
+    box-shadow:0 6px 20px -8px var(--hot)}
+  .btn.save:disabled{background:var(--carbon-3);color:var(--chrome);box-shadow:none;cursor:not-allowed;opacity:.7}
+  .hint-line{color:var(--chrome);font-size:12.5px}
+  .hint-line b{color:var(--ice)}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+    background:var(--carbon-3);border:1px solid var(--volt);color:var(--ice);
+    padding:13px 20px;border-radius:12px;font-weight:600;font-size:14px;
+    box-shadow:0 10px 40px -10px rgba(0,229,255,.4);opacity:0;pointer-events:none;transition:.3s}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast .tcode{font-family:'Saira Condensed';font-weight:800;color:var(--volt)}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:760px){
+    :root{--pool-h:none}
+    .board{grid-template-columns:1fr}
+    .pool-body{max-height:none;display:grid;grid-template-columns:1fr 1fr;gap:0}
+    .race-name{font-size:21px}
+    .deadline .countdown{font-size:18px}
+  }
+  @media (max-width:420px){
+    .pool-body{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="race-meta">
+      <span class="eyebrow"><span class="live-dot"></span>Приём прогнозов открыт</span>
+      <span class="race-name">Гран-при Великобритании</span>
+      <span class="race-round">Раунд 11 · Сильверстоун · первая зачётная гонка</span>
+    </div>
+    <div class="deadline">
+      <span class="lbl">До дедлайна (чт 20:00)</span>
+      <span class="countdown" id="countdown">—</span>
+    </div>
+  </header>
+
+  <div class="board">
+    <!-- POOL -->
+    <section class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Пилоты</span>
+        <span class="counter"><b id="poolCount">22</b> в пуле</span>
+      </div>
+      <div class="pool-body" id="pool"></div>
+    </section>
+
+    <!-- GRID -->
+    <section class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Твой топ-10</span>
+        <span class="counter"><b id="filled">0</b>/10</span>
+      </div>
+      <div class="grid-body" id="grid"></div>
+    </section>
+  </div>
+
+  <div class="actions">
+    <button class="btn save" id="save" disabled>Сохранить прогноз</button>
+    <button class="btn" id="clear">Очистить</button>
+    <span class="hint-line" id="hint">Тапни пилота, затем тапни слот. На компьютере можно перетаскивать мышью.</span>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---- 2026 grid (составы реальные, цвета — приближённые брендовые, легко заменить) ---- */
+const DRIVERS = [
+  {id:'NOR',code:'NOR',name:'Норрис',team:'McLaren',c:'#FF8000'},
+  {id:'PIA',code:'PIA',name:'Пиастри',team:'McLaren',c:'#FF8000'},
+  {id:'LEC',code:'LEC',name:'Леклер',team:'Ferrari',c:'#FF2D3C'},
+  {id:'HAM',code:'HAM',name:'Хэмилтон',team:'Ferrari',c:'#FF2D3C'},
+  {id:'RUS',code:'RUS',name:'Расселл',team:'Mercedes',c:'#00D7B6'},
+  {id:'ANT',code:'ANT',name:'Антонелли',team:'Mercedes',c:'#00D7B6'},
+  {id:'VER',code:'VER',name:'Ферстаппен',team:'Red Bull',c:'#4B7BEC'},
+  {id:'HAD',code:'HAD',name:'Хаджар',team:'Red Bull',c:'#4B7BEC'},
+  {id:'ALB',code:'ALB',name:'Албон',team:'Williams',c:'#5AA9FF'},
+  {id:'SAI',code:'SAI',name:'Сайнс',team:'Williams',c:'#5AA9FF'},
+  {id:'ALO',code:'ALO',name:'Алонсо',team:'Aston Martin',c:'#2BD589'},
+  {id:'STR',code:'STR',name:'Стролл',team:'Aston Martin',c:'#2BD589'},
+  {id:'GAS',code:'GAS',name:'Гасли',team:'Alpine',c:'#2AA7E0'},
+  {id:'COL',code:'COL',name:'Колапинто',team:'Alpine',c:'#2AA7E0'},
+  {id:'LAW',code:'LAW',name:'Лоусон',team:'Racing Bulls',c:'#8AA0FF'},
+  {id:'LIN',code:'LIN',name:'Линдблад',team:'Racing Bulls',c:'#8AA0FF'},
+  {id:'HUL',code:'HUL',name:'Хюлькенберг',team:'Audi',c:'#19B3A6'},
+  {id:'BOR',code:'BOR',name:'Бортолето',team:'Audi',c:'#19B3A6'},
+  {id:'OCO',code:'OCO',name:'Окон',team:'Haas',c:'#C5CAD2'},
+  {id:'BEA',code:'BEA',name:'Бирман',team:'Haas',c:'#C5CAD2'},
+  {id:'BOT',code:'BOT',name:'Боттас',team:'Cadillac',c:'#C7A35A'},
+  {id:'PER',code:'PER',name:'Перес',team:'Cadillac',c:'#C7A35A'},
+];
+const WEIGHTS = [25,18,15,12,10,8,6,4,2,1];
+
+const byId = Object.fromEntries(DRIVERS.map(d=>[d.id,d]));
+let slots = Array(10).fill(null);   // slot index -> driverId
+let selected = null;
+
+const poolEl = document.getElementById('pool');
+const gridEl = document.getElementById('grid');
+const filledEl = document.getElementById('filled');
+const poolCountEl = document.getElementById('poolCount');
+const saveBtn = document.getElementById('save');
+const hintEl = document.getElementById('hint');
+
+/* ---- render pool ---- */
+function renderPool(){
+  poolEl.innerHTML='';
+  DRIVERS.forEach(d=>{
+    const placed = slots.includes(d.id);
+    const el = document.createElement('div');
+    el.className='car'+(placed?' placed':'')+(selected===d.id?' selected':'');
+    el.style.setProperty('--c',d.c);
+    el.tabIndex = placed?-1:0;
+    el.setAttribute('role','button');
+    el.setAttribute('aria-label',`${d.name}, ${d.team}`);
+    el.draggable = !placed;
+    el.dataset.id = d.id;
+    el.innerHTML = `
+      <div class="spine"></div>
+      <div class="body">
+        <span class="code">${d.code}</span>
+        <span class="who">${d.name}</span>
+        <span class="team">${d.team}</span>
+      </div>
+      <span class="grab">⠿</span>`;
+    el.addEventListener('click',()=>pickDriver(d.id));
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pickDriver(d.id);}});
+    el.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',d.id);selected=null;renderPool();});
+    poolEl.appendChild(el);
+  });
+  poolCountEl.textContent = DRIVERS.length - slots.filter(Boolean).length;
+}
+
+/* ---- render grid ---- */
+function renderGrid(snapIdx=-1){
+  gridEl.innerHTML='';
+  slots.forEach((did,i)=>{
+    const d = did?byId[did]:null;
+    const slot = document.createElement('div');
+    slot.className='slot'+(d?' filled':'')+(i===snapIdx?' snap':'');
+    if(d) slot.style.setProperty('--c',d.c);
+    slot.dataset.idx=i;
+    slot.innerHTML = `
+      <div class="pos"><span class="n">${i+1}</span><span class="pts">${WEIGHTS[i]} б</span></div>
+      ${d?`
+        <div class="placed-car">
+          <div class="spine"></div>
+          <div>
+            <div class="code">${d.code}</div>
+            <div class="who">${d.name} · ${d.team}</div>
+          </div>
+        </div>
+        <button class="remove" aria-label="Убрать из P${i+1}">✕</button>
+      `:`<span class="hint">${selected?'Тапни, чтобы поставить '+byId[selected].code:'Пусто'}</span>`}
+    `;
+    // place via tap
+    slot.addEventListener('click',e=>{
+      if(e.target.closest('.remove')){removeFromSlot(i);return;}
+      if(selected){placeDriver(selected,i);}
+    });
+    // drag/drop
+    slot.addEventListener('dragover',e=>{e.preventDefault();slot.classList.add('over');});
+    slot.addEventListener('dragleave',()=>slot.classList.remove('over'));
+    slot.addEventListener('drop',e=>{
+      e.preventDefault();slot.classList.remove('over');
+      const id=e.dataTransfer.getData('text/plain');
+      if(id)placeDriver(id,i);
+    });
+    gridEl.appendChild(slot);
+  });
+  const n = slots.filter(Boolean).length;
+  filledEl.textContent=n;
+  saveBtn.disabled = n<10;
+  hintEl.innerHTML = n<10
+    ? `Заполни все 10 слотов — осталось <b>${10-n}</b>. Тапни пилота, потом слот; на ПК можно тащить мышью.`
+    : `Готово: <b>10/10</b>. Можно сохранять прогноз.`;
+}
+
+function pickDriver(id){
+  if(slots.includes(id))return;
+  selected = (selected===id)?null:id;
+  renderPool();renderGrid();
+}
+function placeDriver(id,idx){
+  if(slots.includes(id)) slots[slots.indexOf(id)]=null; // move if already placed elsewhere
+  slots[idx]=id;
+  selected=null;
+  renderPool();renderGrid(idx);
+}
+function removeFromSlot(idx){
+  slots[idx]=null;
+  renderPool();renderGrid();
+}
+
+/* ---- actions ---- */
+saveBtn.addEventListener('click',()=>{
+  if(slots.filter(Boolean).length<10)return;
+  const top3 = slots.slice(0,3).map(id=>byId[id].code).join(' · ');
+  showToast(`Прогноз принят (демо) — твой подиум: <span class="tcode">${top3}</span>`);
+});
+document.getElementById('clear').addEventListener('click',()=>{
+  slots=Array(10).fill(null);selected=null;renderPool();renderGrid();
+});
+
+let toastT;
+function showToast(html){
+  const t=document.getElementById('toast');
+  t.innerHTML=html;t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+/* ---- countdown to next Thursday 20:00 (demo) ---- */
+function nextThursday2000(){
+  const now=new Date();const d=new Date(now);
+  d.setHours(20,0,0,0);
+  let diff=(4 - d.getDay()+7)%7; // 4 = Thursday
+  if(diff===0 && now>d) diff=7;
+  d.setDate(d.getDate()+diff);
+  return d;
+}
+const target=nextThursday2000();
+function tick(){
+  const ms=target-new Date();
+  const el=document.getElementById('countdown');
+  if(ms<=0){el.textContent='Приём закрыт';return;}
+  const dd=Math.floor(ms/86400000),hh=Math.floor(ms/3600000)%24,
+        mm=Math.floor(ms/60000)%60,ss=Math.floor(ms/1000)%60;
+  const p=n=>String(n).padStart(2,'0');
+  el.textContent = (dd>0?dd+'д ':'')+`${p(hh)}:${p(mm)}:${p(ss)}`;
+}
+setInterval(tick,1000);tick();
+
+renderPool();renderGrid();
+</script>
+</body>
+</html>
