@@ -13,7 +13,9 @@ grant insert, update on public.predictions to authenticated;
 grant insert, update, delete on
   public.drivers, public.races, public.race_driver_pool,
   public.results, public.result_changes to authenticated;
--- users: менять можно только свои безопасные колонки (is_admin недоступен для UPDATE)
+-- users: сначала отзываем широкий UPDATE (Supabase по дефолту грантит ALL роли authenticated),
+-- затем даём UPDATE только на безопасные колонки -> is_admin менять нельзя.
+revoke update on public.users from authenticated;
 grant update (display_name, telegram_username, telegram_user_id) on public.users to authenticated;
 
 -- Включить RLS
