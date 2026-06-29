@@ -30,9 +30,22 @@ f1_predict/
 MVP = Фазы 0–3.
 
 ## Команды
-- (пока не заданы — появятся с `package.json` на этапе React-каркаса)
+- БД (cloud-direct, нужен `cd scripts/db && npm install`):
+  - `npm run rebuild` — накат всех `supabase/migrations/*.sql` на облако.
+  - `npm test` — тесты Фазы 0 (формула, view, RLS). Подробности — `scripts/db/README.md`.
+- (фронтенд-команды появятся с `package.json` на этапе React-каркаса)
+
+## Бэкенд Supabase (Фаза 0)
+- Облако `konicaRu_f1` (ref `kolrwuhjjsclqalapfzt`, EU-West, FREE). Локальный Docker-стек НЕ используется
+  (не работает на этой машине) → миграции/тесты идут напрямую через session pooler, см. `scripts/db/`.
+- `supabase/migrations/`: `0001_schema` (7 таблиц) · `0002_scoring` (функция score_prediction + view scores)
+  · `0003_rls` (RLS-политики, гранты, is_admin) · `0004_validation` (триггер состава прогноза).
+- Секреты — в `.env` (gitignored): `SUPABASE_DB_URL` (session pooler с паролем БД).
 
 ## Changelog
+### 2026-06-29
+- Фаза 0 backend: миграции 0001–0004 применены к облаку, тесты зелёные (RLS 7/7 = критерий готовности).
+- Пивот на cloud-direct (Docker недоступен): инструменты в `scripts/db/`, keep-alive workflow.
 ### 2026-06-26
 - Разворот по project-starter: git init, .gitignore, контекстные файлы.
 - План перемещён в `docs/plan.md`.

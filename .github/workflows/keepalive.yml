@@ -1,0 +1,23 @@
+name: keepalive
+# Бесплатный Supabase засыпает через 7 дней без запросов к БД (plan §11).
+# Лёгкий REST-пинг ×2/нед обнуляет таймер простоя -> проект не спит -> pg_cron жив.
+on:
+  schedule:
+    - cron: '17 6 * * 1'   # Пн 06:17 UTC
+    - cron: '17 6 * * 4'   # Чт 06:17 UTC
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST (resets idle timer)
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${SUPABASE_URL}/rest/v1/drivers?select=id&limit=1" \
+            -H "apikey: ${SUPABASE_ANON_KEY}")
+          echo "HTTP $code"
+          test "$code" = "200"
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}

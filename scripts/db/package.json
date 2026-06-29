@@ -1,0 +1,16 @@
+{
+  "name": "f1-predict-db-tools",
+  "private": true,
+  "description": "Cloud-direct применение миграций и тесты Фазы 0 против облачного Supabase (через session pooler).",
+  "type": "commonjs",
+  "scripts": {
+    "rebuild": "node runner.js rebuild",
+    "test:score": "node scoring.test.js",
+    "test:view": "node view.test.js",
+    "test:rls": "node rls.test.js",
+    "test": "node scoring.test.js && node view.test.js && node rls.test.js"
+  },
+  "dependencies": {
+    "pg": "^8.13.0"
+  }
+}
