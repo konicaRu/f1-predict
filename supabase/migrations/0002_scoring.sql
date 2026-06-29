@@ -28,3 +28,12 @@ begin
   return next;
 end;
 $$;
+
+-- View очков: считается из predictions ⋈ results. security_invoker → уважает RLS
+-- (до дедлайна чужие прогнозы не утекают и через view).
+create view public.scores
+  with (security_invoker = true) as
+select p.user_id, p.race_id, s.points, s.exact_hits
+from public.predictions p
+join public.results r on r.race_id = p.race_id
+cross join lateral public.score_prediction(p.positions, r.positions) s;
