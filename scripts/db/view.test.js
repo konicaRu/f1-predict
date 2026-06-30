@@ -13,6 +13,7 @@ insert into races(id,round,name,deadline_utc,status) overriding system value
   values(${RID},1,'ViewTest',now()-interval '1 day','resulted');
 insert into auth.users(id,email) values('${UID}','viewtest@test.io');
 insert into users(id,display_name) values('${UID}','View Tester');
+insert into race_driver_pool(race_id,driver_id) select ${RID},'d'||g from generate_series(1,10) g;
 insert into results(race_id,positions,status)
   values(${RID},(select jsonb_agg('d'||g order by g) from generate_series(1,10) g),'final');
 insert into predictions(user_id,race_id,positions)
