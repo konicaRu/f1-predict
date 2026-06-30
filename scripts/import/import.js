@@ -82,6 +82,7 @@ async function main(){
   if(cmd==='drivers') await importDrivers();
   else if(cmd==='calendar') await importCalendar();
   else if(cmd==='results') await importResults();
+  else if(cmd==='all'){ await importDrivers(); await importCalendar(); await importResults(); }
   else { console.error('usage: drivers|calendar|results|all'); process.exit(2); }
   await close();
 }
