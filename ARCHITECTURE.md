@@ -45,7 +45,16 @@ MVP = Фазы 0–3.
   · `0003_rls` (RLS-политики, гранты, is_admin) · `0004_validation` (триггер состава прогноза).
 - Секреты — в `.env` (gitignored): `SUPABASE_DB_URL` (session pooler с паролем БД).
 
+## Фронтенд (Фаза 2a)
+- Vite + React 18 + TypeScript + react-router + `@supabase/supabase-js`. Корневой `package.json`.
+- `src/`: `lib/supabase.ts`, `auth/` (AuthContext, ProtectedRoute), `pages/` (Login/Signup/RedeemInvite),
+  `components/Shell.tsx`, `styles/app.css`. Прототип-референс — `docs/prototype.html`. Подробности — `docs/frontend.md`.
+- Вход по инвайт-коду (миграция 0006), доступ к данным по членству (`is_member()`). Команды: `npm run dev`, `npm run build`.
+
 ## Changelog
+### 2026-06-30 (2a)
+- Фаза 2a: React-каркас + auth по инвайт-коду. Миграция 0006 (invite/membership), RLS чтения по членству.
+  e2e-смоук пройден. Прототип → `docs/prototype.html`.
 ### 2026-06-30
 - Фаза 1 (данные): `scripts/import/` тянет Jolpica → 22 гонки, 22 пилота, 8 демо-результатов. Миграция
   `0005_is_sprint`. `verify` 7/7. Переход на transaction-пулер :6543 (лимит session-пулера).

@@ -3,9 +3,12 @@
 ## Статус проекта
 **ФАЗА 0 и ФАЗА 1 закрыты** (в `main`). В облаке `konicaRu_f1`: 22 гонки, 22 пилота с командами/цветами,
 8 демо-результатов (`scored=false`), `races.is_sprint`. keepalive зелёный.
-**Сейчас — ФАЗА 2 (ядро), декомпозирована** на под-проекты, каждый = свой spec→plan→impl:
-**2a Каркас+Auth → 2b Календарь+Прогноз → 2c Админка → backup-Sheets**. Стартуем с **2a** (brainstorming идёт).
-Тут начинается React-фронтенд (Vite) — появится корневой `package.json`. Скиллы: Superpowers + `karpathy-guidelines`.
+**ФАЗА 2 (ядро) декомпозирована:** 2a Каркас+Auth → 2b Календарь+Прогноз → 2c Админка → backup-Sheets.
+**2a РЕАЛИЗОВАНА на ветке `phase2a`** (ждёт влития): React+Vite+TS фронтенд, вход по инвайт-коду (миграция
+0006: `redeem_invite`+`is_member`, RLS чтения по членству), AuthContext/ProtectedRoute, экраны Login/Signup/
+Redeem, Shell. e2e-смоук в браузере пройден (рег по коду `F1-2026-LEAGUE`→членство→вход; админ-вкладка).
+Аккаунт `prokol35@gmail.com` (Dima_k) = админ. **Дальше — 2b** (календарь+прогноз). Скиллы: Superpowers + `karpathy-guidelines`.
+Supabase Auth: «Confirm email» OFF, email-сигнапы ON.
 
 **ВАЖНО — пивот на cloud-direct:** локальный Docker-стек Supabase на этой машине НЕ работает
 (Docker не может тянуть образы из реестра — сетевой блок, даже hello-world виснет; containerd/прокси/
@@ -37,6 +40,16 @@
 - (опц.) Пользователь может вернуть галку containerd в Docker Desktop — выключали зря, на причину не влияло.
 
 ## Лог сессий
+
+### 2026-06-30 (Фаза 2a — каркас + auth)
+- Brainstorming → спека+план 2a. Решения S1–S7 (инвайт-код серверный, email-подтверждение off, TS, порт CSS).
+- Миграция 0006 (invite_codes/redeem_invite/is_member, RLS чтения по членству); pg-тест членства PASS.
+  `rls.test` изолирован высокими id/round (после импорта Фазы 1 был конфликт ключей).
+- React-каркас Vite+TS: supabase-клиент, AuthContext, ProtectedRoute, Login/Signup/RedeemInvite, Shell, тема из прототипа.
+  Прототип → `docs/prototype.html`. `.env.local` (gitignored) с VITE-переменными.
+- e2e-смоук в браузере (dev `npm run dev -- --host`, порт 5173): рег по коду → членство → вход; бутстрап админа.
+- Нюансы окружения: Vite default слушает IPv6 → `--host`; Supabase «Email signups» надо было включить, «Confirm email» выключить.
+- Ветка `phase2a` (не влита).
 
 ### 2026-06-30 (Фаза 1 — данные)
 - Brainstorming → спека (`docs/superpowers/specs/2026-06-30-phase1-data-design.md`) → план
