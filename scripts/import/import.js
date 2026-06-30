@@ -36,9 +36,30 @@ async function importDrivers(){
   console.log(`drivers: ${n} upsert (${gray} без цвета, ${skipped} без кода пропущено)`);
 }
 
+async function importCalendar(){
+  const d = await fetchJolpica('2026/races');
+  let n=0, sprint=0;
+  for(const r of d.MRData.RaceTable.Races){
+    const dt = `${r.date}T${r.time||'12:00:00Z'}`;       // Jolpica отдаёт UTC
+    const isSprint = !!r.Sprint;
+    if(isSprint) sprint++;
+    await q(
+      `insert into races(season,round,name,race_datetime_utc,deadline_utc,is_sprint,status,scored)
+         values(2026,$1,$2,$3,$4,$5,'demo',false)
+       on conflict (season,round) do update set name=excluded.name,
+         race_datetime_utc=excluded.race_datetime_utc, deadline_utc=excluded.deadline_utc,
+         is_sprint=excluded.is_sprint`,
+      [Number(r.round), r.raceName, dt, deadlineUtc(r.date), isSprint]
+    );
+    n++;
+  }
+  console.log(`races: ${n} upsert (${sprint} спринтов)`);
+}
+
 async function main(){
   const cmd = process.argv[2];
   if(cmd==='drivers') await importDrivers();
+  else if(cmd==='calendar') await importCalendar();
   else { console.error('usage: drivers|calendar|results|all'); process.exit(2); }
   await close();
 }
