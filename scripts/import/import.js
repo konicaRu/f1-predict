@@ -56,10 +56,32 @@ async function importCalendar(){
   console.log(`races: ${n} upsert (${sprint} спринтов)`);
 }
 
+async function importResults(){
+  let loaded=0;
+  for(let round=1; round<=22; round++){
+    const d = await fetchJolpica(`2026/${round}/results`);
+    const races = d.MRData.RaceTable.Races;
+    if(!races.length || !races[0].Results || races[0].Results.length < 10) continue; // не завершён
+    const top10 = races[0].Results
+      .slice().sort((a,b)=>Number(a.position)-Number(b.position))
+      .slice(0,10).map(x=>x.Driver.driverId);
+    await q(
+      `insert into results(race_id, positions, status, fetched_at)
+         select id, $2::jsonb, 'final', now() from races where season=2026 and round=$1
+       on conflict (race_id) do update set positions=excluded.positions, status='final', fetched_at=now()`,
+      [round, JSON.stringify(top10)]
+    );
+    await q(`update races set status='resulted' where season=2026 and round=$1`, [round]);
+    loaded++;
+  }
+  console.log(`results: ${loaded} завершённых раундов загружено`);
+}
+
 async function main(){
   const cmd = process.argv[2];
   if(cmd==='drivers') await importDrivers();
   else if(cmd==='calendar') await importCalendar();
+  else if(cmd==='results') await importResults();
   else { console.error('usage: drivers|calendar|results|all'); process.exit(2); }
   await close();
 }
