@@ -4,6 +4,9 @@ node_modules/
 # Сборка
 dist/
 build/
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
 
 # Секреты — НИКОГДА в репозиторий (anon-ключ публичен, но service_role и токены — нет)
 .env
