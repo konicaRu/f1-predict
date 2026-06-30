@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --bg: #0B0E14;
+  --panel: #121826;
+  --panel2: #1A2233;
+  --line: #23304A;
+  --volt: #00E5FF;
+  --hot: #FF2E63;
+  --txt: #E6EAF2;
+  --muted: #8A93A6;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--txt); font-family: Inter, system-ui, sans-serif; }
+
+.app { max-width: 1100px; margin: 0 auto; padding: 16px; }
+
+.hdr { display: flex; justify-content: space-between; align-items: center; background: var(--panel); border-radius: 14px; padding: 14px 18px; border-left: 4px solid var(--volt); }
+.hdr-label { font-family: 'Saira Condensed'; color: var(--volt); text-transform: uppercase; letter-spacing: .08em; font-size: 12px; display: block; }
+.hdr-title { font-family: 'Saira Condensed'; font-weight: 800; font-size: 24px; display: block; }
+.hdr-sub { color: var(--muted); font-size: 12px; }
+.hdr-logout { background: transparent; border: 1px solid var(--line); color: var(--txt); border-radius: 8px; padding: 8px 14px; cursor: pointer; }
+
+.nav { display: flex; gap: 6px; background: var(--panel); border-radius: 12px; padding: 6px; margin: 12px 0; }
+.nav-tab { font-family: 'Saira Condensed'; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); text-decoration: none; padding: 10px 14px; border-radius: 9px; }
+.nav-tab.active { background: var(--panel2); color: #fff; }
+.main { margin-top: 12px; }
+
+.auth-card { max-width: 360px; margin: 48px auto; display: flex; flex-direction: column; gap: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 24px; }
+.auth-card h1 { font-family: 'Saira Condensed'; font-weight: 800; margin: 0 0 8px; }
+.auth-card input { background: var(--panel2); border: 1px solid var(--line); color: var(--txt); border-radius: 9px; padding: 11px 12px; font-size: 14px; }
+.auth-card button { background: linear-gradient(90deg, var(--hot), #c01f4a); color: #fff; border: 0; border-radius: 9px; padding: 12px; font-weight: 600; cursor: pointer; }
+.auth-card button:disabled { opacity: .6; cursor: not-allowed; }
+.auth-card a { color: var(--volt); }
+.auth-err { color: var(--hot); font-size: 13px; margin: 0; }
+.link-btn { background: none !important; border: 0; color: var(--volt); cursor: pointer; padding: 0; font: inherit; }
+
+.stub { padding: 32px; color: var(--muted); text-align: center; border: 1px dashed var(--line); border-radius: 12px; }
