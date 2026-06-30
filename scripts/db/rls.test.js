@@ -10,6 +10,8 @@ const AD='33333333-3333-3333-3333-333333333333';
 const perfect = JSON.stringify(Array.from({length:10},(_,i)=>`d${i+1}`));
 const dup     = JSON.stringify(['d1','d1','d2','d3','d4','d5','d6','d7','d8','d9']);
 const notPool = JSON.stringify(['d1','d2','d3','d4','d5','d6','d7','d8','d9','d11']);
+// высокие id/round, чтобы не конфликтовать с реальными гонками из импорта (Фаза 1)
+const R1=900000001, R2=900000002;
 
 function tryThrow(name, stmt){ return `
   begin ${stmt};
@@ -29,23 +31,23 @@ begin
   insert into auth.users(id,email) values('${A}','a@t.io'),('${B}','b@t.io'),('${AD}','ad@t.io');
   insert into users(id,display_name,is_admin) values('${A}','A',false),('${B}','B',false),('${AD}','Adm',true);
   insert into races(id,round,name,deadline_utc,status) overriding system value values
-    (1,1,'Open',now()+interval '2 days','open'),(2,2,'Closed',now()-interval '1 day','resulted');
+    (${R1},9001,'Open',now()+interval '2 days','open'),(${R2},9002,'Closed',now()-interval '1 day','resulted');
   insert into race_driver_pool(race_id,driver_id)
-    select r,'d'||g from (values(1),(2)) v(r) cross join generate_series(1,10) g;
-  insert into results(race_id,positions,status) values(2,'${perfect}'::jsonb,'final');
-  insert into predictions(user_id,race_id,positions) values('${B}',1,'${perfect}'::jsonb),('${B}',2,'${perfect}'::jsonb);
+    select r,'d'||g from (values(${R1}),(${R2})) v(r) cross join generate_series(1,10) g;
+  insert into results(race_id,positions,status) values(${R2},'${perfect}'::jsonb,'final');
+  insert into predictions(user_id,race_id,positions) values('${B}',${R1},'${perfect}'::jsonb),('${B}',${R2},'${perfect}'::jsonb);
 
   perform set_config('request.jwt.claims','{"sub":"${A}","role":"authenticated"}',true);
   execute 'set local role authenticated';
 
-  select count(*) into n from predictions where race_id=1 and user_id<>'${A}';
+  select count(*) into n from predictions where race_id=${R1} and user_id<>'${A}';
   names:=array_append(names,'1'); passed:=array_append(passed,(n=0)); infos:=array_append(infos,'видно чужих='||n);
-  select count(*) into n from predictions where race_id=2 and user_id='${B}';
+  select count(*) into n from predictions where race_id=${R2} and user_id='${B}';
   names:=array_append(names,'1b'); passed:=array_append(passed,(n=1)); infos:=array_append(infos,'видно чужих='||n);
-  ${tryThrow('2',  `insert into predictions(user_id,race_id,positions) values('${A}',2,'${perfect}'::jsonb)`)}
-  ${tryThrow('3a', `insert into predictions(user_id,race_id,positions) values('${A}',1,'${dup}'::jsonb)`)}
-  ${tryThrow('3b', `insert into predictions(user_id,race_id,positions) values('${A}',1,'${notPool}'::jsonb)`)}
-  ${tryThrow('4',  `insert into results(race_id,positions) values(1,'${perfect}'::jsonb)`)}
+  ${tryThrow('2',  `insert into predictions(user_id,race_id,positions) values('${A}',${R2},'${perfect}'::jsonb)`)}
+  ${tryThrow('3a', `insert into predictions(user_id,race_id,positions) values('${A}',${R1},'${dup}'::jsonb)`)}
+  ${tryThrow('3b', `insert into predictions(user_id,race_id,positions) values('${A}',${R1},'${notPool}'::jsonb)`)}
+  ${tryThrow('4',  `insert into results(race_id,positions) values(${R1},'${perfect}'::jsonb)`)}
   ${tryThrow('5',  `update users set is_admin=true where id='${A}'`)}
 
   reset role;
