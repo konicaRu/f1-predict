@@ -1,5 +1,13 @@
 # Фаза 0 — Фундамент Supabase. План реализации
 
+> **Статус (2026-06-30): ВЫПОЛНЕНО, но не так, как написано ниже.** Локальный Docker не заработал →
+> пивот на **cloud-direct**. Фактически: миграции `supabase/migrations/0001..0004` применены к облаку
+> `konicaRu_f1` раннером `scripts/db/runner.js` (постейтментно, через session pooler); тесты — Node, а не
+> pgTAP: `scripts/db/{scoring,view,rls}.test.js`. Результат: формула 7/7, view 131/10, RLS 7/7 (= критерий).
+> Task 1 (Docker `supabase start`), Task 5 (seed.sql) и Task 10 (`supabase db push`) НЕ применялись —
+> заменены cloud-direct подходом. Task 9 (keep-alive) — сделан, ждёт GitHub secrets от пользователя.
+> Детали — `scripts/db/README.md` и `MEMORY.md`. SQL миграций ниже актуален.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Поднять схему БД, RLS, валидацию прогноза, функцию/view очков и keep-alive — локально на Docker, с зелёными pgTAP-тестами, готовые к пушу в облако `konicaRu_f1`.
