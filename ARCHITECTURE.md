@@ -33,7 +33,10 @@ MVP = Фазы 0–3.
 - БД (cloud-direct, нужен `cd scripts/db && npm install`):
   - `npm run rebuild` — накат всех `supabase/migrations/*.sql` на облако.
   - `npm test` — тесты Фазы 0 (формула, view, RLS). Подробности — `scripts/db/README.md`.
-- (фронтенд-команды появятся с `package.json` на этапе React-каркаса)
+- Импорт данных (`cd scripts/import && npm install`):
+  - `npm run all` — пилоты+календарь+результаты из Jolpica (идемпотентно). `npm run verify` — критерий Фазы 1.
+- Подключение к облаку: transaction-пулер `:6543` (см. `.env` / `scripts/import/README.md`).
+- (фронтенд-команды появятся с корневым `package.json` на этапе React-каркаса, Фаза 2)
 
 ## Бэкенд Supabase (Фаза 0)
 - Облако `konicaRu_f1` (ref `kolrwuhjjsclqalapfzt`, EU-West, FREE). Локальный Docker-стек НЕ используется
@@ -43,6 +46,9 @@ MVP = Фазы 0–3.
 - Секреты — в `.env` (gitignored): `SUPABASE_DB_URL` (session pooler с паролем БД).
 
 ## Changelog
+### 2026-06-30
+- Фаза 1 (данные): `scripts/import/` тянет Jolpica → 22 гонки, 22 пилота, 8 демо-результатов. Миграция
+  `0005_is_sprint`. `verify` 7/7. Переход на transaction-пулер :6543 (лимит session-пулера).
 ### 2026-06-29
 - Фаза 0 backend: миграции 0001–0004 применены к облаку, тесты зелёные (RLS 7/7 = критерий готовности).
 - Пивот на cloud-direct (Docker недоступен): инструменты в `scripts/db/`, keep-alive workflow.
