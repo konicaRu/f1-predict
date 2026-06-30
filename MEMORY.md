@@ -1,9 +1,10 @@
 # MEMORY — журнал
 
 ## Статус проекта
-Фаза 0 почти закрыта. **Все миграции (0001–0004) применены к облаку `konicaRu_f1` и тесты зелёные:**
-формула 7/7, view 131/10, **RLS 7/7 = критерий готовности Фазы 0 выполнен.** Ветка `phase0-supabase`.
-Скиллы: Superpowers активен, `karpathy-guidelines` в `~/.claude/skills/`.
+**ФАЗА 0 ЗАВЕРШЕНА ПОЛНОСТЬЮ** (влита в `main`, ветка `phase0-supabase` удалена). Миграции 0001–0004
+в облаке `konicaRu_f1`, тесты зелёные (score 7/7, view 131/10, RLS 7/7). **keepalive workflow настроен и
+проверен (зелёный),** GitHub secrets `SUPABASE_URL` + `SUPABASE_ANON_KEY` заведены.
+Следующее — **Фаза 1** (данные). Скиллы: Superpowers + `karpathy-guidelines`.
 
 **ВАЖНО — пивот на cloud-direct:** локальный Docker-стек Supabase на этой машине НЕ работает
 (Docker не может тянуть образы из реестра — сетевой блок, даже hello-world виснет; containerd/прокси/
@@ -19,17 +20,25 @@
 **Цель:** закрытая лига прогнозов F1 для компании друзей.
 **Критерий MVP:** первая зачётная гонка играбельна = Фазы 0–3.
 
-## Открытые вопросы / что осталось по Фазе 0
-- **Проверить committed-харнесс:** `cd scripts/db && npm install && npm test` (вчера не успели запустить).
-- **Обновить спеку и план** под cloud-direct (`docs/superpowers/specs|plans/...`) — они всё ещё описывают Docker/pgTAP.
-- **Пользователю:** завести GitHub secrets `SUPABASE_URL` (`https://kolrwuhjjsclqalapfzt.supabase.co`) и
-  `SUPABASE_ANON_KEY` (из дашборда) → запустить workflow `keepalive` вручную (зелёный = ок).
-- Миграции применены напрямую раннером, БЕЗ supabase migration-трекинга. Если позже понадобится
-  `supabase db push` — учесть, что в облаке нет записей в `supabase_migrations.schema_migrations`.
-- Завершить ветку: merge `phase0-supabase` → `main` (finishing-a-development-branch).
-- (опц.) Пользователь может вернуть галку containerd в Docker Desktop — мы её выключали зря.
+## Открытые вопросы / на будущее
+- **Старт Фазы 1** (данные): импорт справочника пилотов + календаря 2026 из Jolpica API, ретро-загрузка
+  7 прошедших гонок как демо (`scored=false`). Перед началом — `brainstorming`. Применять к облаку тем же
+  `scripts/db`-раннером (cloud-direct остаётся, Docker по-прежнему недоступен).
+- Миграции применяются раннером напрямую, БЕЗ supabase migration-трекинга — если позже понадобится
+  `supabase db push`, в облаке нет записей `supabase_migrations.schema_migrations`.
+- (опц.) Пользователь может вернуть галку containerd в Docker Desktop — выключали зря, на причину не влияло.
+- Напоминание о cloud-direct и подключении через session pooler — см. блок «ВАЖНО» в Статусе.
 
 ## Лог сессий
+
+### 2026-06-30 (Фаза 0 — финал)
+- Перепроверен committed-харнесс (`scripts/db`): score 7/7, view 131/10, RLS 7/7. Фикс view-теста
+  (заполнял `race_driver_pool` — триггер валидации требует пул).
+- Спека и план дополнены поправкой про cloud-direct.
+- Ветка `phase0-supabase` влита в `main` (finishing-a-development-branch), удалена локально и на origin.
+- keepalive: заведены GitHub secrets `SUPABASE_URL`+`SUPABASE_ANON_KEY`, ручной запуск зелёный.
+  (Первый запуск был красный — забыли `SUPABASE_URL`; добавили, перезапустили.)
+- **Фаза 0 закрыта.**
 
 ### 2026-06-29 (Фаза 0 — backend, cloud-direct)
 - Brainstorming → спека (`docs/superpowers/specs/2026-06-29-phase0-supabase-design.md`) → план
