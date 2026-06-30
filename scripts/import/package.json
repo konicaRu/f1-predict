@@ -1,0 +1,14 @@
+{
+  "name": "f1-predict-import",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "drivers": "node import.js drivers",
+    "calendar": "node import.js calendar",
+    "results": "node import.js results",
+    "all": "node import.js all",
+    "verify": "node verify.js",
+    "test": "node deadlines.test.js"
+  },
+  "dependencies": { "pg": "^8.13.0" }
+}
