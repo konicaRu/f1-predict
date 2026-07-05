@@ -14,4 +14,4 @@ const connStr=env.match(/^SUPABASE_DB_URL=(.+)$/m)[1].trim();
     const { rows:[p] } = await c.query('select public.open_race($1) as pool',[r.id]);
     console.log(`open_race(id=${r.id}, было status=${r.status}) OK — пул: ${p.pool} пилотов`);
   } finally { try{ await c.end(); }catch(_){} }
-})();
+})().catch(e=>{ console.error('ERR', e.message); process.exit(1); });
