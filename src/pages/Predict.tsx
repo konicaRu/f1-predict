@@ -23,9 +23,14 @@ export default function Predict() {
   useEffect(() => {
     if (raceId) return;
     (async () => {
-      const r = await nextOpenRace();
-      if (r) nav(`/predict/${r.id}`, { replace: true });
-      else setLoading(false);
+      try {
+        const r = await nextOpenRace();
+        if (r) nav(`/predict/${r.id}`, { replace: true });
+        else setLoading(false);
+      } catch (e: any) {
+        setErr(e.message || 'Ошибка загрузки');
+        setLoading(false);
+      }
     })();
   }, [raceId, nav]);
 
