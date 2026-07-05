@@ -4,7 +4,7 @@
 **ФАЗА 0 и ФАЗА 1 закрыты** (в `main`). В облаке `konicaRu_f1`: 22 гонки, 22 пилота с командами/цветами,
 8 демо-результатов (`scored=false`), `races.is_sprint`. keepalive зелёный.
 **ФАЗА 2 (ядро) декомпозирована:** 2a Каркас+Auth → 2b Календарь+Прогноз → 2c Админка → backup-Sheets.
-**2a РЕАЛИЗОВАНА на ветке `phase2a`** (ждёт влития): React+Vite+TS фронтенд, вход по инвайт-коду (миграция
+**2a ЗАКРЫТА (влита в `main`, ветка удалена):** React+Vite+TS фронтенд, вход по инвайт-коду (миграция
 0006: `redeem_invite`+`is_member`, RLS чтения по членству), AuthContext/ProtectedRoute, экраны Login/Signup/
 Redeem, Shell. e2e-смоук в браузере пройден (рег по коду `F1-2026-LEAGUE`→членство→вход; админ-вкладка).
 Аккаунт `prokol35@gmail.com` (Dima_k) = админ. **Дальше — 2b** (календарь+прогноз). Скиллы: Superpowers + `karpathy-guidelines`.
