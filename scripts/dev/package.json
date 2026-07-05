@@ -1,0 +1,7 @@
+{
+  "name": "f1-predict-dev",
+  "private": true,
+  "type": "commonjs",
+  "description": "Разовые dev-скрипты (cloud-direct). bootstrap-open-belgium: открыть гонку round 10.",
+  "dependencies": { "pg": "^8.13.0" }
+}
