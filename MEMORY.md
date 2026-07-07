@@ -70,8 +70,13 @@ Supabase Auth: «Confirm email» OFF, email-сигнапы ON.
   Titillium Web (шрифт), SVG-флаги стран (`country-flag-icons`, emoji-флаги не рисуются на Windows),
   авто-ретрай сети в `db.ts` + кнопка «Повторить» (флап сети до Supabase из РФ).
 - Финальное ревью ветки → «Ready to merge». Влито в `main` (merge-commit, --no-ff), ветка `phase2b` удалена.
-  Синхронизирован шрифт в `plan.md` §16 и `CLAUDE.md`. **2b ЗАКРЫТА.** Дальше: 2c Админка (или деплой на Pages).
-  Ещё НЕ запушено в origin — `git push origin main` задеплоит на GitHub Pages, когда захочешь показать друзьям.
+  Синхронизирован шрифт в `plan.md` §16 и `CLAUDE.md`. **2b ЗАКРЫТА.**
+- **ДЕПЛОЙ НАСТРОЕН И ВЫПОЛНЕН:** `.github/workflows/deploy.yml` (Actions: push main → npm ci → build →
+  Pages; VITE_* из секретов `SUPABASE_URL`/`SUPABASE_ANON_KEY`; SPA-фолбэк `index.html`→`404.html`).
+  Pages Source в GitHub переключён на «GitHub Actions» (вручную юзером). Запушено в origin, сайт ЖИВОЙ:
+  **https://konicaru.github.io/f1-predict/** (проверено curl: HTTP 200, наш бандл, верные Supabase URL+anon-ключ
+  в бандле, SPA-фолбэк работает). Друзья могут регистрироваться (код `F1-2026-LEAGUE`) и ставить прогноз на Бельгию.
+  Дальше: 2c Админка (ручной ввод результатов + UI-кнопка open_race).
 
 ### 2026-06-30 (Фаза 2a — каркас + auth)
 - Brainstorming → спека+план 2a. Решения S1–S7 (инвайт-код серверный, email-подтверждение off, TS, порт CSS).
