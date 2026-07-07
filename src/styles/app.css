@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@600;700;900&family=Inter:wght@400;500;600&display=swap');
 
 :root {
   --bg: #0B0E14;
@@ -16,18 +16,18 @@ body { margin: 0; background: var(--bg); color: var(--txt); font-family: Inter, 
 .app { max-width: 1100px; margin: 0 auto; padding: 16px; }
 
 .hdr { display: flex; justify-content: space-between; align-items: center; background: var(--panel); border-radius: 14px; padding: 14px 18px; border-left: 4px solid var(--volt); }
-.hdr-label { font-family: 'Saira Condensed'; color: var(--volt); text-transform: uppercase; letter-spacing: .08em; font-size: 12px; display: block; }
-.hdr-title { font-family: 'Saira Condensed'; font-weight: 800; font-size: 24px; display: block; }
+.hdr-label { font-family: 'Titillium Web'; color: var(--volt); text-transform: uppercase; letter-spacing: .08em; font-size: 12px; display: block; }
+.hdr-title { font-family: 'Titillium Web'; font-weight: 700; font-size: 24px; display: block; }
 .hdr-sub { color: var(--muted); font-size: 12px; }
 .hdr-logout { background: transparent; border: 1px solid var(--line); color: var(--txt); border-radius: 8px; padding: 8px 14px; cursor: pointer; }
 
 .nav { display: flex; gap: 6px; background: var(--panel); border-radius: 12px; padding: 6px; margin: 12px 0; }
-.nav-tab { font-family: 'Saira Condensed'; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); text-decoration: none; padding: 10px 14px; border-radius: 9px; }
+.nav-tab { font-family: 'Titillium Web'; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); text-decoration: none; padding: 10px 14px; border-radius: 9px; }
 .nav-tab.active { background: var(--panel2); color: #fff; }
 .main { margin-top: 12px; }
 
 .auth-card { max-width: 360px; margin: 48px auto; display: flex; flex-direction: column; gap: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 24px; }
-.auth-card h1 { font-family: 'Saira Condensed'; font-weight: 800; margin: 0 0 8px; }
+.auth-card h1 { font-family: 'Titillium Web'; font-weight: 700; margin: 0 0 8px; }
 .auth-card input { background: var(--panel2); border: 1px solid var(--line); color: var(--txt); border-radius: 9px; padding: 11px 12px; font-size: 14px; }
 .auth-card button { background: linear-gradient(90deg, var(--hot), #c01f4a); color: #fff; border: 0; border-radius: 9px; padding: 12px; font-weight: 600; cursor: pointer; }
 .auth-card button:disabled { opacity: .6; cursor: not-allowed; }
@@ -36,3 +36,66 @@ body { margin: 0; background: var(--bg); color: var(--txt); font-family: Inter, 
 .link-btn { background: none !important; border: 0; color: var(--volt); cursor: pointer; padding: 0; font: inherit; }
 
 .stub { padding: 32px; color: var(--muted); text-align: center; border: 1px dashed var(--line); border-radius: 12px; }
+.retry-btn { margin-top: 12px; background: transparent; border: 1px solid var(--volt); color: var(--volt); border-radius: 9px; padding: 9px 20px; font-weight: 600; cursor: pointer; }
+.retry-btn:hover { background: rgba(0,229,255,.1); }
+
+/* ===== Фаза 2b: Календарь ===== */
+.calendar { display: flex; flex-direction: column; gap: 20px; }
+.cal-sec { display: flex; flex-direction: column; gap: 8px; }
+.cal-h { font-family: 'Titillium Web'; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-size: 14px; margin: 4px 0; }
+.race-card { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+.race-click { cursor: pointer; }
+.race-click:hover { border-color: var(--volt); }
+.race-static { opacity: .6; }
+.race-hl { border-left-color: var(--volt); box-shadow: 0 0 0 1px var(--volt) inset; }
+.race-main { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.race-round { font-family: 'Titillium Web'; font-weight: 700; color: var(--volt); font-size: 15px; }
+.race-flag { width: 24px; height: 16px; border-radius: 3px; flex: 0 0 auto; align-self: center; box-shadow: 0 0 0 1px rgba(255,255,255,.08); }
+.race-flag-fallback { font-size: 16px; line-height: 1; align-self: center; }
+.race-name { font-family: 'Titillium Web'; font-weight: 700; font-size: 18px; letter-spacing: .01em; }
+.race-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end; font-size: 12px; }
+.race-badge { text-transform: uppercase; letter-spacing: .05em; font-weight: 700; font-size: 10px; padding: 3px 8px; border-radius: 6px; }
+.badge-open { background: rgba(0,229,255,.15); color: var(--volt); }
+.badge-locked { background: rgba(138,147,166,.18); color: var(--muted); }
+.badge-soon { background: rgba(255,46,99,.15); color: var(--hot); }
+.badge-past { background: rgba(138,147,166,.12); color: var(--muted); }
+.race-date { color: var(--muted); }
+.race-cd { color: var(--volt); font-weight: 600; }
+.race-pred { color: var(--muted); }
+.race-pred.has { color: var(--volt); }
+
+/* ===== Чипы пилотов ===== */
+.chip { display: inline-flex; align-items: center; gap: 8px; background: var(--panel2); border: 1px solid var(--line); border-left: 4px solid #888; color: var(--txt); border-radius: 8px; padding: 8px 10px; cursor: pointer; font-family: 'Titillium Web'; font-weight: 700; }
+.chip:disabled { cursor: default; }
+.chip-code { font-size: 15px; letter-spacing: .04em; }
+.chip-name { font-family: Inter; font-weight: 500; font-size: 12px; color: var(--muted); }
+.chip-compact { padding: 6px 8px; }
+.chip-sel { border-color: var(--volt); box-shadow: 0 0 0 1px var(--volt) inset; }
+.chip-dim { opacity: .32; cursor: default; }
+
+/* ===== Прогноз ===== */
+.predict { display: flex; flex-direction: column; gap: 14px; }
+.predict-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.predict-head h1 { font-family: 'Titillium Web'; font-weight: 700; margin: 0; }
+.lock-note { color: var(--muted); font-size: 13px; }
+.predict-grid { display: grid; grid-template-columns: 260px 1fr; gap: 16px; align-items: start; }
+.slots { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.slot { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; }
+.slot-sel { border-color: var(--volt); }
+.slot-pos { font-family: 'Titillium Web'; font-weight: 700; color: var(--volt); width: 22px; text-align: center; }
+.slot-empty { flex: 1; text-align: left; background: transparent; border: 1px dashed var(--line); color: var(--muted); border-radius: 8px; padding: 8px 10px; cursor: pointer; }
+.slot-empty:disabled { cursor: default; }
+.pool { display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }
+.predict-actions { display: flex; align-items: center; gap: 14px; }
+.predict-actions button { background: linear-gradient(90deg, var(--hot), #c01f4a); color: #fff; border: 0; border-radius: 9px; padding: 12px 22px; font-weight: 600; cursor: pointer; }
+.predict-actions button:disabled { opacity: .5; cursor: not-allowed; }
+.ok-note { color: var(--volt); font-size: 13px; }
+
+/* ===== Мобильная боковая раскладка (принятое требование §16.11) ===== */
+@media (max-width: 640px) {
+  .predict-grid { grid-template-columns: 116px 1fr; gap: 8px; }
+  .pool { max-height: 72vh; overflow-y: auto; gap: 6px; }
+  .slot { padding: 5px 6px; gap: 6px; }
+  .slot-pos { width: 16px; }
+  .race-meta { justify-content: flex-start; }
+}

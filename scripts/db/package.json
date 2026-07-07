@@ -8,6 +8,7 @@
     "test:score": "node scoring.test.js",
     "test:view": "node view.test.js",
     "test:rls": "node rls.test.js",
+    "test:open_race": "node open_race.test.js",
     "test": "node scoring.test.js && node view.test.js && node rls.test.js"
   },
   "dependencies": {

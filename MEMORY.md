@@ -7,7 +7,19 @@
 **2a ЗАКРЫТА (влита в `main`, ветка удалена):** React+Vite+TS фронтенд, вход по инвайт-коду (миграция
 0006: `redeem_invite`+`is_member`, RLS чтения по членству), AuthContext/ProtectedRoute, экраны Login/Signup/
 Redeem, Shell. e2e-смоук в браузере пройден (рег по коду `F1-2026-LEAGUE`→членство→вход; админ-вкладка).
-Аккаунт `prokol35@gmail.com` (Dima_k) = админ. **Дальше — 2b** (календарь+прогноз). Скиллы: Superpowers + `karpathy-guidelines`.
+Аккаунт `prokol35@gmail.com` (Dima_k) = админ. Скиллы: Superpowers + `karpathy-guidelines`.
+**2b РЕАЛИЗОВАНА (ветка `phase2b`, ещё НЕ влита):** миграция `0007_open_race()` (снимок пула активных +
+status='open', гейт: залогиненный=админ, прямое подключение=пропуск; pg-тест 6/6). Dev-бутстрап
+`scripts/dev/bootstrap-open-belgium.js` → Бельгия (round 10, race id 11) открыта, пул 22. Фронт (подход A):
+`src/lib/{types,db,countdown}.ts`, компоненты `DriverChip/PredictionSlots/DriverPool/RaceCard`, экраны
+`Calendar` (группы open/soon/past, подсветка ближайшей, метка прогноза) и `Predict` (tap-to-assign: быстрый+
+прицельный, save с серверной валидацией, read-only после дедлайна), маршруты `/predict` + `/predict/:raceId`,
+стили + мобильная боковая раскладка (`max-width:640px`). Все 9 задач через subagent-driven (impl+spec+quality
+ревью), `npm run build` зелёный на каждом шаге. **e2e-смоук в браузере ПРОЙДЕН** (Календарь, tap-to-assign,
+сохранение прогноза, мобильная раскладка на iPhone SE). Доп. правки по ходу смоука (влиты в ту же ветку):
+шрифт Titillium Web вместо Saira Condensed (читаемее), SVG-флаги стран в календаре (`country-flag-icons`,
+т.к. Windows не рисует emoji-флаги), авто-ретрай сети в `db.ts` (3× backoff на транзиентных fetch-сбоях) +
+кнопка «Повторить» (сеть до Supabase из РФ флапает). **Осталось: финальное ревью ветки → merge в `main`.**
 Supabase Auth: «Confirm email» OFF, email-сигнапы ON.
 
 **ВАЖНО — пивот на cloud-direct:** локальный Docker-стек Supabase на этой машине НЕ работает
@@ -46,6 +58,18 @@ Supabase Auth: «Confirm email» OFF, email-сигнапы ON.
 - (опц.) Пользователь может вернуть галку containerd в Docker Desktop — выключали зря, на причину не влияло.
 
 ## Лог сессий
+
+### 2026-07-05 (Фаза 2b — Календарь + Прогноз)
+- Brainstorming → спека (`docs/superpowers/specs/2026-07-05-phase2b-calendar-prediction-design.md`) → план
+  (`.../plans/2026-07-05-phase2b-calendar-prediction.md`, 9 задач). Решения: календарь=точка входа,
+  tap-to-assign, `open_race()`+dev-бутстрап, upcoming некликабельны, locked=read-only.
+- Исполнение через **subagent-driven-development**: свежий сабагент на задачу + spec-ревью + code-quality-ревью.
+  Фиксы по ревью: `.catch()` на IIFE бутстрапа (`2e5698c`), try/catch в редирект-эффекте Прогноза (`b6e9831`).
+- Миграция `0007_open_race` применена к облаку, pg-тест 6/6 PASS. Бельгия (round 10) открыта бутстрапом.
+- e2e-смоук в браузере ПРОЙДЕН (десктоп + iPhone SE 375px). По ходу смоука доработано и влито в ветку:
+  Titillium Web (шрифт), SVG-флаги стран (`country-flag-icons`, emoji-флаги не рисуются на Windows),
+  авто-ретрай сети в `db.ts` + кнопка «Повторить» (флап сети до Supabase из РФ).
+- Ветка `phase2b` (ещё не влита). Осталось: финальное ревью ветки → finishing-a-development-branch (merge в `main`).
 
 ### 2026-06-30 (Фаза 2a — каркас + auth)
 - Brainstorming → спека+план 2a. Решения S1–S7 (инвайт-код серверный, email-подтверждение off, TS, порт CSS).
