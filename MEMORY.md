@@ -8,7 +8,7 @@
 0006: `redeem_invite`+`is_member`, RLS чтения по членству), AuthContext/ProtectedRoute, экраны Login/Signup/
 Redeem, Shell. e2e-смоук в браузере пройден (рег по коду `F1-2026-LEAGUE`→членство→вход; админ-вкладка).
 Аккаунт `prokol35@gmail.com` (Dima_k) = админ. Скиллы: Superpowers + `karpathy-guidelines`.
-**2b РЕАЛИЗОВАНА (ветка `phase2b`, ещё НЕ влита):** миграция `0007_open_race()` (снимок пула активных +
+**2b ЗАКРЫТА (влита в `main` merge-commit'ом, ветка `phase2b` удалена):** миграция `0007_open_race()` (снимок пула активных +
 status='open', гейт: залогиненный=админ, прямое подключение=пропуск; pg-тест 6/6). Dev-бутстрап
 `scripts/dev/bootstrap-open-belgium.js` → Бельгия (round 10, race id 11) открыта, пул 22. Фронт (подход A):
 `src/lib/{types,db,countdown}.ts`, компоненты `DriverChip/PredictionSlots/DriverPool/RaceCard`, экраны
@@ -69,7 +69,9 @@ Supabase Auth: «Confirm email» OFF, email-сигнапы ON.
 - e2e-смоук в браузере ПРОЙДЕН (десктоп + iPhone SE 375px). По ходу смоука доработано и влито в ветку:
   Titillium Web (шрифт), SVG-флаги стран (`country-flag-icons`, emoji-флаги не рисуются на Windows),
   авто-ретрай сети в `db.ts` + кнопка «Повторить» (флап сети до Supabase из РФ).
-- Ветка `phase2b` (ещё не влита). Осталось: финальное ревью ветки → finishing-a-development-branch (merge в `main`).
+- Финальное ревью ветки → «Ready to merge». Влито в `main` (merge-commit, --no-ff), ветка `phase2b` удалена.
+  Синхронизирован шрифт в `plan.md` §16 и `CLAUDE.md`. **2b ЗАКРЫТА.** Дальше: 2c Админка (или деплой на Pages).
+  Ещё НЕ запушено в origin — `git push origin main` задеплоит на GitHub Pages, когда захочешь показать друзьям.
 
 ### 2026-06-30 (Фаза 2a — каркас + auth)
 - Brainstorming → спека+план 2a. Решения S1–S7 (инвайт-код серверный, email-подтверждение off, TS, порт CSS).
