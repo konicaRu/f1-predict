@@ -1,5 +1,7 @@
 import type { Race } from '../lib/types';
 import { formatCountdown, formatMoscow, isPast } from '../lib/countdown';
+import { raceCountry } from '../lib/flags';
+import { Flag } from './Flag';
 
 export type RaceView = 'open' | 'locked' | 'soon' | 'past';
 
@@ -30,6 +32,7 @@ export function RaceCard({ race, hasPrediction, highlight, onClick }: {
     >
       <div className="race-main">
         <span className="race-round">R{race.round}</span>
+        <Flag code={raceCountry(race.name)} />
         <span className="race-name">{race.name}</span>
       </div>
       <div className="race-meta">

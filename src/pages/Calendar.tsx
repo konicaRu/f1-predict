@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { listRaces, getMyPredictionRaceIds } from '../lib/db';
 import type { Race } from '../lib/types';
@@ -10,19 +10,29 @@ export default function Calendar() {
   const [err, setErr] = useState('');
   const nav = useNavigate();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const [rs, ids] = await Promise.all([listRaces(), getMyPredictionRaceIds()]);
-        setRaces(rs);
-        setPredIds(ids);
-      } catch (e: any) {
-        setErr(e.message || 'Ошибка загрузки');
-      }
-    })();
+  const load = useCallback(async () => {
+    setErr('');
+    setRaces(null);
+    try {
+      const [rs, ids] = await Promise.all([listRaces(), getMyPredictionRaceIds()]);
+      setRaces(rs);
+      setPredIds(ids);
+    } catch (e: any) {
+      setErr(e.message || 'Ошибка загрузки');
+    }
   }, []);
 
-  if (err) return <div className="stub">{err}</div>;
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  if (err)
+    return (
+      <div className="stub">
+        <p>{err}</p>
+        <button className="retry-btn" onClick={load}>Повторить</button>
+      </div>
+    );
   if (!races) return <div className="stub">Загрузка…</div>;
 
   const byView = (v: RaceView | RaceView[]) => {

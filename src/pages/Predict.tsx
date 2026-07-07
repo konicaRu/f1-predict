@@ -18,11 +18,14 @@ export default function Predict() {
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [reload, setReload] = useState(0);
 
   // /predict без id -> редирект на ближайшую открытую гонку
   useEffect(() => {
     if (raceId) return;
     (async () => {
+      setLoading(true);
+      setErr('');
       try {
         const r = await nextOpenRace();
         if (r) nav(`/predict/${r.id}`, { replace: true });
@@ -32,7 +35,7 @@ export default function Predict() {
         setLoading(false);
       }
     })();
-  }, [raceId, nav]);
+  }, [raceId, nav, reload]);
 
   useEffect(() => {
     if (!raceId) return;
@@ -51,7 +54,7 @@ export default function Predict() {
         setLoading(false);
       }
     })();
-  }, [raceId]);
+  }, [raceId, reload]);
 
   const driversById = useMemo(() => new Map(pool.map((d) => [d.id, d])), [pool]);
   const assigned = useMemo(() => new Set(slots.filter((x): x is string => !!x)), [slots]);
@@ -105,7 +108,13 @@ export default function Predict() {
 
   if (loading) return <div className="stub">Загрузка…</div>;
   if (!raceId) return <div className="stub">Сейчас нет открытых гонок — смотри Календарь.</div>;
-  if (err && !race) return <div className="stub">{err}</div>;
+  if (err && !race)
+    return (
+      <div className="stub">
+        <p>{err}</p>
+        <button className="retry-btn" onClick={() => setReload((n) => n + 1)}>Повторить</button>
+      </div>
+    );
   if (!race) return <div className="stub">Загрузка…</div>;
 
   return (
