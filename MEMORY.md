@@ -72,6 +72,20 @@ Supabase Auth: «Confirm email» OFF, email-сигнапы ON.
 
 ## Лог сессий
 
+### 2026-07-07…14 (деплой, конституция, keepalive-инцидент, spec-kit)
+- **Деплой на GitHub Pages** настроен с нуля (`.github/workflows/deploy.yml`, Actions: push main →
+  build → Pages, VITE из секретов, SPA-фолбэк) и выполнен. Сайт живой: https://konicaru.github.io/f1-predict/
+  (проверено curl: наш бандл, верные Supabase URL+ключ, deep-link через 404.html).
+- **Конституция проекта** `docs/constitution.md` — свод незыблемых принципов (по мотивам github/spec-kit;
+  сам CLI не ставим). Указатель в `CLAUDE.md`. С 2c прокидывать её пункты сабагентам-исполнителям/ревьюерам.
+- **Изучен spec-kit** → в `project-starter` добавлен модуль «конституция + coverage-check» (пункт 9 чек-листа
+  + раздел 12), синхронизированы обе копии (хаб + `~/.claude`).
+- **⚠️ keepalive-инцидент 2026-07-14:** проект уснул, ХОТЯ keepalive был зелёный. Причина: `SELECT drivers`
+  под RLS с анон-ключом → 0 строк → Supabase не считал активностью. Фикс: миграция `0008_keepalive`
+  (таблица + RPC `keepalive_ping()` = реальный UPDATE через SECURITY DEFINER), workflow дёргает RPC ×2/день.
+  Проверено (анон POST → 200 + запись). Проект разбужен вручную, данные целы (22/22/22, 1 прогноз, Бельгия open).
+- Бэклог пополнен: **сброс пароля** (мини-подпроект).
+
 ### 2026-07-05 (Фаза 2b — Календарь + Прогноз)
 - Brainstorming → спека (`docs/superpowers/specs/2026-07-05-phase2b-calendar-prediction-design.md`) → план
   (`.../plans/2026-07-05-phase2b-calendar-prediction.md`, 9 задач). Решения: календарь=точка входа,
