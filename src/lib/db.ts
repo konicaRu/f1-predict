@@ -8,11 +8,20 @@ function isTransient(e: unknown): boolean {
   return /failed to fetch|fetch failed|network|timeout|econn|load failed/.test(m);
 }
 
-async function withRetry<T>(fn: () => Promise<T>, tries = 3): Promise<T> {
+// У supabase-js нет таймаута на fetch: зависший коннект не падает и висит вечно.
+// Ограничиваем ожидание -> зависание становится transient-ошибкой -> ретраится.
+function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    p,
+    new Promise<T>((_, rej) => setTimeout(() => rej(new Error('network timeout')), ms)),
+  ]);
+}
+
+async function withRetry<T>(fn: () => Promise<T>, tries = 3, timeoutMs = 10000): Promise<T> {
   let last: unknown;
   for (let a = 1; a <= tries; a++) {
     try {
-      return await fn();
+      return await withTimeout(fn(), timeoutMs);
     } catch (e) {
       last = e;
       if (a === tries || !isTransient(e)) throw e;
