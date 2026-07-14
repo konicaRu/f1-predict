@@ -18,7 +18,7 @@
 - **Бэкенд:** Supabase (Postgres + Auth + Edge Functions + pg_cron)
 - **Данные F1:** Jolpica API (основной), OpenF1 (фолбэк)
 - **Напоминания:** Telegram Bot API → общий групповой чат
-- **Keep-alive:** GitHub Actions (cron ×2/нед)
+- **Keep-alive:** GitHub Actions (cron ×2/день — реальный запрос к БД; ×2/нед оказалось мало, уснул 2026-07-14)
 
 ## Ключевые решения (краткая выжимка, детали в docs/plan.md)
 
