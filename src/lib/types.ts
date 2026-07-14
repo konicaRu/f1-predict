@@ -19,7 +19,7 @@ export interface Driver {
   team_color: string | null;
 }
 
-export type SaveErrorCode = 'deadline' | 'shape' | 'pool' | 'unknown';
+export type SaveErrorCode = 'deadline' | 'shape' | 'pool' | 'admin' | 'unknown';
 
 export class SaveError extends Error {
   code: SaveErrorCode;

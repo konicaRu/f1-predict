@@ -101,3 +101,41 @@ function mapSaveError(error: { message?: string; code?: string }): SaveError {
     return new SaveError('pool', 'Пилот не из состава этой гонки (обнови страницу)');
   return new SaveError('unknown', 'Не удалось сохранить, попробуй ещё раз');
 }
+
+// ===== Админ (Фаза 2c) =====
+
+// Открыть гонку (снимок пула + status=open). open_race идемпотентна.
+export async function openRace(raceId: number): Promise<number> {
+  const { data, error } = await supabase.rpc('open_race', { p_race_id: raceId });
+  if (error) throw error;
+  return data as number;
+}
+
+// Текущий результат гонки (топ-10 driver_id) или null.
+export async function getResult(raceId: number): Promise<string[] | null> {
+  return withRetry(async () => {
+    const { data, error } = await supabase
+      .from('results').select('positions').eq('race_id', raceId).maybeSingle();
+    if (error) throw error;
+    return data ? (data.positions as string[]) : null;
+  });
+}
+
+// Занос/правка результата. НЕ ретраим (журнал не идемпотентен: повтор = лишняя строка в result_changes).
+export async function setRaceResult(raceId: number, driverIds: string[], reason?: string): Promise<void> {
+  const { error } = await supabase.rpc('set_race_result', {
+    p_race_id: raceId, p_positions: driverIds, p_reason: reason ?? null,
+  });
+  if (error) throw mapResultError(error);
+}
+
+function mapResultError(error: { message?: string; code?: string }): SaveError {
+  const m = (error.message || '').toLowerCase();
+  if (m.includes('admin only') || error.code === '42501' || m.includes('row-level security'))
+    return new SaveError('admin', 'Только для администратора');
+  if (m.includes('exactly 10') || m.includes('10 distinct'))
+    return new SaveError('shape', 'Нужно 10 разных пилотов');
+  if (m.includes('race pool'))
+    return new SaveError('pool', 'Пилот не из состава гонки (обнови страницу)');
+  return new SaveError('unknown', 'Не удалось сохранить, попробуй ещё');
+}
