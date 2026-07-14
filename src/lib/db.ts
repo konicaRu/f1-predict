@@ -118,11 +118,13 @@ function mapSaveError(error: { message?: string; code?: string }): SaveError {
 
 // ===== Админ (Фаза 2c) =====
 
-// Открыть гонку (снимок пула + status=open). open_race идемпотентна.
+// Открыть гонку (снимок пула + status=open). open_race идемпотентна -> withRetry (таймаут+ретрай).
 export async function openRace(raceId: number): Promise<number> {
-  const { data, error } = await supabase.rpc('open_race', { p_race_id: raceId });
-  if (error) throw error;
-  return data as number;
+  return withRetry(async () => {
+    const { data, error } = await supabase.rpc('open_race', { p_race_id: raceId });
+    if (error) throw error;
+    return data as number;
+  });
 }
 
 // Текущий результат гонки (топ-10 driver_id) или null.
@@ -135,11 +137,16 @@ export async function getResult(raceId: number): Promise<string[] | null> {
   });
 }
 
-// Занос/правка результата. НЕ ретраим (журнал не идемпотентен: повтор = лишняя строка в result_changes).
+// Занос/правка результата. Таймаут есть, но БЕЗ ретрая: журнал не идемпотентен
+// (повтор при флапе = лишняя строка в result_changes). Зависание -> ошибка -> UI покажет её.
 export async function setRaceResult(raceId: number, driverIds: string[], reason?: string): Promise<void> {
-  const { error } = await supabase.rpc('set_race_result', {
-    p_race_id: raceId, p_positions: driverIds, p_reason: reason ?? null,
-  });
+  const { error } = await withTimeout(
+    (async () =>
+      supabase.rpc('set_race_result', {
+        p_race_id: raceId, p_positions: driverIds, p_reason: reason ?? null,
+      }))(),
+    10000,
+  );
   if (error) throw mapResultError(error);
 }
 
