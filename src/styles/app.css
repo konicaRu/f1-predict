@@ -85,7 +85,7 @@ body { margin: 0; background: var(--bg); color: var(--txt); font-family: Inter, 
 .slot-pos { font-family: 'Titillium Web'; font-weight: 700; color: var(--volt); width: 22px; text-align: center; }
 .slot-empty { flex: 1; text-align: left; background: transparent; border: 1px dashed var(--line); color: var(--muted); border-radius: 8px; padding: 8px 10px; cursor: pointer; }
 .slot-empty:disabled { cursor: default; }
-.pool { display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }
+.pool { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; align-content: start; }
 .predict-actions { display: flex; align-items: center; gap: 14px; }
 .predict-actions button { background: linear-gradient(90deg, var(--hot), #c01f4a); color: #fff; border: 0; border-radius: 9px; padding: 12px 22px; font-weight: 600; cursor: pointer; }
 .predict-actions button:disabled { opacity: .5; cursor: not-allowed; }
