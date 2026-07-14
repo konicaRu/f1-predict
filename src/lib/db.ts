@@ -8,11 +8,20 @@ function isTransient(e: unknown): boolean {
   return /failed to fetch|fetch failed|network|timeout|econn|load failed/.test(m);
 }
 
-async function withRetry<T>(fn: () => Promise<T>, tries = 3): Promise<T> {
+// У supabase-js нет таймаута на fetch: зависший коннект не падает и висит вечно.
+// Ограничиваем ожидание -> зависание становится transient-ошибкой -> ретраится.
+function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    p,
+    new Promise<T>((_, rej) => setTimeout(() => rej(new Error('network timeout')), ms)),
+  ]);
+}
+
+async function withRetry<T>(fn: () => Promise<T>, tries = 3, timeoutMs = 10000): Promise<T> {
   let last: unknown;
   for (let a = 1; a <= tries; a++) {
     try {
-      return await fn();
+      return await withTimeout(fn(), timeoutMs);
     } catch (e) {
       last = e;
       if (a === tries || !isTransient(e)) throw e;
@@ -46,13 +55,18 @@ export async function getRaceWithPool(raceId: number): Promise<{ race: Race; poo
     if (e1) throw e1;
     const { data: poolRows, error: e2 } = await supabase
       .from('race_driver_pool')
-      .select('drivers(id, code, name, team, team_color)')
+      .select('drivers(id, code, name, team, team_color, standing)')
       .eq('race_id', raceId);
     if (e2) throw e2;
+    // Порядок как в чемпионате: по позиции (standing), безпозиционные — в конец, затем по коду.
     const pool = (poolRows ?? [])
       .map((r: any) => r.drivers as Driver)
       .filter(Boolean)
-      .sort((a, b) => a.code.localeCompare(b.code));
+      .sort((a, b) => {
+        const sa = a.standing ?? 999;
+        const sb = b.standing ?? 999;
+        return sa !== sb ? sa - sb : a.code.localeCompare(b.code);
+      });
     return { race: race as Race, pool };
   });
 }
@@ -100,4 +114,49 @@ function mapSaveError(error: { message?: string; code?: string }): SaveError {
   if (m.includes('race pool'))
     return new SaveError('pool', 'Пилот не из состава этой гонки (обнови страницу)');
   return new SaveError('unknown', 'Не удалось сохранить, попробуй ещё раз');
+}
+
+// ===== Админ (Фаза 2c) =====
+
+// Открыть гонку (снимок пула + status=open). open_race идемпотентна -> withRetry (таймаут+ретрай).
+export async function openRace(raceId: number): Promise<number> {
+  return withRetry(async () => {
+    const { data, error } = await supabase.rpc('open_race', { p_race_id: raceId });
+    if (error) throw error;
+    return data as number;
+  });
+}
+
+// Текущий результат гонки (топ-10 driver_id) или null.
+export async function getResult(raceId: number): Promise<string[] | null> {
+  return withRetry(async () => {
+    const { data, error } = await supabase
+      .from('results').select('positions').eq('race_id', raceId).maybeSingle();
+    if (error) throw error;
+    return data ? (data.positions as string[]) : null;
+  });
+}
+
+// Занос/правка результата. Таймаут есть, но БЕЗ ретрая: журнал не идемпотентен
+// (повтор при флапе = лишняя строка в result_changes). Зависание -> ошибка -> UI покажет её.
+export async function setRaceResult(raceId: number, driverIds: string[], reason?: string): Promise<void> {
+  const { error } = await withTimeout(
+    (async () =>
+      supabase.rpc('set_race_result', {
+        p_race_id: raceId, p_positions: driverIds, p_reason: reason ?? null,
+      }))(),
+    10000,
+  );
+  if (error) throw mapResultError(error);
+}
+
+function mapResultError(error: { message?: string; code?: string }): SaveError {
+  const m = (error.message || '').toLowerCase();
+  if (m.includes('admin only') || error.code === '42501' || m.includes('row-level security'))
+    return new SaveError('admin', 'Только для администратора');
+  if (m.includes('exactly 10') || m.includes('10 distinct'))
+    return new SaveError('shape', 'Нужно 10 разных пилотов');
+  if (m.includes('race pool'))
+    return new SaveError('pool', 'Пилот не из состава гонки (обнови страницу)');
+  return new SaveError('unknown', 'Не удалось сохранить, попробуй ещё');
 }

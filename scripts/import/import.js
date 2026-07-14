@@ -2,7 +2,7 @@ const { fetchJolpica, q, close } = require('./lib');
 const { deadlineUtc } = require('./deadlines');
 const TEAMS = require('./teams');
 
-// driverId -> {constructorId, name} из driverStandings (кто уже ехал)
+// driverId -> {constructorId, name, position} из driverStandings (кто уже ехал)
 async function driverTeams(){
   const d = await fetchJolpica('2026/driverStandings');
   const lists = d.MRData.StandingsTable.StandingsLists;
@@ -10,7 +10,7 @@ async function driverTeams(){
   if(lists && lists[0]){
     for(const s of lists[0].DriverStandings){
       const c = s.Constructors[s.Constructors.length-1];
-      map[s.Driver.driverId] = { constructorId:c.constructorId, name:c.name };
+      map[s.Driver.driverId] = { constructorId:c.constructorId, name:c.name, position:Number(s.position) };
     }
   }
   return map;
@@ -26,10 +26,10 @@ async function importDrivers(){
     const color = t ? (TEAMS[t.constructorId] || '#888') : null;
     if(t && !TEAMS[t.constructorId]){ gray++; console.warn('нет цвета для команды', t.constructorId); }
     await q(
-      `insert into drivers(id,code,name,team,team_color,active) values($1,$2,$3,$4,$5,true)
+      `insert into drivers(id,code,name,team,team_color,active,standing) values($1,$2,$3,$4,$5,true,$6)
        on conflict (id) do update set code=excluded.code, name=excluded.name,
-         team=excluded.team, team_color=excluded.team_color, active=excluded.active`,
-      [dr.driverId, dr.code, `${dr.givenName} ${dr.familyName}`, t?t.name:null, color]
+         team=excluded.team, team_color=excluded.team_color, active=excluded.active, standing=excluded.standing`,
+      [dr.driverId, dr.code, `${dr.givenName} ${dr.familyName}`, t?t.name:null, color, t?t.position:null]
     );
     n++;
   }

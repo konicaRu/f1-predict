@@ -7,6 +7,9 @@ import Signup from './pages/Signup';
 import RedeemInvite from './pages/RedeemInvite';
 import Calendar from './pages/Calendar';
 import Predict from './pages/Predict';
+import Admin from './pages/Admin';
+import AdminResult from './pages/AdminResult';
+import { AdminRoute } from './auth/AdminRoute';
 
 const Stub = ({ name }: { name: string }) => (
   <div className="stub">Экран «{name}» — в следующих под-проектах</div>
@@ -27,7 +30,8 @@ export default function App() {
             <Route path="/predict/:raceId" element={<Predict />} />
             <Route path="/standings" element={<Stub name="Зачёт" />} />
             <Route path="/results" element={<Stub name="Результаты" />} />
-            <Route path="/admin" element={<Stub name="Админка" />} />
+            <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
+            <Route path="/admin/result/:raceId" element={<AdminRoute><AdminResult /></AdminRoute>} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
