@@ -9,6 +9,7 @@
     "test:view": "node view.test.js",
     "test:rls": "node rls.test.js",
     "test:open_race": "node open_race.test.js",
+    "test:set_race_result": "node set_race_result.test.js",
     "test": "node scoring.test.js && node view.test.js && node rls.test.js"
   },
   "dependencies": {
