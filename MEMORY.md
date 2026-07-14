@@ -72,6 +72,22 @@ Supabase Auth: «Confirm email» OFF, email-сигнапы ON.
 
 ## Лог сессий
 
+### 2026-07-14 (Фаза 2c — Админка, В ПРОЦЕССЕ, ветка `phase2c` не влита)
+- Brainstorm → спека (`docs/superpowers/specs/2026-07-14-phase2c-admin-design.md`) → план
+  (`.../plans/2026-07-14-phase2c-admin.md`, 6 задач). Сверено с конституцией. Подход A: серверный RPC.
+- Исполнение subagent-driven **с блоком конституции в промптах** (первый раз по новой практике).
+- **Task 1–5 готовы и отревьюены** (spec+quality+конституция): миграция `0009_admin_results` — RPC
+  `set_race_result()` (гейт админа, валидация 10-из-пула, журнал `result_changes`, upsert, `resulted+scored`);
+  pg-тест **11/11 PASS** вкл. сквозной скоринг 131. Фронт: `db.ts` (openRace/getResult/setRaceResult),
+  `AdminRoute` (гейт), экран `Admin` (список + действия по `races.status`), `AdminResult` (tap-to-assign
+  занос/правка + причина), стили. `npm run build` зелёный.
+- **Фикс по ходу смоука:** таймаут 10с в `withRetry` (`db.ts`) — supabase-js без таймаута, зависший fetch
+  висел вечно («Загрузка…» на Админке); теперь через 10с → transient → ретрай → иначе «Повторить». Чинит все экраны.
+- **Осталось: Task 6 e2e-смоук** (под админом; отложен — у юзера скакала латентность RU→EU до Supabase).
+  Смоук делать на дальней гонке R22 (Abu Dhabi), НЕ на Бельгии (она открыта для друзей), потом откатить R22
+  в demo через SQL. Затем финальное ревью ветки + merge в `main`.
+- Коммиты `phase2c`: 97d1c86, 9141824, 9169fba, a0f87a7, 310de2d, be36873 (+спека/план).
+
 ### 2026-07-07…14 (деплой, конституция, keepalive-инцидент, spec-kit)
 - **Деплой на GitHub Pages** настроен с нуля (`.github/workflows/deploy.yml`, Actions: push main →
   build → Pages, VITE из секретов, SPA-фолбэк) и выполнен. Сайт живой: https://konicaru.github.io/f1-predict/
