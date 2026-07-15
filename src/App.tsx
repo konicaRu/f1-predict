@@ -5,6 +5,7 @@ import Shell from './components/Shell';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import RedeemInvite from './pages/RedeemInvite';
+import ResetPassword from './pages/ResetPassword';
 import Calendar from './pages/Calendar';
 import Predict from './pages/Predict';
 import Admin from './pages/Admin';
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/redeem" element={<RedeemInvite />} />
+          <Route path="/reset" element={<ResetPassword />} />
           <Route element={<ProtectedRoute><Shell /></ProtectedRoute>}>
             <Route index element={<Navigate to="/calendar" replace />} />
             <Route path="/calendar" element={<Calendar />} />
