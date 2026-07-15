@@ -37,6 +37,12 @@ function posHeader() {
   return Array.from({ length: 10 }, (_, i) => `П${i + 1}`);
 }
 
+function codeFor(id, codeOf) {
+  const code = codeOf.get(id);
+  if (!code) console.warn('нет кода для пилота', id);
+  return code || id;
+}
+
 async function exportPredictions(sheets, spreadsheetId, codeOf) {
   const { rows } = await q(`
     select r.round, r.name as race, u.display_name as "user", p.positions, p.created_at
@@ -50,7 +56,7 @@ async function exportPredictions(sheets, spreadsheetId, codeOf) {
     r.round,
     r.race,
     r.user,
-    ...r.positions.map((id) => codeOf.get(id) || id),
+    ...r.positions.map((id) => codeFor(id, codeOf)),
     toMsk(r.created_at),
   ]);
   await writeTab(sheets, spreadsheetId, 'Прогнозы', [header, ...data]);
@@ -69,7 +75,7 @@ async function exportResults(sheets, spreadsheetId, codeOf) {
   const data = rows.map((r) => [
     r.round,
     r.race,
-    ...r.positions.map((id) => codeOf.get(id) || id),
+    ...r.positions.map((id) => codeFor(id, codeOf)),
     r.status,
     toMsk(r.fetched_at),
   ]);
