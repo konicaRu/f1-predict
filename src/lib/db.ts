@@ -17,7 +17,7 @@ function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
   ]);
 }
 
-async function withRetry<T>(fn: () => Promise<T>, tries = 3, timeoutMs = 10000): Promise<T> {
+export async function withRetry<T>(fn: () => Promise<T>, tries = 3, timeoutMs = 10000): Promise<T> {
   let last: unknown;
   for (let a = 1; a <= tries; a++) {
     try {
