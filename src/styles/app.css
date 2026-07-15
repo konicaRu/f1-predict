@@ -113,3 +113,40 @@ body { margin: 0; background: var(--bg); color: var(--txt); font-family: Inter, 
 .admin-actions button:disabled { opacity: .5; cursor: not-allowed; }
 .admin-badge { font-size: 11px; color: var(--volt); }
 .reason-input { background: var(--panel2); border: 1px solid var(--line); color: var(--txt); border-radius: 9px; padding: 10px 12px; font-size: 14px; max-width: 420px; }
+
+/* ===== Фаза 3: Витрина (Зачёт + Результаты) ===== */
+.page-h1 { font-family: 'Titillium Web'; font-weight: 700; margin: 0 0 14px; }
+
+/* Таблицы-лидерборды (общие для Зачёта и Результатов) */
+.lb { width: 100%; border-collapse: collapse; }
+.lb thead th { text-align: left; font-family: 'Titillium Web'; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; font-size: 11px; color: var(--muted); padding: 6px 10px; border-bottom: 1px solid var(--line); }
+.lb-row td { padding: 10px; border-bottom: 1px solid var(--line); font-size: 14px; }
+.lb-place { font-family: 'Titillium Web'; font-weight: 700; font-size: 18px; width: 40px; }
+.lb-name { font-weight: 600; }
+.lb-you { margin-left: 8px; font-size: 9px; text-transform: uppercase; letter-spacing: .06em; color: var(--volt); border: 1px solid var(--volt); border-radius: 5px; padding: 1px 5px; }
+.lb-pts { font-family: 'Titillium Web'; font-weight: 700; font-size: 17px; font-variant-numeric: tabular-nums; }
+.lb-me { box-shadow: 0 0 0 1px var(--volt) inset; }
+.lb-p1 .lb-place { color: #E8C15A; }
+.lb-p2 .lb-place { color: #C7CDD6; }
+.lb-p3 .lb-place { color: #CD7F47; }
+.lb-note { color: var(--muted); font-size: 12px; margin-top: 12px; }
+.lb-empty { color: var(--muted); text-align: center; }
+
+/* Результаты */
+.results { display: flex; flex-direction: column; gap: 14px; }
+.race-pills { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.pill { flex: 0 0 auto; background: var(--panel); border: 1px solid var(--line); color: var(--txt); border-radius: 9px; padding: 8px 12px; font-weight: 600; cursor: pointer; white-space: nowrap; font-size: 13px; }
+.pill-on { border-color: var(--volt); background: var(--panel2); }
+.results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+.col-h { font-family: 'Titillium Web'; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+.finish { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.finish-row { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; padding: 7px 10px; }
+.finish-pos { font-family: 'Titillium Web'; font-weight: 700; width: 22px; text-align: center; color: var(--muted); }
+.finish-podium .finish-pos { color: #E8C15A; }
+.finish-bar { width: 4px; height: 20px; border-radius: 2px; flex: 0 0 auto; }
+.finish-code { font-family: 'Titillium Web'; font-weight: 700; font-size: 15px; }
+.finish-name { color: var(--muted); font-size: 12px; }
+
+@media (max-width: 640px) {
+  .results-grid { grid-template-columns: 1fr; }
+}
