@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { Race, Driver } from './types';
+import type { Race, Driver, Score, LeagueUser } from './types';
 import { SaveError } from './types';
 
 // Сеть до Supabase флапает -> ретрай транзиентных сбоев (обрыв fetch), но НЕ ошибок БД/RLS.
@@ -159,4 +159,33 @@ function mapResultError(error: { message?: string; code?: string }): SaveError {
   if (m.includes('race pool'))
     return new SaveError('pool', 'Пилот не из состава гонки (обнови страницу)');
   return new SaveError('unknown', 'Не удалось сохранить, попробуй ещё');
+}
+
+// ===== Витрина (Фаза 3) =====
+
+// Очки: все видимые строки view scores (RLS: чужое до дедлайна скрыто, для сыгранных — видно).
+export async function getScores(): Promise<Score[]> {
+  return withRetry(async () => {
+    const { data, error } = await supabase.from('scores').select('user_id, race_id, points, exact_hits');
+    if (error) throw error;
+    return (data ?? []) as Score[];
+  });
+}
+
+// Игроки лиги (для имён в таблицах).
+export async function listUsers(): Promise<LeagueUser[]> {
+  return withRetry(async () => {
+    const { data, error } = await supabase.from('users').select('id, display_name');
+    if (error) throw error;
+    return (data ?? []) as LeagueUser[];
+  });
+}
+
+// Все пилоты (для кодов/цветов команд в топ-10 результата).
+export async function listDrivers(): Promise<Driver[]> {
+  return withRetry(async () => {
+    const { data, error } = await supabase.from('drivers').select('id, code, name, team, team_color, standing');
+    if (error) throw error;
+    return (data ?? []) as Driver[];
+  });
 }
