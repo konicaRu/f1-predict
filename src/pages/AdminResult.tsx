@@ -72,6 +72,12 @@ export default function AdminResult() {
 
   async function save() {
     if (!race || !full) return;
+    if (new Date(race.deadline_utc) > new Date()) {
+      const ok = window.confirm(
+        'Дедлайн этой гонки ещё не наступил — гонка в реальности уже прошла? Если нет, отмени и подожди.',
+      );
+      if (!ok) return;
+    }
     setBusy(true);
     setErr('');
     setMsg('');
