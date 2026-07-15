@@ -1,0 +1,12 @@
+{
+  "name": "f1-predict-export",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "export": "node export.js"
+  },
+  "dependencies": {
+    "googleapis": "^173.0.0",
+    "pg": "^8.22.0"
+  }
+}

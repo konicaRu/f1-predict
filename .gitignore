@@ -14,6 +14,7 @@ vite.config.d.ts
 !.env.example
 supabase/.env
 **/service_role*
+scripts/export/service-account*.json
 *.key
 telegram-token*
 
