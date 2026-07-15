@@ -11,7 +11,9 @@
 2. В проекте: **APIs & Services → Library** → найти «Google Sheets API» → **Enable**.
 3. **APIs & Services → Credentials → Create Credentials → Service Account**.
    Имя — любое (например `f1-predict-export`), роль на уровне проекта не нужна — доступ дадим
-   точечно через шаринг конкретной таблицы (шаг 7).
+   точечно через шаринг конкретной таблицы (шаг 7). На экранах «Grant this service account
+   access to project» и «Grant users access to this service account» ничего не выбирать и не
+   заполнять — просто Continue/Done.
 4. Открыть созданный сервис-аккаунт → вкладка **Keys → Add Key → Create new key → JSON**.
    Скачается файл ключа.
 5. Положить скачанный файл в `scripts/export/service-account.json` (путь уже в `.gitignore`,
@@ -44,3 +46,7 @@ npm run export
 
 Это и есть проверка успешного запуска — отдельного verify-скрипта нет (низкий риск: только
 чтение из Supabase и запись наружу, схема БД не меняется).
+
+Если скрипт падает с ошибкой доступа (permission denied) — скорее всего таблица не расшарена
+на email сервис-аккаунта из шага 6/7, или расшарена не на тот email. Проверить это в первую
+очередь.
