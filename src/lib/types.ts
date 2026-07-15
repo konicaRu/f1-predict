@@ -30,3 +30,15 @@ export class SaveError extends Error {
     this.code = code;
   }
 }
+
+export interface Score {
+  user_id: string;
+  race_id: number;
+  points: number;
+  exact_hits: number;
+}
+
+export interface LeagueUser {
+  id: string;
+  display_name: string;
+}

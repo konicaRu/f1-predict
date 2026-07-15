@@ -9,11 +9,9 @@ import Calendar from './pages/Calendar';
 import Predict from './pages/Predict';
 import Admin from './pages/Admin';
 import AdminResult from './pages/AdminResult';
+import Standings from './pages/Standings';
+import Results from './pages/Results';
 import { AdminRoute } from './auth/AdminRoute';
-
-const Stub = ({ name }: { name: string }) => (
-  <div className="stub">Экран «{name}» — в следующих под-проектах</div>
-);
 
 export default function App() {
   return (
@@ -28,8 +26,8 @@ export default function App() {
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/predict" element={<Predict />} />
             <Route path="/predict/:raceId" element={<Predict />} />
-            <Route path="/standings" element={<Stub name="Зачёт" />} />
-            <Route path="/results" element={<Stub name="Результаты" />} />
+            <Route path="/standings" element={<Standings />} />
+            <Route path="/results" element={<Results />} />
             <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
             <Route path="/admin/result/:raceId" element={<AdminRoute><AdminResult /></AdminRoute>} />
           </Route>
