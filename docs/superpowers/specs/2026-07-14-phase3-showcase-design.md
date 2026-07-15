@@ -65,7 +65,7 @@ aggregateStandings(scores: Score[], users: LeagueUser[], scoredRaceIds: Set<numb
 ```
 - По каждому игроку (из `users`) суммируем `points`/`exact_hits` только по `scores`, где `race_id ∈ scoredRaceIds`; `bestRace = max(points)`; `played = число таких гонок`.
 - Игроки без прогнозов — 0/0/0/0 (показываем всех членов).
-- Сортировка: `points ↓ → exact ↓ → bestRace ↓` (тайбрейкер §1). Плотный ранг (равным — одно место).
+- Сортировка: `points ↓ → exact ↓ → bestRace ↓` (тайбрейкер §1). Соревновательный ранг (равным — одно место, следующий — с пропуском мест, как в реальном зачёте F1).
 
 ## 7. Экран «Зачёт» (`/standings`)
 
