@@ -34,16 +34,21 @@ jobs:
           else
             case "${{ github.event.schedule }}" in
               '0 7 * * 1') echo "mode=raceweek" >> "$GITHUB_OUTPUT" ;;
+              '0 7 * * 3'|'0 16 * * 3'|'0 7 * * 4'|'0 16 * * 4') echo "mode=deadline" >> "$GITHUB_OUTPUT" ;;
               '0 */2 * * *') echo "mode=results" >> "$GITHUB_OUTPUT" ;;
-              *) echo "mode=deadline" >> "$GITHUB_OUTPUT" ;;
+              *) echo "ERR неизвестное расписание: ${{ github.event.schedule }}"; exit 1 ;;
             esac
           fi
       - name: Записать .env для scripts/telegram
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           cat > .env <<EOF
-          SUPABASE_DB_URL=${{ secrets.SUPABASE_DB_URL }}
-          TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}
+          SUPABASE_DB_URL=$SUPABASE_DB_URL
+          TELEGRAM_BOT_TOKEN=$TELEGRAM_BOT_TOKEN
+          TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID
           EOF
       - name: npm install
         run: cd scripts/telegram && npm install
