@@ -94,7 +94,7 @@ supabase/migrations/
 
 - **`raceweek`:**
   ```
-  🏎 Гоночная неделя! На очереди <b>{name}</b> (раунд {round}).
+  🏁 RACE WEEK! На очереди <b>{name}</b> (раунд {round}).
   Дедлайн прогнозов — четверг {ЧЧ:ММ} МСК.
   Ставь: {SITE_URL}/predict
   ```
