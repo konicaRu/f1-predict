@@ -1,0 +1,51 @@
+name: telegram-notify
+# Напоминания и итоги гонок в общий Telegram-чат (plan §10, спека
+# docs/superpowers/specs/2026-07-19-telegram-notify-design.md). Расписание в UTC, МСК = UTC+3
+# (в России нет перехода на летнее время).
+on:
+  schedule:
+    - cron: '0 7 * * 1'    # Пн 10:00 МСК — raceweek
+    - cron: '0 7 * * 3'    # Ср 10:00 МСК — deadline
+    - cron: '0 16 * * 3'   # Ср 19:00 МСК — deadline
+    - cron: '0 7 * * 4'    # Чт 10:00 МСК — deadline
+    - cron: '0 16 * * 4'   # Чт 19:00 МСК — deadline
+    - cron: '0 */2 * * *'  # каждые 2 часа — results (проверка новых финальных результатов)
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Режим (для ручного запуска)'
+        required: true
+        type: choice
+        options: [raceweek, deadline, results]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Определить режим
+        id: mode
+        run: |
+          if [ -n "${{ inputs.mode }}" ]; then
+            echo "mode=${{ inputs.mode }}" >> "$GITHUB_OUTPUT"
+          else
+            case "${{ github.event.schedule }}" in
+              '0 7 * * 1') echo "mode=raceweek" >> "$GITHUB_OUTPUT" ;;
+              '0 */2 * * *') echo "mode=results" >> "$GITHUB_OUTPUT" ;;
+              *) echo "mode=deadline" >> "$GITHUB_OUTPUT" ;;
+            esac
+          fi
+      - name: Записать .env для scripts/telegram
+        run: |
+          cat > .env <<EOF
+          SUPABASE_DB_URL=${{ secrets.SUPABASE_DB_URL }}
+          TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}
+          EOF
+      - name: npm install
+        run: cd scripts/telegram && npm install
+      - name: Запустить notify.js
+        run: node scripts/telegram/notify.js ${{ steps.mode.outputs.mode }}
