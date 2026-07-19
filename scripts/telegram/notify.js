@@ -2,6 +2,10 @@ const { q, close, sendTelegram } = require('./lib');
 
 const SITE_URL = 'https://konicaru.github.io/f1-predict';
 
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 function toMskTime(iso) {
   return new Date(iso).toLocaleString('ru-RU', {
     timeZone: 'Europe/Moscow',
@@ -30,7 +34,7 @@ async function raceweek() {
   }
   for (const r of races) {
     const text =
-      `🏁 RACE WEEK! На очереди <b>${r.name}</b> (раунд ${r.round}).\n` +
+      `🏁 RACE WEEK! На очереди <b>${escapeHtml(r.name)}</b> (раунд ${r.round}).\n` +
       `Дедлайн прогнозов — четверг ${toMskTime(r.deadline_utc)} МСК.\n` +
       `Ставь: ${SITE_URL}/predict`;
     await sendTelegram(text);
@@ -46,7 +50,7 @@ async function deadline() {
   }
   for (const r of races) {
     const text =
-      `⏰ Не забудь поставить прогноз на <b>${r.name}</b>!\n` +
+      `⏰ Не забудь поставить прогноз на <b>${escapeHtml(r.name)}</b>!\n` +
       `Дедлайн — четверг ${toMskTime(r.deadline_utc)} МСК.\n` +
       `${SITE_URL}/predict`;
     await sendTelegram(text);
@@ -93,10 +97,10 @@ async function results() {
       [r.id],
     );
     const scoresText = scoreRows
-      .map((s, i) => `${i + 1}. ${s.user} — ${s.points} (${s.exact_hits} точных)`)
+      .map((s, i) => `${i + 1}. ${escapeHtml(s.user)} — ${s.points} (${s.exact_hits} точных)`)
       .join('\n');
 
-    const text = `🏁 Финиш <b>${r.name}</b>!\n\nТоп-10:\n${top10}\n\nОчки за гонку:\n${scoresText}`;
+    const text = `🏁 Финиш <b>${escapeHtml(r.name)}</b>!\n\nТоп-10:\n${top10}\n\nОчки за гонку:\n${scoresText}`;
     await sendTelegram(text);
     await q('update races set telegram_announced_at = now() where id = $1', [r.id]);
     console.log(`results: отправлено для ${r.name}`);
