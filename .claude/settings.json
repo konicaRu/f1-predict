@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build)",
+      "Bash(node --check *)",
+      "Bash(tasklist*)",
+      "Bash(pwd*)",
+      "Bash(git check-ignore *)",
+      "Bash(git ls-tree *)",
+      "Bash(node verify.js)",
+      "Bash(node membership.test.js)",
+      "Bash(node rlstest.js)",
+      "Bash(node rls.test.js)",
+      "Bash(node deadlines.test.js)",
+      "Bash(node view.test.js)",
+      "Bash(node viewtest.js)"
+    ]
+  }
+}
