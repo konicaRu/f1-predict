@@ -1,0 +1,11 @@
+{
+  "name": "f1-predict-autoresults",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "fetch": "node fetch.js"
+  },
+  "dependencies": {
+    "pg": "^8.22.0"
+  }
+}
