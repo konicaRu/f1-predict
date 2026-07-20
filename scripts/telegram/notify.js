@@ -107,11 +107,31 @@ async function results() {
   }
 }
 
+async function remind() {
+  const { rows } = await q(`
+    select id, round, name
+    from races
+    where status = 'open' and race_datetime_utc < now()
+    order by round
+  `);
+  if (rows.length === 0) {
+    console.log('remind: просроченных гонок нет');
+    return;
+  }
+  for (const r of rows) {
+    const text =
+      `⚠️ Автопоиск не нашёл результат <b>${escapeHtml(r.name)}</b> — занеси вручную в Админке.\n` +
+      `${SITE_URL}/admin`;
+    await sendTelegram(text);
+    console.log(`remind: отправлено для ${r.name}`);
+  }
+}
+
 async function main() {
   const mode = process.argv[2];
-  const modes = { raceweek, deadline, results };
+  const modes = { raceweek, deadline, results, remind };
   if (!modes[mode]) {
-    console.error(`ERR неизвестный режим "${mode}", ожидается raceweek|deadline|results`);
+    console.error(`ERR неизвестный режим "${mode}", ожидается raceweek|deadline|results|remind`);
     process.exit(1);
   }
   await modes[mode]();
