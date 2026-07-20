@@ -33,10 +33,11 @@ async function fetchOpenF1Results(raceDatetimeUtc, driverCodeToId) {
 
   const results = await resultsRes.json();
   const drivers = await driversRes.json();
-  if (results.length < 10) return null;
+  const classified = results.filter((r) => r.position != null); // DNF/DNS/DSQ несут position:null — не участвуют в зачёте
+  if (classified.length < 10) return null;
 
   const numberToCode = new Map(drivers.map((d) => [d.driver_number, d.name_acronym]));
-  const top10 = results
+  const top10 = classified
     .slice()
     .sort((a, b) => a.position - b.position)
     .slice(0, 10)
