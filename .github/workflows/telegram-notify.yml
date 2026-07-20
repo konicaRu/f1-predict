@@ -1,22 +1,23 @@
 name: telegram-notify
-# Напоминания и итоги гонок в общий Telegram-чат (plan §10, спека
-# docs/superpowers/specs/2026-07-19-telegram-notify-design.md). Расписание в UTC, МСК = UTC+3
+# Напоминания, автозабор и итоги гонок в общий Telegram-чат (спеки
+# docs/superpowers/specs/2026-07-19-telegram-notify-design.md,
+# docs/superpowers/specs/2026-07-20-autoresults-design.md). Расписание в UTC, МСК = UTC+3
 # (в России нет перехода на летнее время).
 on:
   schedule:
-    - cron: '0 7 * * 1'    # Пн 10:00 МСК — raceweek
+    - cron: '0 7 * * 1'    # Пн 10:00 МСК — raceweek + remind
     - cron: '0 7 * * 3'    # Ср 10:00 МСК — deadline
     - cron: '0 16 * * 3'   # Ср 19:00 МСК — deadline
     - cron: '0 7 * * 4'    # Чт 10:00 МСК — deadline
     - cron: '0 16 * * 4'   # Чт 19:00 МСК — deadline
-    - cron: '0 */2 * * *'  # каждые 2 часа — results (проверка новых финальных результатов)
+    - cron: '0 */2 * * *'  # каждые 2 часа — autoresults (забор) + results (объявление)
   workflow_dispatch:
     inputs:
       mode:
         description: 'Режим (для ручного запуска)'
         required: true
         type: choice
-        options: [raceweek, deadline, results]
+        options: [raceweek, deadline, results, remind, autoresults]
 
 jobs:
   notify:
@@ -26,20 +27,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Определить режим
+      - name: Определить режимы
         id: mode
         run: |
           if [ -n "${{ inputs.mode }}" ]; then
-            echo "mode=${{ inputs.mode }}" >> "$GITHUB_OUTPUT"
+            echo "modes=${{ inputs.mode }}" >> "$GITHUB_OUTPUT"
           else
             case "${{ github.event.schedule }}" in
-              '0 7 * * 1') echo "mode=raceweek" >> "$GITHUB_OUTPUT" ;;
-              '0 7 * * 3'|'0 16 * * 3'|'0 7 * * 4'|'0 16 * * 4') echo "mode=deadline" >> "$GITHUB_OUTPUT" ;;
-              '0 */2 * * *') echo "mode=results" >> "$GITHUB_OUTPUT" ;;
+              '0 7 * * 1') echo "modes=raceweek remind" >> "$GITHUB_OUTPUT" ;;
+              '0 7 * * 3'|'0 16 * * 3'|'0 7 * * 4'|'0 16 * * 4') echo "modes=deadline" >> "$GITHUB_OUTPUT" ;;
+              '0 */2 * * *') echo "modes=autoresults results" >> "$GITHUB_OUTPUT" ;;
               *) echo "ERR неизвестное расписание: ${{ github.event.schedule }}"; exit 1 ;;
             esac
           fi
-      - name: Записать .env для scripts/telegram
+      - name: Записать .env для scripts/telegram и scripts/autoresults
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -51,6 +52,15 @@ jobs:
           TELEGRAM_CHAT_ID=$TELEGRAM_CHAT_ID
           EOF
       - name: npm install
-        run: cd scripts/telegram && npm install
-      - name: Запустить notify.js
-        run: node scripts/telegram/notify.js ${{ steps.mode.outputs.mode }}
+        run: |
+          cd scripts/telegram && npm install
+          cd ../autoresults && npm install
+      - name: Запустить режимы
+        run: |
+          for m in ${{ steps.mode.outputs.modes }}; do
+            if [ "$m" = "autoresults" ]; then
+              node scripts/autoresults/fetch.js
+            else
+              node scripts/telegram/notify.js "$m"
+            fi
+          done
