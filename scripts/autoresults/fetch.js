@@ -19,20 +19,33 @@ async function main() {
 
   const codeToId = await driverCodeToIdMap();
 
+  let entered = 0;
+  let pending = 0;
+  let failed = 0;
+
   for (const r of races) {
-    let positions = await fetchJolpicaResults(r.round);
-    let source = 'Jolpica';
-    if (!positions) {
-      positions = await fetchOpenF1Results(r.race_datetime_utc, codeToId);
-      source = 'OpenF1';
+    try {
+      let positions = await fetchJolpicaResults(r.round);
+      let source = 'Jolpica';
+      if (!positions) {
+        positions = await fetchOpenF1Results(r.race_datetime_utc, codeToId);
+        source = 'OpenF1';
+      }
+      if (!positions) {
+        console.log(`autoresults: ${r.name} — источники пока пусты`);
+        pending++;
+        continue;
+      }
+      await q('select set_race_result($1, $2::jsonb)', [r.id, JSON.stringify(positions)]);
+      console.log(`autoresults: ${r.name} — занесено (${source})`);
+      entered++;
+    } catch (e) {
+      console.error(`autoresults: ${r.name} — ошибка: ${e.message}`);
+      failed++;
     }
-    if (!positions) {
-      console.log(`autoresults: ${r.name} — источники пока пусты`);
-      continue;
-    }
-    await q('select set_race_result($1, $2::jsonb)', [r.id, JSON.stringify(positions)]);
-    console.log(`autoresults: ${r.name} — занесено (${source})`);
   }
+
+  console.log(`autoresults: итог — занесено ${entered}, источники пока пусты ${pending}, ошибок ${failed}`);
 
   await close();
 }
