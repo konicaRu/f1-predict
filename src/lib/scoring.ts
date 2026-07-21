@@ -29,7 +29,7 @@ export function scoreDriftSlots(prediction: string[], actual: string[]): DriftSl
     const x = actualIndex === -1 ? null : actualIndex + 1;
     const { points, exact } = scoreSlot(y, x);
     const accuracy: SlotAccuracy =
-      x === null ? 'miss' : exact ? 'exact' : Math.abs(x - y) === 1 ? 'near' : points > 0 ? 'close' : 'miss';
+      x === null ? 'miss' : exact ? 'exact' : points === 0 ? 'miss' : Math.abs(x - y) === 1 ? 'near' : 'close';
     return { code, predictedPos: y, actualPos: x, points, accuracy };
   });
 }
