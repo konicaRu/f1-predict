@@ -5,7 +5,7 @@ import { scoreDriftSlots, type DriftSlot } from '../lib/scoring';
 const WIDTH = 560;
 const ROW_H = 32;
 const TOP = 36;
-const HEIGHT = TOP + ROW_H * 10 + 16;
+const MISS_ROW_H = 24;
 const LEFT_X = 150;
 const RIGHT_X = 410;
 
@@ -40,6 +40,15 @@ export default function DriftChart({
     if (!canvas || !prediction) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    // Промахи (actualPos === null) не могут занимать строки 1-10 — та же строка
+    // может понадобиться другому слоту с реальной (пусть и нулевой по очкам) позицией.
+    // Уводим их в отдельную полосу под основной сеткой, с уникальным рангом каждому.
+    const missCodes = slots.filter((s) => s.actualPos === null).map((s) => s.code);
+    const missRank = new Map(missCodes.map((code, idx) => [code, idx]));
+    const missLaneHeight = missCodes.length > 0 ? 16 + missCodes.length * MISS_ROW_H : 8;
+    const HEIGHT = TOP + ROW_H * 10 + missLaneHeight;
+
     const dpr = window.devicePixelRatio || 1;
     canvas.width = WIDTH * dpr;
     canvas.height = HEIGHT * dpr;
@@ -59,25 +68,28 @@ export default function DriftChart({
 
     slots.forEach((slot, i) => {
       const yLeft = TOP + i * ROW_H + ROW_H / 2;
-      const yRight = slot.actualPos !== null ? TOP + (slot.actualPos - 1) * ROW_H + ROW_H / 2 : yLeft;
+      const yRight = slot.actualPos !== null
+        ? TOP + (slot.actualPos - 1) * ROW_H + ROW_H / 2
+        : TOP + ROW_H * 10 + 16 + (missRank.get(slot.code) ?? 0) * MISS_ROW_H + MISS_ROW_H / 2;
       const color = ACCURACY_COLOR[slot.accuracy];
       const driver = drivers.get(slot.code);
       const dotColor = driver?.team_color || '#888';
-      const dip = slot.actualPos === null ? 26 : 0;
 
       ctx.strokeStyle = color;
       ctx.lineWidth = 2;
       ctx.setLineDash(slot.accuracy === 'miss' ? [4, 4] : []);
       ctx.beginPath();
       ctx.moveTo(LEFT_X, yLeft);
-      ctx.bezierCurveTo(cpX, yLeft + dip, cpX, yRight + dip, RIGHT_X, yRight);
+      ctx.bezierCurveTo(cpX, yLeft, cpX, yRight, RIGHT_X, yRight);
       ctx.stroke();
       ctx.setLineDash([]);
 
+      // Подпись очков — у своей строки прогноза слева (строки гарантированно разнесены на ROW_H),
+      // а не у центра кривой: там подписи соседних слотов схлопываются при пересечении линий.
       ctx.fillStyle = color;
       ctx.font = '700 11px "Titillium Web", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(slot.points > 0 ? `+${slot.points}` : '0', cpX, Math.min(yLeft, yRight) - 8);
+      ctx.textAlign = 'left';
+      ctx.fillText(slot.points > 0 ? `+${slot.points}` : '0', LEFT_X + 12, yLeft - 10);
 
       ctx.fillStyle = dotColor;
       ctx.beginPath();
