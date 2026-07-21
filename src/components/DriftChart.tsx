@@ -86,7 +86,7 @@ export default function DriftChart({
       ctx.fillStyle = '#e8ebf2';
       ctx.font = '700 12px "Titillium Web", sans-serif';
       ctx.textAlign = 'right';
-      ctx.fillText(slot.code.toUpperCase(), LEFT_X - 14, yLeft + 4);
+      ctx.fillText((driver?.code ?? slot.code).toUpperCase(), LEFT_X - 14, yLeft + 4);
       ctx.fillStyle = '#8A93A6';
       ctx.font = '600 10px Inter, sans-serif';
       ctx.textAlign = 'left';
@@ -100,7 +100,7 @@ export default function DriftChart({
         ctx.fillStyle = '#e8ebf2';
         ctx.font = '700 12px "Titillium Web", sans-serif';
         ctx.textAlign = 'left';
-        ctx.fillText(`${slot.code.toUpperCase()} · P${slot.actualPos}`, RIGHT_X + 14, yRight + 4);
+        ctx.fillText(`${(driver?.code ?? slot.code).toUpperCase()} · P${slot.actualPos}`, RIGHT_X + 14, yRight + 4);
       } else {
         ctx.strokeStyle = '#5a6273';
         ctx.lineWidth = 1.5;
