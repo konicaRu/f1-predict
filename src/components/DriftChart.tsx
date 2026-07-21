@@ -1,0 +1,152 @@
+import { useEffect, useMemo, useRef } from 'react';
+import type { Driver } from '../lib/types';
+import { scoreDriftSlots, type DriftSlot } from '../lib/scoring';
+
+const WIDTH = 560;
+const ROW_H = 32;
+const TOP = 36;
+const HEIGHT = TOP + ROW_H * 10 + 16;
+const LEFT_X = 150;
+const RIGHT_X = 410;
+
+const ACCURACY_COLOR: Record<DriftSlot['accuracy'], string> = {
+  exact: '#4ade80',
+  near: '#00E5FF',
+  close: '#E8C15A',
+  miss: '#5a6273',
+};
+
+interface DriftChartProps {
+  prediction: string[] | null;
+  actual: string[];
+  drivers: Map<string, Driver>;
+  playerName: string;
+  raceName: string;
+  points: number;
+  exactHits: number;
+}
+
+export default function DriftChart({
+  prediction, actual, drivers, playerName, raceName, points, exactHits,
+}: DriftChartProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const slots = useMemo(
+    () => (prediction ? scoreDriftSlots(prediction, actual) : []),
+    [prediction, actual],
+  );
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !prediction) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = WIDTH * dpr;
+    canvas.height = HEIGHT * dpr;
+    canvas.style.width = `${WIDTH}px`;
+    canvas.style.height = `${HEIGHT}px`;
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+    ctx.font = '700 12px "Titillium Web", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#00E5FF';
+    ctx.fillText('ПРОГНОЗ', LEFT_X, 18);
+    ctx.fillStyle = '#FF2E63';
+    ctx.fillText('ФАКТ', RIGHT_X, 18);
+
+    const cpX = (LEFT_X + RIGHT_X) / 2;
+
+    slots.forEach((slot, i) => {
+      const yLeft = TOP + i * ROW_H + ROW_H / 2;
+      const yRight = slot.actualPos !== null ? TOP + (slot.actualPos - 1) * ROW_H + ROW_H / 2 : yLeft;
+      const color = ACCURACY_COLOR[slot.accuracy];
+      const driver = drivers.get(slot.code);
+      const dotColor = driver?.team_color || '#888';
+      const dip = slot.actualPos === null ? 26 : 0;
+
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.setLineDash(slot.accuracy === 'miss' ? [4, 4] : []);
+      ctx.beginPath();
+      ctx.moveTo(LEFT_X, yLeft);
+      ctx.bezierCurveTo(cpX, yLeft + dip, cpX, yRight + dip, RIGHT_X, yRight);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = color;
+      ctx.font = '700 11px "Titillium Web", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(slot.points > 0 ? `+${slot.points}` : '0', cpX, Math.min(yLeft, yRight) - 8);
+
+      ctx.fillStyle = dotColor;
+      ctx.beginPath();
+      ctx.arc(LEFT_X, yLeft, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#e8ebf2';
+      ctx.font = '700 12px "Titillium Web", sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText((driver?.code ?? slot.code).toUpperCase(), LEFT_X - 14, yLeft + 4);
+      ctx.fillStyle = '#8A93A6';
+      ctx.font = '600 10px Inter, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(`P${slot.predictedPos}`, 12, yLeft + 4);
+
+      if (slot.actualPos !== null) {
+        ctx.fillStyle = dotColor;
+        ctx.beginPath();
+        ctx.arc(RIGHT_X, yRight, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#e8ebf2';
+        ctx.font = '700 12px "Titillium Web", sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(`${(driver?.code ?? slot.code).toUpperCase()} · P${slot.actualPos}`, RIGHT_X + 14, yRight + 4);
+      } else {
+        ctx.strokeStyle = '#5a6273';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(RIGHT_X, yRight, 6, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = '#5a6273';
+        ctx.font = '600 11px Inter, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('мимо топ-10', RIGHT_X + 14, yRight + 4);
+      }
+    });
+  }, [prediction, slots, drivers]);
+
+  if (!prediction) {
+    return <div className="drift-empty">{playerName} не поставил(а) прогноз на эту гонку.</div>;
+  }
+
+  const withActual = slots.filter((s) => s.actualPos !== null);
+  const avgMiss = withActual.length
+    ? (
+        withActual.reduce((sum, s) => sum + Math.abs((s.actualPos as number) - s.predictedPos), 0) /
+        withActual.length
+      ).toFixed(1)
+    : '—';
+
+  return (
+    <div className="drift">
+      <h3 className="drift-title">
+        Прогноз {playerName} vs факт · {raceName} — {points} очков
+      </h3>
+      <div className="drift-canvas-wrap">
+        <canvas ref={canvasRef} />
+      </div>
+      <div className="drift-summary">
+        <div className="drift-card"><span className="drift-card-v">{points}</span><span className="drift-card-l">очков</span></div>
+        <div className="drift-card"><span className="drift-card-v">{exactHits}</span><span className="drift-card-l">точных</span></div>
+        <div className="drift-card"><span className="drift-card-v">{avgMiss}</span><span className="drift-card-l">средний промах</span></div>
+        <div className="drift-card"><span className="drift-card-v">{withActual.length}/10</span><span className="drift-card-l">в топ-10</span></div>
+      </div>
+      <div className="drift-legend">
+        <span><i className="drift-dot" style={{ background: '#4ade80' }} /> точно</span>
+        <span><i className="drift-dot" style={{ background: '#00E5FF' }} /> ±1</span>
+        <span><i className="drift-dot" style={{ background: '#E8C15A' }} /> близко</span>
+        <span><i className="drift-dot" style={{ background: '#5a6273' }} /> мимо / 0 очков</span>
+      </div>
+    </div>
+  );
+}

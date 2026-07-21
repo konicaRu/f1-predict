@@ -1,16 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { listRaces, getResult, getScores, listUsers, listDrivers } from '../lib/db';
-import type { Race, Driver, Score } from '../lib/types';
+import { listRaces, getResult, getScores, listUsers, listDrivers, getPrediction } from '../lib/db';
+import type { Race, Driver, Score, LeagueUser } from '../lib/types';
 import { supabase } from '../lib/supabase';
+import DriftChart from '../components/DriftChart';
 
 export default function Results() {
   const [races, setRaces] = useState<Race[] | null>(null);
   const [drivers, setDrivers] = useState<Map<string, Driver>>(new Map());
   const [users, setUsers] = useState<Map<string, string>>(new Map());
+  const [leagueUsers, setLeagueUsers] = useState<LeagueUser[]>([]);
   const [scores, setScores] = useState<Score[]>([]);
   const [meId, setMeId] = useState<string | null>(null);
   const [sel, setSel] = useState<number | null>(null);
+  const [selPlayer, setSelPlayer] = useState<string | null>(null);
   const [positions, setPositions] = useState<string[] | null>(null);
+  const [prediction, setPrediction] = useState<string[] | null>(null);
   const [err, setErr] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -28,8 +32,11 @@ export default function Results() {
       setRaces(rs);
       setDrivers(new Map(ds.map((d) => [d.id, d])));
       setUsers(new Map(us.map((u) => [u.id, u.display_name])));
+      setLeagueUsers(us);
       setScores(sc);
-      setMeId(userRes.data.user?.id ?? null);
+      const me = userRes.data.user?.id ?? null;
+      setMeId(me);
+      setSelPlayer(me);
       const resulted = rs.filter((r) => r.status === 'resulted').sort((a, b) => b.round - a.round);
       setSel(resulted[0]?.id ?? null);
     } catch (e: any) {
@@ -44,12 +51,16 @@ export default function Results() {
   }, [load]);
 
   useEffect(() => {
-    if (sel == null) {
-      setPositions(null);
-      return;
-    }
+    setPositions(null);
+    if (sel == null) return;
     getResult(sel).then(setPositions).catch(() => setPositions(null));
   }, [sel]);
+
+  useEffect(() => {
+    setPrediction(null);
+    if (sel == null || selPlayer == null) return;
+    getPrediction(sel, selPlayer).then(setPrediction).catch(() => setPrediction(null));
+  }, [sel, selPlayer]);
 
   const resulted = useMemo(
     () => (races ?? []).filter((r) => r.status === 'resulted').sort((a, b) => b.round - a.round),
@@ -58,6 +69,11 @@ export default function Results() {
   const raceScores = useMemo(
     () => scores.filter((s) => s.race_id === sel).sort((a, b) => b.points - a.points),
     [scores, sel],
+  );
+  const selRace = useMemo(() => resulted.find((r) => r.id === sel) ?? null, [resulted, sel]);
+  const selPlayerScore = useMemo(
+    () => raceScores.find((s) => s.user_id === selPlayer) ?? null,
+    [raceScores, selPlayer],
   );
 
   if (err && !races)
@@ -132,6 +148,29 @@ export default function Results() {
           </table>
         </div>
       </div>
+      <h2 className="col-h">Игрок</h2>
+      <div className="race-pills">
+        {leagueUsers.map((u) => (
+          <button
+            key={u.id}
+            className={'pill' + (u.id === selPlayer ? ' pill-on' : '')}
+            onClick={() => setSelPlayer(u.id)}
+          >
+            {u.display_name}{u.id === meId ? ' (ты)' : ''}
+          </button>
+        ))}
+      </div>
+      {selRace && selPlayer && positions != null && (
+        <DriftChart
+          prediction={prediction}
+          actual={positions}
+          drivers={drivers}
+          playerName={users.get(selPlayer) ?? '—'}
+          raceName={selRace.name}
+          points={selPlayerScore?.points ?? 0}
+          exactHits={selPlayerScore?.exact_hits ?? 0}
+        />
+      )}
     </div>
   );
 }
