@@ -59,7 +59,7 @@ export default function DriftChart({
 
     slots.forEach((slot, i) => {
       const yLeft = TOP + i * ROW_H + ROW_H / 2;
-      const yRight = slot.actualPos !== null ? TOP + (slot.actualPos - 1) * ROW_H + ROW_H / 2 : yLeft;
+      const yRight = slot.actualPos !== null ? TOP + (slot.actualPos - 1) * ROW_H + ROW_H / 2 : HEIGHT - 8;
       const color = ACCURACY_COLOR[slot.accuracy];
       const driver = drivers.get(slot.code);
       const dotColor = driver?.team_color || '#888';
@@ -144,7 +144,7 @@ export default function DriftChart({
         <span><i className="drift-dot" style={{ background: '#4ade80' }} /> точно</span>
         <span><i className="drift-dot" style={{ background: '#00E5FF' }} /> ±1</span>
         <span><i className="drift-dot" style={{ background: '#E8C15A' }} /> близко</span>
-        <span><i className="drift-dot" style={{ background: '#5a6273' }} /> мимо</span>
+        <span><i className="drift-dot" style={{ background: '#5a6273' }} /> мимо / 0 очков</span>
       </div>
     </div>
   );
