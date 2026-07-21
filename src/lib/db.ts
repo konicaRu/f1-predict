@@ -80,6 +80,18 @@ export async function getMyPrediction(raceId: number): Promise<string[] | null> 
   });
 }
 
+// Прогноз конкретного игрока на гонку (для drift chart на экране "Результаты").
+// RLS: pred_select_after_deadline открывает чужие прогнозы после дедлайна —
+// для resulted-гонок дедлайн всегда уже прошёл, так что это всегда читаемо.
+export async function getPrediction(raceId: number, userId: string): Promise<string[] | null> {
+  return withRetry(async () => {
+    const { data, error } = await supabase
+      .from('predictions').select('positions').eq('race_id', raceId).eq('user_id', userId).maybeSingle();
+    if (error) throw error;
+    return data ? (data.positions as string[]) : null;
+  });
+}
+
 export async function nextOpenRace(): Promise<Race | null> {
   const races = await listRaces();
   const now = Date.now();
