@@ -51,18 +51,14 @@ export default function Results() {
   }, [load]);
 
   useEffect(() => {
-    if (sel == null) {
-      setPositions(null);
-      return;
-    }
+    setPositions(null);
+    if (sel == null) return;
     getResult(sel).then(setPositions).catch(() => setPositions(null));
   }, [sel]);
 
   useEffect(() => {
-    if (sel == null || selPlayer == null) {
-      setPrediction(null);
-      return;
-    }
+    setPrediction(null);
+    if (sel == null || selPlayer == null) return;
     getPrediction(sel, selPlayer).then(setPrediction).catch(() => setPrediction(null));
   }, [sel, selPlayer]);
 
@@ -164,10 +160,10 @@ export default function Results() {
           </button>
         ))}
       </div>
-      {selRace && selPlayer && (
+      {selRace && selPlayer && positions != null && (
         <DriftChart
           prediction={prediction}
-          actual={positions ?? []}
+          actual={positions}
           drivers={drivers}
           playerName={users.get(selPlayer) ?? '—'}
           raceName={selRace.name}
