@@ -59,17 +59,18 @@ export default function DriftChart({
 
     slots.forEach((slot, i) => {
       const yLeft = TOP + i * ROW_H + ROW_H / 2;
-      const yRight = slot.actualPos !== null ? TOP + (slot.actualPos - 1) * ROW_H + ROW_H / 2 : HEIGHT - 8;
+      const yRight = slot.actualPos !== null ? TOP + (slot.actualPos - 1) * ROW_H + ROW_H / 2 : yLeft;
       const color = ACCURACY_COLOR[slot.accuracy];
       const driver = drivers.get(slot.code);
       const dotColor = driver?.team_color || '#888';
+      const dip = slot.actualPos === null ? 26 : 0;
 
       ctx.strokeStyle = color;
       ctx.lineWidth = 2;
       ctx.setLineDash(slot.accuracy === 'miss' ? [4, 4] : []);
       ctx.beginPath();
       ctx.moveTo(LEFT_X, yLeft);
-      ctx.bezierCurveTo(cpX, yLeft, cpX, yRight, RIGHT_X, yRight);
+      ctx.bezierCurveTo(cpX, yLeft + dip, cpX, yRight + dip, RIGHT_X, yRight);
       ctx.stroke();
       ctx.setLineDash([]);
 
