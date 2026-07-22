@@ -136,6 +136,25 @@ async function results() {
     return;
   }
   const codeOf = await driverCodeMap();
+
+  const { rows: standingRows } = await q(`
+    select u.id, u.display_name,
+           coalesce(sum(cs.points), 0) as points,
+           coalesce(sum(cs.exact_hits), 0) as exact,
+           coalesce(max(cs.points), 0) as best_race
+    from users u
+    left join (
+      select s.user_id, s.race_id, s.points, s.exact_hits
+      from scores s
+      join races r on r.id = s.race_id
+      where r.scored = true
+    ) cs on cs.user_id = u.id
+    group by u.id, u.display_name
+  `);
+  const standingsText = rankStandings(standingRows)
+    .map((sr) => `${sr.rank}. ${escapeHtml(sr.display_name)} — ${sr.points}`)
+    .join('\n');
+
   for (const r of rows) {
     const { rows: resRows } = await q('select positions from results where race_id = $1', [r.id]);
     const resultPositions = resRows[0].positions;
@@ -162,24 +181,6 @@ async function results() {
       .join('\n');
 
     const winnerLine = roundWinnerLine(scoreRows);
-
-    const { rows: standingRows } = await q(`
-      select u.id, u.display_name,
-             coalesce(sum(cs.points), 0) as points,
-             coalesce(sum(cs.exact_hits), 0) as exact,
-             coalesce(max(cs.points), 0) as best_race
-      from users u
-      left join (
-        select s.user_id, s.race_id, s.points, s.exact_hits
-        from scores s
-        join races r on r.id = s.race_id
-        where r.scored = true
-      ) cs on cs.user_id = u.id
-      group by u.id, u.display_name
-    `);
-    const standingsText = rankStandings(standingRows)
-      .map((sr) => `${sr.rank}. ${escapeHtml(sr.display_name)} — ${sr.points}`)
-      .join('\n');
 
     const text =
       `🏁 Финиш <b>${escapeHtml(r.name)}</b>!\n\n` +
