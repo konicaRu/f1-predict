@@ -60,11 +60,21 @@ async function deadline() {
     console.log('deadline: нет открытой гонки с дедлайном впереди, ничего не шлём');
     return;
   }
+  const thursday = isMskThursday();
   for (const r of races) {
-    const text =
+    let text =
       `⏰ Не забудь поставить прогноз на <b>${escapeHtml(r.name)}</b>!\n` +
       `Дедлайн — четверг ${toMskTime(r.deadline_utc)} МСК.\n` +
       `${SITE_URL}/predict`;
+    if (thursday) {
+      const { rows: predRows } = await q('select user_id from predictions where race_id = $1', [r.id]);
+      const { rows: userRows } = await q('select id, display_name from users');
+      const missing = notVotedNames(userRows, predRows.map((p) => p.user_id));
+      text +=
+        missing.length === 0
+          ? '\n\nВсе уже поставили прогноз, красавцы! 👍'
+          : `\n\nЕщё не поставили: ${missing.map(escapeHtml).join(', ')}`;
+    }
     await sendTelegram(text);
     console.log(`deadline: отправлено для ${r.name}`);
   }
