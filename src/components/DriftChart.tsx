@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Driver } from '../lib/types';
 import { scoreDriftSlots, type DriftSlot } from '../lib/scoring';
 
@@ -30,6 +30,7 @@ export default function DriftChart({
   prediction, actual, drivers, playerName, raceName, points, exactHits,
 }: DriftChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [explainOpen, setExplainOpen] = useState(false);
   const slots = useMemo(
     () => (prediction ? scoreDriftSlots(prediction, actual) : []),
     [prediction, actual],
@@ -159,6 +160,16 @@ export default function DriftChart({
         <span><i className="drift-dot" style={{ background: '#E8C15A' }} /> близко</span>
         <span><i className="drift-dot" style={{ background: '#5a6273' }} /> мимо / 0 очков</span>
       </div>
+      <button className="drift-explain-toggle" onClick={() => setExplainOpen((v) => !v)}>
+        Почему такие очки? {explainOpen ? '▴' : '▾'}
+      </button>
+      {explainOpen && (
+        <p className="drift-explain-text">
+          Очки зависят от места, на которое ты поставил пилота, а не от того, где он финишировал на
+          самом деле. Например: поставил на P9 (макс. 2 очка) и промахнулся на 2 позиции — штраф
+          съедает всё, будет 0. А промах на P1 (25 очков) прощается щедрее.
+        </p>
+      )}
     </div>
   );
 }
