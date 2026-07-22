@@ -78,6 +78,7 @@ body { margin: 0; background: var(--bg); color: var(--txt); font-family: Inter, 
 .predict-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
 .predict-head h1 { font-family: 'Titillium Web'; font-weight: 700; margin: 0; }
 .lock-note { color: var(--muted); font-size: 13px; }
+.predict-voted { color: var(--muted); font-size: 13px; margin: 0; flex-basis: 100%; }
 .predict-grid { display: grid; grid-template-columns: 260px 1fr; gap: 16px; align-items: start; }
 .slots { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .slot { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; }

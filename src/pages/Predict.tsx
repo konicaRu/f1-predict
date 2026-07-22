@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getRaceWithPool, getMyPrediction, savePrediction, nextOpenRace } from '../lib/db';
-import type { Driver, Race } from '../lib/types';
+import { getRaceWithPool, getMyPrediction, savePrediction, nextOpenRace, getVotedUserIds, listUsers } from '../lib/db';
+import type { Driver, Race, LeagueUser } from '../lib/types';
 import { SaveError } from '../lib/types';
 import { isPast, formatCountdown } from '../lib/countdown';
 import { PredictionSlots } from '../components/PredictionSlots';
@@ -19,6 +19,8 @@ export default function Predict() {
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [reload, setReload] = useState(0);
+  const [leagueUsers, setLeagueUsers] = useState<LeagueUser[]>([]);
+  const [votedIds, setVotedIds] = useState<string[]>([]);
 
   // /predict без id -> редирект на ближайшую открытую гонку
   useEffect(() => {
@@ -45,9 +47,13 @@ export default function Predict() {
       try {
         const { race, pool } = await getRaceWithPool(Number(raceId));
         const saved = await getMyPrediction(Number(raceId));
+        const users = await listUsers();
+        const voted = await getVotedUserIds(Number(raceId));
         setRace(race);
         setPool(pool);
         setSlots(saved && saved.length === 10 ? saved : Array(10).fill(null));
+        setLeagueUsers(users);
+        setVotedIds(voted);
       } catch (e: any) {
         setErr(e.message || 'Ошибка загрузки');
       } finally {
@@ -60,6 +66,13 @@ export default function Predict() {
   const assigned = useMemo(() => new Set(slots.filter((x): x is string => !!x)), [slots]);
   const readOnly = race ? isPast(race.deadline_utc) : false;
   const full = slots.every((s) => s !== null);
+  const votedNames = useMemo(() => {
+    const voted = new Set(votedIds);
+    return leagueUsers
+      .filter((u) => voted.has(u.id))
+      .map((u) => u.display_name)
+      .sort((a, b) => a.localeCompare(b));
+  }, [leagueUsers, votedIds]);
 
   function onSlotClick(i: number) {
     if (readOnly) return;
@@ -99,6 +112,13 @@ export default function Predict() {
     try {
       await savePrediction(race.id, slots as string[]);
       setMsg('Прогноз сохранён');
+      // Обновление списка проголосовавших — best-effort: сам прогноз уже сохранён,
+      // сбой здесь не должен показывать пользователю ложную ошибку сохранения.
+      try {
+        setVotedIds(await getVotedUserIds(race.id));
+      } catch {
+        // список подтянется при следующей загрузке страницы
+      }
     } catch (e) {
       setErr(e instanceof SaveError ? e.message : 'Не удалось сохранить');
     } finally {
@@ -125,6 +145,9 @@ export default function Predict() {
           <span className="lock-note">Дедлайн прошёл — прогноз зафиксирован</span>
         ) : (
           <span className="race-cd">⏱ до дедлайна: {formatCountdown(race.deadline_utc)}</span>
+        )}
+        {votedNames.length > 0 && (
+          <p className="predict-voted">✓ Поставили: {votedNames.join(', ')}</p>
         )}
       </div>
 
