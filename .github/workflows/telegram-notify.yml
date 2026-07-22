@@ -5,12 +5,15 @@ name: telegram-notify
 # (в России нет перехода на летнее время).
 on:
   schedule:
-    - cron: '0 7 * * 1'    # Пн 10:00 МСК — raceweek + remind
-    - cron: '0 7 * * 3'    # Ср 10:00 МСК — deadline
-    - cron: '0 16 * * 3'   # Ср 19:00 МСК — deadline
-    - cron: '0 7 * * 4'    # Чт 10:00 МСК — deadline
-    - cron: '0 16 * * 4'   # Чт 19:00 МСК — deadline
-    - cron: '0 */2 * * *'  # каждые 2 часа — autoresults (забор) + results (объявление)
+    # Минута сдвинута с :00 на :05 — GitHub Actions официально предупреждает, что
+    # запланированные запуски могут задерживаться или пропускаться при высокой
+    # нагрузке, а начало каждого часа — самое нагруженное время.
+    - cron: '5 7 * * 1'    # Пн 10:05 МСК — raceweek + remind
+    - cron: '5 7 * * 3'    # Ср 10:05 МСК — deadline
+    - cron: '5 16 * * 3'   # Ср 19:05 МСК — deadline
+    - cron: '5 7 * * 4'    # Чт 10:05 МСК — deadline
+    - cron: '5 16 * * 4'   # Чт 19:05 МСК — deadline
+    - cron: '5 */2 * * *'  # каждые 2 часа — autoresults (забор) + results (объявление)
   workflow_dispatch:
     inputs:
       mode:
@@ -34,9 +37,9 @@ jobs:
             echo "modes=${{ inputs.mode }}" >> "$GITHUB_OUTPUT"
           else
             case "${{ github.event.schedule }}" in
-              '0 7 * * 1') echo "modes=raceweek remind" >> "$GITHUB_OUTPUT" ;;
-              '0 7 * * 3'|'0 16 * * 3'|'0 7 * * 4'|'0 16 * * 4') echo "modes=deadline" >> "$GITHUB_OUTPUT" ;;
-              '0 */2 * * *') echo "modes=autoresults results" >> "$GITHUB_OUTPUT" ;;
+              '5 7 * * 1') echo "modes=raceweek remind" >> "$GITHUB_OUTPUT" ;;
+              '5 7 * * 3'|'5 16 * * 3'|'5 7 * * 4'|'5 16 * * 4') echo "modes=deadline" >> "$GITHUB_OUTPUT" ;;
+              '5 */2 * * *') echo "modes=autoresults results" >> "$GITHUB_OUTPUT" ;;
               *) echo "ERR неизвестное расписание: ${{ github.event.schedule }}"; exit 1 ;;
             esac
           fi
