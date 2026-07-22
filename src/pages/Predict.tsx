@@ -147,7 +147,7 @@ export default function Predict() {
           <span className="race-cd">⏱ до дедлайна: {formatCountdown(race.deadline_utc)}</span>
         )}
         {votedNames.length > 0 && (
-          <p className="predict-voted">✓ Поставили: {votedNames.join(', ')}</p>
+          <p className="predict-voted">✓ Проголосовали: {votedNames.join(', ')}</p>
         )}
       </div>
 
