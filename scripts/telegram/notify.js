@@ -138,12 +138,12 @@ async function results() {
   const codeOf = await driverCodeMap();
   for (const r of rows) {
     const { rows: resRows } = await q('select positions from results where race_id = $1', [r.id]);
-    const positions = resRows[0].positions;
-    const top10 = positions.map((id, i) => `${i + 1}. ${codeFor(id, codeOf)}`).join('  ');
+    const resultPositions = resRows[0].positions;
+    const top10 = resultPositions.map((id, i) => `${i + 1}. ${codeFor(id, codeOf)}`).join('  ');
 
     const { rows: scoreRows } = await q(
       `
-      select u.display_name as "user", s.points, s.exact_hits
+      select s.user_id, u.display_name as "user", s.points, s.exact_hits
       from scores s
       join users u on u.id = s.user_id
       where s.race_id = $1
@@ -151,11 +151,42 @@ async function results() {
     `,
       [r.id],
     );
+    const { rows: predRows } = await q('select user_id, positions from predictions where race_id = $1', [r.id]);
+    const predOf = new Map(predRows.map((p) => [p.user_id, p.positions]));
+
     const scoresText = scoreRows
-      .map((s, i) => `${i + 1}. ${escapeHtml(s.user)} — ${s.points} (${s.exact_hits} точных)`)
+      .map((s, i) => {
+        const podium = podiumText(predOf.get(s.user_id), codeOf);
+        return `${i + 1}. ${escapeHtml(s.user)} — подиум ${podium} → ${s.points} (${s.exact_hits} точных)`;
+      })
       .join('\n');
 
-    const text = `🏁 Финиш <b>${escapeHtml(r.name)}</b>!\n\nТоп-10:\n${top10}\n\nОчки за гонку:\n${scoresText}`;
+    const winnerLine = roundWinnerLine(scoreRows);
+
+    const { rows: standingRows } = await q(`
+      select u.id, u.display_name,
+             coalesce(sum(cs.points), 0) as points,
+             coalesce(sum(cs.exact_hits), 0) as exact,
+             coalesce(max(cs.points), 0) as best_race
+      from users u
+      left join (
+        select s.user_id, s.race_id, s.points, s.exact_hits
+        from scores s
+        join races r on r.id = s.race_id
+        where r.scored = true
+      ) cs on cs.user_id = u.id
+      group by u.id, u.display_name
+    `);
+    const standingsText = rankStandings(standingRows)
+      .map((sr) => `${sr.rank}. ${escapeHtml(sr.display_name)} — ${sr.points}`)
+      .join('\n');
+
+    const text =
+      `🏁 Финиш <b>${escapeHtml(r.name)}</b>!\n\n` +
+      `Топ-10:\n${top10}\n\n` +
+      `Прогнозы и очки:\n${scoresText}\n\n` +
+      (winnerLine ? `${winnerLine}\n\n` : '') +
+      `Общий зачёт сезона:\n${standingsText}`;
     await sendTelegram(text);
     await q('update races set telegram_announced_at = now() where id = $1', [r.id]);
     console.log(`results: отправлено для ${r.name}`);
