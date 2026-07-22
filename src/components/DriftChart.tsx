@@ -129,7 +129,7 @@ export default function DriftChart({
   }, [prediction, slots, drivers]);
 
   if (!prediction) {
-    return <div className="drift-empty">{playerName} не поставил(а) прогноз на эту гонку.</div>;
+    return <div className="drift-empty">{playerName} не сделал(а) прогноз на эту гонку.</div>;
   }
 
   const withActual = slots.filter((s) => s.actualPos !== null);

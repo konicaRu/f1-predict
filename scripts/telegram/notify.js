@@ -63,7 +63,7 @@ async function deadline() {
   const thursday = isMskThursday();
   for (const r of races) {
     let text =
-      `⏰ Не забудь поставить прогноз на <b>${escapeHtml(r.name)}</b>!\n` +
+      `⏰ Не забудь сделать прогноз на <b>${escapeHtml(r.name)}</b>!\n` +
       `Дедлайн — четверг ${toMskTime(r.deadline_utc)} МСК.\n` +
       `${SITE_URL}/predict`;
     if (thursday) {
@@ -72,8 +72,8 @@ async function deadline() {
       const missing = notVotedNames(userRows, predRows.map((p) => p.user_id));
       text +=
         missing.length === 0
-          ? '\n\nВсе уже поставили прогноз, красавцы! 👍'
-          : `\n\nЕщё не поставили: ${missing.map(escapeHtml).join(', ')}`;
+          ? '\n\nВсе уже сделали прогноз, красавцы! 👍'
+          : `\n\nЕщё не сделали: ${missing.map(escapeHtml).join(', ')}`;
     }
     await sendTelegram(text);
     console.log(`deadline: отправлено для ${r.name}`);
