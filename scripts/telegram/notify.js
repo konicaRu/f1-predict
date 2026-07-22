@@ -14,6 +14,18 @@ function toMskTime(iso) {
   });
 }
 
+function isMskThursday(date = new Date()) {
+  return date.toLocaleString('en-US', { timeZone: 'Europe/Moscow', weekday: 'short' }) === 'Thu';
+}
+
+function notVotedNames(users, votedIds) {
+  const voted = new Set(votedIds);
+  return users
+    .filter((u) => !voted.has(u.id))
+    .map((u) => u.display_name)
+    .sort((a, b) => a.localeCompare(b));
+}
+
 async function thisWeekOpenRaces() {
   const { rows } = await q(`
     select id, round, name, deadline_utc
@@ -138,7 +150,11 @@ async function main() {
   await close();
 }
 
-main().catch((e) => {
-  console.error('ERR', e.message);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((e) => {
+    console.error('ERR', e.message);
+    process.exit(1);
+  });
+}
+
+module.exports = { isMskThursday, notVotedNames };
