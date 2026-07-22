@@ -91,6 +91,39 @@ function codeFor(id, codeOf) {
   return code || id;
 }
 
+function podiumText(positions, codeOf) {
+  return positions
+    .slice(0, 3)
+    .map((id) => codeFor(id, codeOf))
+    .join('-');
+}
+
+function roundWinnerLine(scoreRows) {
+  if (scoreRows.length === 0) return null;
+  const top = scoreRows[0].points;
+  const winners = scoreRows.filter((s) => s.points === top).map((s) => escapeHtml(s.user));
+  return `🏆 Лучший прогноз тура — ${winners.join(', ')} (${top} очков)!`;
+}
+
+function rankStandings(rows) {
+  const sorted = [...rows].sort(
+    (a, b) =>
+      b.points - a.points ||
+      b.exact - a.exact ||
+      b.best_race - a.best_race ||
+      a.display_name.localeCompare(b.display_name),
+  );
+  let rank = 0;
+  let prev = null;
+  return sorted.map((r, i) => {
+    if (!prev || r.points !== prev.points || r.exact !== prev.exact || r.best_race !== prev.best_race) {
+      rank = i + 1;
+    }
+    prev = r;
+    return { ...r, rank };
+  });
+}
+
 async function results() {
   const { rows } = await q(`
     select id, round, name
@@ -167,4 +200,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { isMskThursday, notVotedNames };
+module.exports = { isMskThursday, notVotedNames, podiumText, roundWinnerLine, rankStandings };
