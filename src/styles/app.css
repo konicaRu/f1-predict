@@ -162,7 +162,6 @@ body { margin: 0; background: var(--bg); color: var(--txt); font-family: Inter, 
 .drift-explain-text { margin-top: 8px; color: var(--muted); font-size: 12px; line-height: 1.5; }
 
 .rules { max-width: 760px; }
-.rules-title { font-family: 'Titillium Web'; font-weight: 700; font-size: 24px; margin: 0 0 16px; }
 .rules-table-wrap { overflow-x: auto; margin-bottom: 16px; }
 .rules-table { width: 100%; min-width: 480px; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
 .rules-table th, .rules-table td { text-align: center; padding: 8px; border-bottom: 1px solid var(--line); font-size: 13px; }

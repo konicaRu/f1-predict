@@ -27,7 +27,7 @@ const STRATEGY: string[] = [
 export default function Rules() {
   return (
     <div className="rules">
-      <h1 className="rules-title">🏁 Как считаются очки</h1>
+      <h1 className="page-h1">🏁 Как считаются очки</h1>
 
       <div className="rules-table-wrap">
         <table className="rules-table">
