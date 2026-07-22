@@ -25,3 +25,6 @@ telegram-token*
 # IDE
 .vscode/
 .idea/
+
+# Черновики брейншторм-мокапов (superpowers)
+.superpowers/
