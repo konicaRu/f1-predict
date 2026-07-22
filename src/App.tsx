@@ -12,6 +12,7 @@ import Admin from './pages/Admin';
 import AdminResult from './pages/AdminResult';
 import Standings from './pages/Standings';
 import Results from './pages/Results';
+import Rules from './pages/Rules';
 import { AdminRoute } from './auth/AdminRoute';
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="/predict/:raceId" element={<Predict />} />
             <Route path="/standings" element={<Standings />} />
             <Route path="/results" element={<Results />} />
+            <Route path="/rules" element={<Rules />} />
             <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
             <Route path="/admin/result/:raceId" element={<AdminRoute><AdminResult /></AdminRoute>} />
           </Route>
