@@ -160,7 +160,12 @@ export default function DriftChart({
         <span><i className="drift-dot" style={{ background: '#E8C15A' }} /> близко</span>
         <span><i className="drift-dot" style={{ background: '#5a6273' }} /> мимо / 0 очков</span>
       </div>
-      <button className="drift-explain-toggle" onClick={() => setExplainOpen((v) => !v)}>
+      <button
+        type="button"
+        className="link-btn drift-explain-toggle"
+        aria-expanded={explainOpen}
+        onClick={() => setExplainOpen((v) => !v)}
+      >
         Почему такие очки? {explainOpen ? '▴' : '▾'}
       </button>
       {explainOpen && (
