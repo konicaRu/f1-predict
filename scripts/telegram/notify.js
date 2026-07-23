@@ -2,6 +2,11 @@ const { q, close, sendTelegram } = require('./lib');
 
 const SITE_URL = 'https://konicaru.github.io/f1-predict';
 
+// Сайт на GitHub Pages из РФ открывается только через VPN — напоминаем рядом с каждой ссылкой.
+function siteLink(path) {
+  return `${SITE_URL}${path} (нужен VPN)`;
+}
+
 function escapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
@@ -48,7 +53,7 @@ async function raceweek() {
     const text =
       `🏁 RACE WEEK! На очереди <b>${escapeHtml(r.name)}</b> (раунд ${r.round}).\n` +
       `Дедлайн прогнозов — четверг ${toMskTime(r.deadline_utc)} МСК.\n` +
-      `Ставь: ${SITE_URL}/predict`;
+      `Ставь: ${siteLink('/predict')}`;
     await sendTelegram(text);
     console.log(`raceweek: отправлено для ${r.name}`);
   }
@@ -65,7 +70,7 @@ async function deadline() {
     let text =
       `⏰ Не забудь сделать прогноз на <b>${escapeHtml(r.name)}</b>!\n` +
       `Дедлайн — четверг ${toMskTime(r.deadline_utc)} МСК.\n` +
-      `${SITE_URL}/predict`;
+      siteLink('/predict');
     if (thursday) {
       const { rows: predRows } = await q('select user_id from predictions where race_id = $1', [r.id]);
       const { rows: userRows } = await q('select id, display_name from users');
@@ -208,7 +213,7 @@ async function remind() {
   for (const r of rows) {
     const text =
       `⚠️ Автопоиск не нашёл результат <b>${escapeHtml(r.name)}</b> — занеси вручную в Админке.\n` +
-      `${SITE_URL}/admin`;
+      siteLink('/admin');
     await sendTelegram(text);
     console.log(`remind: отправлено для ${r.name}`);
   }
