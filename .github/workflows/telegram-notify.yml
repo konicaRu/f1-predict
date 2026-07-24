@@ -68,7 +68,7 @@ jobs:
             if [ "$m" = "autoresults" ]; then
               node scripts/autoresults/fetch.js
             elif [ "$m" = "aiplayer" ]; then
-              node scripts/ai-player/predict.js
+              node scripts/ai-player/predict.js || echo "::warning::aiplayer failed, continuing"
             else
               node scripts/telegram/notify.js "$m"
             fi
