@@ -71,7 +71,11 @@ async function askGemini(prompt) {
     && data.candidates[0].content.parts && data.candidates[0].content.parts[0]
     && data.candidates[0].content.parts[0].text;
   if (!text) throw new Error('Gemini: пустой ответ');
-  return JSON.parse(text);
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    throw new Error('Gemini: невалидный JSON: ' + text.slice(0, 200));
+  }
 }
 
 function escapeHtml(s) {
