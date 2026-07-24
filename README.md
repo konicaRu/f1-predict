@@ -2,20 +2,29 @@
 
 Закрытая лига прогнозов на гонки Формулы-1 для компании друзей.
 До дедлайна каждый расставляет прогноз на топ-10 (drag-and-drop карточки в цветах команд),
-после гонки очки считаются автоматически, по сезону — общий зачёт.
+после гонки очки считаются автоматически, по сезону — общий зачёт. В лиге также играет
+GridBot — участник-ИИ на базе Gemini, ставит прогноз на общих основаниях.
 
 ## Документация
 - **`docs/plan.md`** — полный план: решения, формула очков, схема БД, RLS, дизайн, roadmap. Единственный источник правды.
+- **`docs/constitution.md`** — незыблемые принципы проекта.
 - **`CLAUDE.md`** — инструкции для агента.
 - **`MEMORY.md`** / **`ARCHITECTURE.md`** — журнал и карта проекта.
 
 ## Быстрый старт
-Сейчас работает только прототип: открыть `index.html` в браузере.
-React-приложение и Supabase-бэкенд создаются по фазам (см. roadmap в `docs/plan.md`).
+```bash
+npm install
+npm run dev     # http://localhost:5173, нужен .env — см. .env.example
+npm run build
+```
+Серверные скрипты (импорт данных, автозабор результатов, Telegram, GridBot) — самостоятельные
+пакеты в `scripts/*/`, подключаются напрямую к облачной Supabase. Подробности — README в каждой
+папке.
 
 ## Формула очков
 Вес заявленной позиции минус штраф `2·|реальная−заявленная|`, бонус +3 за точное попадание, минимум 0.
 Реализация — `src/lib/scoring.ts` (см. CLAUDE.md).
 
 ## Стек
-React + @dnd-kit · Supabase (Postgres/Auth/Edge Functions/pg_cron) · Jolpica API · Telegram Bot · GitHub Pages.
+React + @dnd-kit · Supabase (Postgres/Auth/Edge Functions) · Jolpica API · Gemini API (GridBot) ·
+Telegram Bot · GitHub Actions · GitHub Pages.
