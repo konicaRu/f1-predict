@@ -6,6 +6,7 @@ const tabs = [
   { to: '/predict', label: 'Прогноз' },
   { to: '/standings', label: 'Зачёт' },
   { to: '/results', label: 'Результаты' },
+  { to: '/rules', label: 'Правила' },
 ];
 
 export default function Shell() {

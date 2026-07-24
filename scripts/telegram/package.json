@@ -1,0 +1,13 @@
+{
+  "name": "f1-predict-telegram",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "raceweek": "node notify.js raceweek",
+    "deadline": "node notify.js deadline",
+    "results": "node notify.js results"
+  },
+  "dependencies": {
+    "pg": "^8.22.0"
+  }
+}

@@ -80,6 +80,29 @@ export async function getMyPrediction(raceId: number): Promise<string[] | null> 
   });
 }
 
+// Прогноз конкретного игрока на гонку (для drift chart на экране "Результаты").
+// RLS: pred_select_after_deadline открывает чужие прогнозы после дедлайна —
+// для resulted-гонок дедлайн всегда уже прошёл, так что это всегда читаемо.
+export async function getPrediction(raceId: number, userId: string): Promise<string[] | null> {
+  return withRetry(async () => {
+    const { data, error } = await supabase
+      .from('predictions').select('positions').eq('race_id', raceId).eq('user_id', userId).maybeSingle();
+    if (error) throw error;
+    return data ? (data.positions as string[]) : null;
+  });
+}
+
+// Кто уже сделал прогноз на гонку (только user_id, не positions) — для вкладки "Прогноз".
+// RPC security definer обходит построчное RLS-скрытие чужих прогнозов узко и осознанно
+// (см. supabase/migrations/0012_predicted_user_ids.sql) — сам прогноз остаётся скрытым.
+export async function getVotedUserIds(raceId: number): Promise<string[]> {
+  return withRetry(async () => {
+    const { data, error } = await supabase.rpc('predicted_user_ids', { p_race_id: raceId });
+    if (error) throw error;
+    return (data ?? []) as string[];
+  });
+}
+
 export async function nextOpenRace(): Promise<Race | null> {
   const races = await listRaces();
   const now = Date.now();
