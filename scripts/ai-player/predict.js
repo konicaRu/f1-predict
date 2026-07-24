@@ -136,8 +136,8 @@ async function main() {
 
   let top10Codes;
   let reasoning = null;
+  const prompt = buildPrompt(race, pool, driverCodeOf, ownResults, standingsMap);
   try {
-    const prompt = buildPrompt(race, pool, driverCodeOf, ownResults, standingsMap);
     const answer = await askGemini(prompt);
     if (isValidTop10(answer.top10, pool)) {
       top10Codes = answer.top10;
