@@ -1,0 +1,12 @@
+{
+  "name": "f1-predict-ai-player",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "predict": "node predict.js",
+    "test": "node predict.test.js"
+  },
+  "dependencies": {
+    "pg": "^8.22.0"
+  }
+}
