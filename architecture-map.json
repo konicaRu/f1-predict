@@ -3,7 +3,7 @@
   "meta": {
     "generated_at": "2026-07-26",
     "generated_from": ["ARCHITECTURE.md", "supabase/migrations/*.sql", "scripts/*/*.js", ".github/workflows/*.yml", "src/**"],
-    "companion_files": ["docs/architecture-map.html (визуальная версия того же снимка)", "ARCHITECTURE.md (человеко-читаемая карта + changelog)", "docs/plan.md (полный план, источник решений)", "docs/constitution.md (незыблемые принципы)"],
+    "companion_files": ["architecture-map.html (визуальная версия того же снимка)", "ARCHITECTURE.md (человеко-читаемая карта + changelog)", "docs/plan.md (полный план, источник решений)", "docs/constitution.md (незыблемые принципы)"],
     "staleness_policy": "Не обновляется автоматически. Актуализировать вручную вместе с ARCHITECTURE.md на git save, если менялась структура/схема/автоматика. Перед тем как доверять деталям — сверить с реальным кодом, особенно списки таблиц/RLS/миграций."
   },
   "project": {

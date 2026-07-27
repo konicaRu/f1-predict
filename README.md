@@ -390,3 +390,4 @@ f1-predict/
 - [`docs/constitution.md`](docs/constitution.md) — незыблемые принципы (RLS-first, UTC/МСК, cloud-direct, секреты, YAGNI)
 - [`CLAUDE.md`](CLAUDE.md) — инструкции для агента, работающего в этом репозитории
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) — карта проекта и changelog по фазам
+- [`architecture-map.html`](architecture-map.html) / [`architecture-map.json`](architecture-map.json) — визуальный + машиночитаемый снимок архитектуры (для агента перед новой фичей)
