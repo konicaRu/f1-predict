@@ -1,0 +1,171 @@
+{
+  "$schema_note": "Машиночитаемая карта архитектуры для агента, который начинает новую фичу в этом репозитории. Источник правды для деталей — сам код; этот файл — навигационный снимок, может отставать. См. meta.staleness_policy.",
+  "meta": {
+    "generated_at": "2026-07-26",
+    "generated_from": ["ARCHITECTURE.md", "supabase/migrations/*.sql", "scripts/*/*.js", ".github/workflows/*.yml", "src/**"],
+    "companion_files": ["docs/architecture-map.html (визуальная версия того же снимка)", "ARCHITECTURE.md (человеко-читаемая карта + changelog)", "docs/plan.md (полный план, источник решений)", "docs/constitution.md (незыблемые принципы)"],
+    "staleness_policy": "Не обновляется автоматически. Актуализировать вручную вместе с ARCHITECTURE.md на git save, если менялась структура/схема/автоматика. Перед тем как доверять деталям — сверить с реальным кодом, особенно списки таблиц/RLS/миграций."
+  },
+  "project": {
+    "name": "F1 Predict",
+    "purpose": "Закрытая лига прогнозов на топ-10 гонок Формулы-1 для компании друзей. До дедлайна каждый вслепую расставляет прогноз, после гонки очки считаются автоматически, по сезону — общий зачёт. Играет и ИИ-участник (GridBot).",
+    "repo": "github.com/konicaRu/f1-predict",
+    "hosting": "GitHub Pages (фронтенд, статика) + Supabase cloud (бэкенд)",
+    "status": "MVP достигнут 2026-07-20; фазы 0-5 закрыты, фаза 6 (полировка) идёт по мере находок"
+  },
+  "stack": {
+    "frontend": ["React 18", "TypeScript", "Vite", "React Router", "@dnd-kit (drag-and-drop)", "country-flag-icons", "@supabase/supabase-js"],
+    "backend": ["Supabase (Postgres + Auth)", "RLS вместо секретности anon-ключа"],
+    "data_sources": ["Jolpica API (основной, Ergast-совместимый)", "OpenF1 (фолбэк для автозабора результатов)"],
+    "ai_player": ["Gemini API, модель gemini-2.5-flash, structured JSON output"],
+    "notifications": ["Telegram Bot API"],
+    "backup": ["Google Sheets API"],
+    "automation": ["GitHub Actions (cron) — НЕ pg_cron, эта идея обсуждалась на старте но не применена"],
+    "important_note": "Anon-ключ Supabase публичен по дизайну (лежит в собранном JS-бандле) — вся защита данных на RLS-политиках БД, не на секретности ключа."
+  },
+  "structure": [
+    { "path": "src/", "purpose": "React SPA. App.tsx/main.tsx — точка входа." },
+    { "path": "src/auth/", "purpose": "AuthContext, ProtectedRoute (по членству), AdminRoute (по is_admin)." },
+    { "path": "src/pages/", "purpose": "Login, Signup, RedeemInvite, ResetPassword, Calendar, Predict, Standings, Results, Rules, Admin, AdminResult." },
+    { "path": "src/components/", "purpose": "Shell, DriverChip, DriverPool, PredictionSlots, RaceCard, Flag, DriftChart." },
+    { "path": "src/lib/", "purpose": "supabase.ts (клиент), db.ts (запросы + ретраи), scoring.ts (формула, дублирует SQL), types.ts, countdown.ts, standings.ts, flags.ts." },
+    { "path": "supabase/migrations/", "purpose": "Все SQL-миграции по порядку, 0001-0015, см. database.migrations ниже." },
+    { "path": "scripts/db/", "purpose": "Применение миграций (runner.js) + regression-тесты против прод-БД (cloud-direct, без Docker)." },
+    { "path": "scripts/import/", "purpose": "Импорт пилотов/календаря/результатов из Jolpica (Фаза 1)." },
+    { "path": "scripts/autoresults/", "purpose": "Автозабор результата прошедшей гонки: Jolpica → OpenF1 фолбэк → set_race_result()." },
+    { "path": "scripts/ai-player/", "purpose": "GridBot: сбор контекста, промпт Gemini, валидация/фолбэк, сохранение прогноза, объяснение в Telegram." },
+    { "path": "scripts/telegram/", "purpose": "Напоминания/итоги в общий чат лиги (режимы raceweek/deadline/results/remind)." },
+    { "path": "scripts/export/", "purpose": "Бэкап прогнозов/результатов/очков в Google Sheets по запросу." },
+    { "path": "scripts/dev/", "purpose": "Разовые dev-бутстрап скрипты (например открытие тестовой гонки локально)." },
+    { "path": ".github/workflows/", "purpose": "deploy.yml, keepalive.yml, telegram-notify.yml — см. automation ниже." },
+    { "path": "docs/plan.md", "purpose": "Единый источник правды: все решения, БД, RLS, дизайн, roadmap." },
+    { "path": "docs/constitution.md", "purpose": "Незыблемые принципы проекта (RLS-first, UTC/МСК, cloud-direct, секреты, YAGNI)." },
+    { "path": "docs/superpowers/specs/ и plans/", "purpose": "Spec → plan по каждой фиче (brainstorming → writing-plans → subagent-driven-development)." },
+    { "path": "ARCHITECTURE.md", "purpose": "Человеко-читаемая карта + changelog по фазам." },
+    { "path": "MEMORY.md", "purpose": "Журнал сессий (что и почему делали), статус, открытые вопросы." },
+    { "path": "README.md", "purpose": "Как пользоваться проектом — для читателя со стороны." }
+  ],
+  "database": {
+    "connection": "Cloud-direct через transaction pooler (:6543), без локального Docker-стека Supabase. SUPABASE_DB_URL в .env каждой scripts/*-папки.",
+    "tables": [
+      { "name": "users", "purpose": "Профиль поверх auth.users.", "columns": ["id uuid PK → auth.users(id)", "display_name text UNIQUE (0015)", "telegram_username text", "telegram_user_id bigint", "is_admin boolean", "created_at"] },
+      { "name": "drivers", "purpose": "Справочник пилотов.", "columns": ["id text PK (Jolpica driverId)", "code text UNIQUE (VER, NOR...)", "name", "team", "team_color", "active", "standing int (0010, позиция в чемпионате)"] },
+      { "name": "races", "purpose": "Календарь.", "columns": ["id bigint PK", "season", "round", "name", "race_datetime_utc", "deadline_utc", "status: demo|open|closed|resulted", "scored boolean", "is_sprint (0005)", "telegram_announced_at (0011)"] },
+      { "name": "race_driver_pool", "purpose": "Снимок состава пилотов конкретной гонки (может отличаться от общего справочника).", "columns": ["race_id FK", "driver_id FK", "PK(race_id, driver_id)"] },
+      { "name": "predictions", "purpose": "Прогнозы игроков.", "columns": ["id PK", "user_id FK", "race_id FK", "positions jsonb (10 driver_id, индекс = позиция-1)", "created_at", "updated_at", "UNIQUE(user_id, race_id)"] },
+      { "name": "results", "purpose": "Факт результата гонки.", "columns": ["race_id PK/FK", "positions jsonb (топ-10 driver_id)", "status: provisional|final (на практике всегда сразу final, см. invariants)", "fetched_at"] },
+      { "name": "result_changes", "purpose": "Журнал правок результата (before/after/reason).", "columns": ["id PK", "race_id FK", "before jsonb", "after jsonb", "changed_at", "reason"] },
+      { "name": "invite_codes", "purpose": "Коды регистрации в лигу (0006).", "columns": ["code text PK", "active boolean", "note"] },
+      { "name": "keepalive", "purpose": "Служебная таблица для реального UPDATE при keep-alive пинге (0008).", "columns": ["минимальная, деталей не требует — трогает только RPC keepalive_ping()"] }
+    ],
+    "functions": [
+      { "name": "score_prediction(prediction jsonb, actual jsonb)", "migration": "0002", "purpose": "Формула очков — источник истины, дублируется во фронтенде только для превью." },
+      { "name": "is_admin()", "migration": "0003", "security": "SECURITY DEFINER", "purpose": "Проверка прав без рекурсии по RLS users." },
+      { "name": "validate_prediction()", "migration": "0004", "purpose": "Триггер: ровно 10 разных пилотов из пула гонки." },
+      { "name": "is_member()", "migration": "0006", "purpose": "Проверка членства в лиге (для RLS чтения)." },
+      { "name": "redeem_invite(p_code, p_display_name)", "migration": "0006", "purpose": "Регистрация по инвайт-коду." },
+      { "name": "open_race(p_race_id)", "migration": "0007", "purpose": "Перевод гонки в status=open со снимком пула активных пилотов." },
+      { "name": "keepalive_ping()", "migration": "0008", "security": "SECURITY DEFINER", "purpose": "Реальный UPDATE в обход RLS — обычный select анон-ключом не считался активностью, проект засыпал." },
+      { "name": "set_race_result(p_race_id, p_positions, p_reason)", "migration": "0009", "security": "SECURITY DEFINER, admin-only если auth.uid() задан", "purpose": "Занос/правка результата (авто и вручную), сразу пишет status='final', обновляет races.status/scored, логирует в result_changes." },
+      { "name": "predicted_user_ids(p_race_id)", "migration": "0012", "purpose": "Узкий обход RLS: кто уже проголосовал (только user_id, НЕ positions)." }
+    ],
+    "rls_summary": [
+      { "table": "predictions", "select": "своя всегда; чужая только после deadline_utc гонки", "write": "только своя и только до дедлайна; delete запрещён (нет политики)" },
+      { "table": "users", "select": "все аутентифицированные видят всех", "write": "только свою строку, только безопасные колонки (display_name/telegram_*), is_admin защищён отдельным grant" },
+      { "table": "drivers/races/race_driver_pool/results/result_changes", "select": "все аутентифицированные читают всё", "write": "только is_admin() или сервисное подключение в обход RLS" },
+      { "table": "все", "anon": "анонимный пользователь (не залогинен) не видит и не пишет ничего" }
+    ],
+    "migrations": [
+      { "file": "0001_schema.sql", "purpose": "7 базовых таблиц (users, drivers, races, race_driver_pool, predictions, results, result_changes)." },
+      { "file": "0002_scoring.sql", "purpose": "score_prediction() + view scores." },
+      { "file": "0003_rls.sql", "purpose": "RLS-политики, гранты, is_admin()." },
+      { "file": "0004_validation.sql", "purpose": "Триггер validate_prediction — состав из ровно 10 разных пилотов пула." },
+      { "file": "0005_is_sprint.sql", "purpose": "Пометка спринт-уикендов для UI." },
+      { "file": "0006_invite_membership.sql", "purpose": "Регистрация по инвайт-коду + членство (invite_codes, is_member, redeem_invite)." },
+      { "file": "0007_open_race.sql", "purpose": "open_race() — перевод гонки в open со снимком пула." },
+      { "file": "0008_keepalive.sql", "purpose": "Надёжный keep-alive через реальный UPDATE (RPC), не просто select под RLS." },
+      { "file": "0009_admin_results.sql", "purpose": "set_race_result() — ручной/автоматический занос результата." },
+      { "file": "0010_driver_standing.sql", "purpose": "drivers.standing — позиция в чемпионате, для сортировки пула и фолбэка GridBot." },
+      { "file": "0011_telegram_announced.sql", "purpose": "races.telegram_announced_at — не слать повторное сообщение при правке уже занесённого результата." },
+      { "file": "0012_predicted_user_ids.sql", "purpose": "RPC predicted_user_ids — список проголосовавших без раскрытия прогноза." },
+      { "file": "0013_revoke_public_execute.sql", "purpose": "КРИТИЧЕСКИЙ фикс: отзыв публичного execute на admin-функции — закрыта эскалация прав через anon-ключ (см. project_open_anon_privilege_escalation в auto-memory)." },
+      { "file": "0014_gridbot_user.sql", "purpose": "Аккаунт GridBot напрямую в auth.users/public.users, в обход штатного signup." },
+      { "file": "0015_users_display_name_unique.sql", "purpose": "UNIQUE(display_name) — закрывает захват аккаунта GridBot через переименование." }
+    ]
+  },
+  "automation": {
+    "workflows": [
+      { "file": ".github/workflows/deploy.yml", "trigger": "push в main", "purpose": "Собирает Vite-приложение, публикует на GitHub Pages." },
+      { "file": ".github/workflows/keepalive.yml", "trigger": "cron, 2 раза в день", "purpose": "Дёргает RPC keepalive_ping() — реальный UPDATE, не просто HTTP-пинг." },
+      { "file": ".github/workflows/telegram-notify.yml", "trigger": "cron (несколько расписаний) + workflow_dispatch", "purpose": "Единый workflow с режимами raceweek/deadline/remind/autoresults/results/aiplayer." }
+    ],
+    "schedule_utc_to_msk": [
+      { "cron_utc": "5 7 * * 1", "msk": "Пн 10:05", "modes": ["raceweek", "remind"] },
+      { "cron_utc": "5 7 * * 3", "msk": "Ср 10:05", "modes": ["deadline"] },
+      { "cron_utc": "5 16 * * 3", "msk": "Ср 19:05", "modes": ["deadline"] },
+      { "cron_utc": "5 7 * * 4", "msk": "Чт 10:05", "modes": ["aiplayer", "deadline"], "note": "aiplayer идёт первым — GridBot успевает проголосовать до напоминания людям" },
+      { "cron_utc": "5 16 * * 4", "msk": "Чт 19:05", "modes": ["deadline"] },
+      { "cron_utc": "5 */2 * * *", "msk": "каждые 2 часа, :05", "modes": ["autoresults", "results"], "note": "работает круглосуточно; вне времени гонки просто no-op (races.race_datetime_utc < now() не выполняется)" }
+    ],
+    "msk_offset": "UTC+3 круглый год — Россия не переходит на летнее время."
+  },
+  "scripts": [
+    { "folder": "scripts/db", "purpose": "Миграции + regression-тесты против прод-БД.", "commands": ["npm run rebuild — ⚠️ дропает и пересоздаёт ВСЕ таблицы", "npm test", "npm run test:<область> (gridbot/security_grants/predicted_user_ids/rls/...)"] },
+    { "folder": "scripts/import", "purpose": "Импорт пилотов/календаря/результатов из Jolpica.", "commands": ["npm run all", "npm run verify"] },
+    { "folder": "scripts/autoresults", "purpose": "Автозабор результата: Jolpica → OpenF1 фолбэк.", "commands": ["node fetch.js"] },
+    { "folder": "scripts/ai-player", "purpose": "GridBot: прогноз + объяснение.", "commands": ["npm run predict", "npm test"], "secrets": ["GEMINI_API_KEY"] },
+    { "folder": "scripts/telegram", "purpose": "Напоминания/итоги в чат.", "commands": ["node notify.js <raceweek|deadline|results|remind>"], "secrets": ["TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID"] },
+    { "folder": "scripts/export", "purpose": "Бэкап в Google Sheets.", "commands": ["npm run export"], "secrets": ["GOOGLE_SHEET_ID", "GOOGLE_SERVICE_ACCOUNT_KEY_PATH"] },
+    { "folder": "scripts/dev", "purpose": "Разовые dev-бутстрап скрипты.", "commands": ["по ситуации, см. файлы в папке"] }
+  ],
+  "frontend": {
+    "routes": [
+      { "path": "/login /signup /redeem /reset-password", "access": "публичные" },
+      { "path": "/calendar /predict/:raceId /standings /results /rules", "access": "по членству (is_member)" },
+      { "path": "/admin /admin/result/:raceId", "access": "только is_admin (AdminRoute)" }
+    ],
+    "key_files": ["src/lib/scoring.ts — превью очков на клиенте", "src/lib/db.ts — запросы к Supabase с авто-ретраем (сеть РФ↔Supabase нестабильна)", "src/components/PredictionSlots.tsx + DriverPool.tsx — drag-and-drop через @dnd-kit", "src/components/DriftChart.tsx — визуализация прогноз vs факт"],
+    "build": ["npm run dev (Vite, localhost:5173)", "npm run build (tsc -b && vite build)"]
+  },
+  "scoring": {
+    "formula": "points(слот i) = max(0, WEIGHTS[i] - 2*abs(реальная_позиция - заявленная_позиция)) + (3 если точное совпадение)",
+    "weights_p1_to_p10": [25, 18, 15, 12, 10, 8, 6, 4, 2, 1],
+    "source_of_truth": "supabase/migrations/0002_scoring.sql (score_prediction), фронтенд-копия в src/lib/scoring.ts только для мгновенного превью",
+    "tiebreaker": "больше точных попаданий → выше место; при равенстве — лучший результат отдельной гонки"
+  },
+  "gridbot": {
+    "summary": "Обычный аккаунт public.users (не отдельный UI), играет по тем же правилам что и люди.",
+    "data_flow": "race_driver_pool + собственные результаты сезона + 3 прошлых сезона F1 (Jolpica driverStandings) → промпт → Gemini structured JSON → валидация (10 уникальных кодов из пула) → фолбэк (сортировка по drivers.standing) при сбое → сохранение как обычный upsert в predictions → если есть reasoning, публикует объяснение в Telegram",
+    "model": "gemini-2.5-flash (gemini-2.0-flash имел нулевую бесплатную квоту на этом ключе)",
+    "lookup": "находится по display_name='GridBot' (не хардкод UUID) — поэтому display_name сделан UNIQUE в 0015",
+    "code": "scripts/ai-player/predict.js + lib.js"
+  },
+  "invariants_and_gotchas": [
+    "pg_cron НЕ используется нигде — вся автоматика на cron-триггерах GitHub Actions, несмотря на упоминания pg_cron в старых доках/CLAUDE.md.",
+    "Результат заносится сразу как status='final' — НЕТ промежуточной provisional-стадии, несмотря на то что где-то в старых доках описан 'двухфазный' занос (T+4ч/T+24ч). autoresults/fetch.js + set_race_result() пишут final при первом успешном ответе Jolpica/OpenF1.",
+    "npm run rebuild в scripts/db дропает и пересоздаёт ВСЕ таблицы в РЕАЛЬНОЙ облачной БД — нет локальной песочницы (Docker не работает на машине разработки). Не гонять не думая.",
+    "Anon-ключ Supabase публичен по дизайну — безопасность держится на RLS, не на секретности ключа.",
+    "МСК = UTC+3 круглый год, Россия не переходит на летнее время — не путать с DST-логикой.",
+    "GitHub Pages из РФ требует VPN — все ссылки на сайт в Telegram-сообщениях сопровождаются пометкой '(нужен VPN)'.",
+    "display_name в users уникален (0015) — раньше не было, что позволяло захватить аккаунт GridBot переименованием.",
+    "predictions: нет DELETE-политики в RLS — удаление прогноза запрещено физически, не только в UI.",
+    "is_admin() и keepalive_ping() и set_race_result() — SECURITY DEFINER, специально чтобы избежать RLS-рекурсии или обойти RLS для системных операций; не копировать этот паттерн бездумно на новые функции без явного обоснования.",
+    "Каждая scripts/*-папка — независимый пакет со своим package.json и .env-ридером (сознательный отказ от общего lib ради независимости папок друг от друга).",
+    "Репозиторий публичный на GitHub — минуты GitHub Actions бесплатны без лимита."
+  ],
+  "secrets": [
+    { "name": "SUPABASE_DB_URL", "used_by": "все scripts/*", "where": "корневой .env (gitignored) + GitHub Secret" },
+    { "name": "TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID", "used_by": "scripts/telegram, scripts/ai-player (объяснение GridBot)", "where": "корневой .env + GitHub Secret" },
+    { "name": "GEMINI_API_KEY", "used_by": "scripts/ai-player", "where": "корневой .env + GitHub Secret" },
+    { "name": "GOOGLE_SHEET_ID / GOOGLE_SERVICE_ACCOUNT_KEY_PATH", "used_by": "scripts/export", "where": "корневой .env (ключ-файл в .gitignore)" },
+    { "name": "VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY", "used_by": "фронтенд (публичные по дизайну)", "where": ".env для dev, GitHub Secret для deploy.yml" }
+  ],
+  "docs": [
+    { "file": "docs/plan.md", "purpose": "Единый источник правды: решения, БД, RLS, дизайн, roadmap." },
+    { "file": "docs/constitution.md", "purpose": "Незыблемые принципы, сверяться при любой спеке/плане/ревью." },
+    { "file": "README.md", "purpose": "Как пользоваться, для читателя со стороны." },
+    { "file": "ARCHITECTURE.md", "purpose": "Человеко-читаемая карта + changelog." },
+    { "file": "MEMORY.md", "purpose": "Журнал сессий — что и почему делали, статус, открытые вопросы." },
+    { "file": "docs/superpowers/specs/ и plans/", "purpose": "История дизайн-решений и планов по каждой фиче." }
+  ]
+}

@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F1 Predict — карта архитектуры</title>
+<style>
+  :root {
+    --bg: #0B0E14;
+    --bg-panel: #11151f;
+    --bg-panel-2: #161b28;
+    --border: #232a3a;
+    --text: #E7ECF4;
+    --text-dim: #9aa5b8;
+    --cyan: #00E5FF;
+    --crimson: #FF2E63;
+    --ok: #3ddc84;
+    --warn: #ffb020;
+    --font-ui: -apple-system, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+    --font-mono: "Cascadia Code", "Consolas", "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    line-height: 1.55;
+  }
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code, pre {
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+  }
+  code {
+    background: var(--bg-panel-2);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    color: #ffd9e2;
+  }
+  pre {
+    background: var(--bg-panel-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    color: #d7e2f5;
+  }
+
+  header.hero {
+    padding: 40px 24px 28px;
+    border-bottom: 1px solid var(--border);
+    background:
+      radial-gradient(1200px 300px at 15% -10%, rgba(0,229,255,0.12), transparent 60%),
+      radial-gradient(1000px 260px at 90% -20%, rgba(255,46,99,0.10), transparent 60%);
+  }
+  .hero-inner { max-width: 1180px; margin: 0 auto; }
+  .flag { font-size: 2rem; margin-right: 10px; }
+  h1 {
+    font-size: 1.9rem;
+    margin: 0 0 6px;
+    letter-spacing: 0.02em;
+  }
+  .subtitle { color: var(--text-dim); font-size: 1rem; max-width: 780px; }
+  .meta-line {
+    margin-top: 14px;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+  }
+  .meta-line b { color: var(--warn); }
+  .badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    margin-right: 6px;
+  }
+
+  .layout {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 32px;
+    padding: 28px 24px 80px;
+  }
+  nav.toc {
+    position: sticky;
+    top: 20px;
+    align-self: start;
+    font-size: 0.86rem;
+  }
+  nav.toc h4 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    margin: 0 0 8px;
+  }
+  nav.toc ul { list-style: none; margin: 0; padding: 0; }
+  nav.toc li { margin-bottom: 6px; }
+  nav.toc a { color: var(--text-dim); }
+  nav.toc a:hover { color: var(--cyan); }
+
+  main { min-width: 0; }
+  section { margin-bottom: 44px; scroll-margin-top: 16px; }
+  section h2 {
+    font-size: 1.3rem;
+    border-left: 3px solid var(--cyan);
+    padding-left: 10px;
+    margin: 0 0 14px;
+  }
+  section h3 {
+    font-size: 1.02rem;
+    color: var(--cyan);
+    margin: 22px 0 8px;
+  }
+  p { color: #cfd8e6; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin: 10px 0 4px;
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    color: var(--text-dim);
+    font-weight: 600;
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+    margin: 10px 0;
+  }
+  .card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .card .path { color: var(--cyan); font-family: var(--font-mono); font-size: 0.85rem; }
+  .card .desc { color: var(--text-dim); font-size: 0.84rem; margin-top: 6px; }
+
+  .pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .pill {
+    background: var(--bg-panel-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 0.82rem;
+    color: #d7e2f5;
+  }
+
+  .gotchas {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .gotchas li {
+    background: linear-gradient(180deg, rgba(255,176,32,0.07), rgba(255,176,32,0.02));
+    border: 1px solid rgba(255,176,32,0.3);
+    border-left: 3px solid var(--warn);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    color: #f1e6cf;
+  }
+
+  .rls-yes { color: var(--ok); }
+  .rls-no { color: var(--crimson); }
+
+  .schema-block {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: #b9c6dd;
+    white-space: pre;
+    overflow-x: auto;
+    margin-bottom: 10px;
+  }
+  .schema-block b { color: var(--cyan); }
+  .schema-block .fn { color: #ffd9e2; }
+
+  footer {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 20px 24px 60px;
+    color: var(--text-dim);
+    font-size: 0.82rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.toc { position: static; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <h1><span class="flag">🏁</span>F1 Predict — карта архитектуры</h1>
+    <p class="subtitle">
+      Визуальный снимок системы для человека. Машиночитаемая версия с теми же данными —
+      <code>docs/architecture-map.json</code>, ей стоит кормить свежего агента перед началом новой фичи.
+    </p>
+    <div class="meta-line">
+      Снимок на <b>2026-07-26</b>. Собран из <code>ARCHITECTURE.md</code>, миграций, workflow-файлов и кода
+      скриптов. <b>Не обновляется автоматически</b> — актуализировать вручную вместе с <code>ARCHITECTURE.md</code>
+      при заметных изменениях структуры.
+    </div>
+    <div class="meta-line" style="margin-top:8px">
+      <span class="badge">MVP: достигнут 2026-07-20</span>
+      <span class="badge">Фазы 0–5: закрыты</span>
+      <span class="badge">Фаза 6: полировка идёт</span>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc">
+    <h4>Разделы</h4>
+    <ul>
+      <li><a href="#overview">Назначение</a></li>
+      <li><a href="#stack">Стек</a></li>
+      <li><a href="#structure">Структура</a></li>
+      <li><a href="#database">База данных</a></li>
+      <li><a href="#automation">Автоматика</a></li>
+      <li><a href="#scripts">Скрипты</a></li>
+      <li><a href="#frontend">Фронтенд</a></li>
+      <li><a href="#scoring">Формула очков</a></li>
+      <li><a href="#gridbot">GridBot</a></li>
+      <li><a href="#gotchas">Гварды / гочи</a></li>
+      <li><a href="#secrets">Секреты</a></li>
+      <li><a href="#docs">Документация</a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <section id="overview">
+      <h2>Назначение</h2>
+      <p>
+        Закрытая лига прогнозов на топ-10 гонок Формулы-1 для компании друзей. До дедлайна каждый
+        вслепую расставляет прогноз (drag-and-drop), после гонки очки считаются автоматически,
+        по сезону — общий зачёт. В лиге играет и ИИ-участник — <a href="#gridbot">GridBot</a>.
+      </p>
+      <p style="color:var(--text-dim); font-size:0.86rem;">
+        Репозиторий: <code>github.com/konicaRu/f1-predict</code> · хостинг фронтенда — GitHub Pages,
+        бэкенд — облачный Supabase.
+      </p>
+    </section>
+
+    <section id="stack">
+      <h2>Стек</h2>
+      <div class="pill-row">
+        <span class="pill">React 18 + TypeScript</span>
+        <span class="pill">Vite</span>
+        <span class="pill">React Router</span>
+        <span class="pill">@dnd-kit</span>
+        <span class="pill">Supabase (Postgres + Auth)</span>
+        <span class="pill">RLS-first безопасность</span>
+        <span class="pill">Jolpica API</span>
+        <span class="pill">OpenF1 (фолбэк)</span>
+        <span class="pill">Gemini API (GridBot)</span>
+        <span class="pill">Telegram Bot API</span>
+        <span class="pill">Google Sheets API</span>
+        <span class="pill">GitHub Actions (cron)</span>
+      </div>
+      <p style="font-size:0.86rem; color:var(--text-dim)">
+        <b style="color:var(--warn)">Важно:</b> anon-ключ Supabase публичен по дизайну (лежит в собранном
+        JS-бандле) — вся защита данных на RLS-политиках БД, не на секретности ключа. И —
+        <b style="color:var(--warn)">pg_cron нигде не используется</b>, вся автоматика на cron-триггерах
+        GitHub Actions, несмотря на упоминания pg_cron в старых доках.
+      </p>
+    </section>
+
+    <section id="structure">
+      <h2>Структура репозитория</h2>
+      <div class="card-grid">
+        <div class="card"><div class="path">src/</div><div class="desc">React SPA — страницы, компоненты, lib (scoring, db, supabase-клиент)</div></div>
+        <div class="card"><div class="path">supabase/migrations/</div><div class="desc">SQL 0001–0015: схема, очки, RLS, автоматика, GridBot</div></div>
+        <div class="card"><div class="path">scripts/db/</div><div class="desc">Применение миграций + regression-тесты (cloud-direct)</div></div>
+        <div class="card"><div class="path">scripts/import/</div><div class="desc">Импорт пилотов/календаря/результатов из Jolpica</div></div>
+        <div class="card"><div class="path">scripts/autoresults/</div><div class="desc">Автозабор результата: Jolpica → OpenF1 фолбэк</div></div>
+        <div class="card"><div class="path">scripts/ai-player/</div><div class="desc">GridBot: прогноз + объяснение в Telegram</div></div>
+        <div class="card"><div class="path">scripts/telegram/</div><div class="desc">Напоминания/итоги в общий чат</div></div>
+        <div class="card"><div class="path">scripts/export/</div><div class="desc">Бэкап в Google Sheets</div></div>
+        <div class="card"><div class="path">.github/workflows/</div><div class="desc">deploy, keepalive, telegram-notify</div></div>
+        <div class="card"><div class="path">docs/plan.md</div><div class="desc">Единый источник правды: решения, БД, RLS, дизайн, roadmap</div></div>
+        <div class="card"><div class="path">docs/constitution.md</div><div class="desc">Незыблемые принципы проекта</div></div>
+        <div class="card"><div class="path">ARCHITECTURE.md / MEMORY.md</div><div class="desc">Карта + changelog / журнал сессий</div></div>
+      </div>
+    </section>
+
+    <section id="database">
+      <h2>База данных</h2>
+      <p style="font-size:0.86rem; color:var(--text-dim)">
+        Cloud-direct через transaction pooler (<code>:6543</code>), без локального Docker-стека Supabase.
+      </p>
+
+      <h3>Схема таблиц</h3>
+      <div class="schema-block">auth.users (Supabase Auth)
+     │ id
+     ▼
+<b>public.users</b> ──────────┐  display_name UNIQUE, is_admin, telegram_username
+     │ id (user_id)     │
+     ▼                  │
+<b>public.predictions</b>      │   race_id, positions jsonb (10 driver_id, индекс = P1..P10)
+     │ race_id          │
+     ▼                  │
+<b>public.races</b> ───────────┤   season, round, deadline_utc, status, scored
+     │ race_id          │
+     ▼                  │
+<b>public.results</b>          │   positions jsonb (факт топ-10), status
+                         │
+<b>public.race_driver_pool</b> │   race_id + driver_id — состав именно этой гонки
+     │ driver_id        │
+     ▼                  │
+<b>public.drivers</b> ─────────┘   code, name, team, standing
+
+<b>public.result_changes</b>       журнал правок: before / after / reason
+<b>public.invite_codes</b>         коды регистрации в лигу</div>
+
+      <h3>RLS — кто видит / кто пишет</h3>
+      <table>
+        <tr><th>Таблица</th><th>Select</th><th>Write</th></tr>
+        <tr><td><code>predictions</code></td><td>своя всегда; чужая — только после дедлайна гонки</td><td>только своя, только до дедлайна; <span class="rls-no">DELETE запрещён</span> (нет политики)</td></tr>
+        <tr><td><code>users</code></td><td><span class="rls-yes">все аутентифицированные</span> видят всех</td><td>только своя строка, только безопасные колонки; <code>is_admin</code> защищён отдельным grant</td></tr>
+        <tr><td><code>drivers / races / pool / results</code></td><td><span class="rls-yes">все аутентифицированные</span></td><td>только <code>is_admin()</code> или сервисное подключение</td></tr>
+        <tr><td>анонимный пользователь</td><td><span class="rls-no">ничего</span></td><td><span class="rls-no">ничего</span></td></tr>
+      </table>
+
+      <h3>Функции / RPC</h3>
+      <table>
+        <tr><th>Функция</th><th>Миграция</th><th>Что делает</th></tr>
+        <tr><td class="fn"><code>score_prediction()</code></td><td>0002</td><td>Формула очков — источник истины</td></tr>
+        <tr><td class="fn"><code>is_admin()</code></td><td>0003</td><td>SECURITY DEFINER, проверка прав без RLS-рекурсии</td></tr>
+        <tr><td class="fn"><code>validate_prediction()</code></td><td>0004</td><td>Триггер: ровно 10 разных пилотов из пула</td></tr>
+        <tr><td class="fn"><code>is_member()</code> / <code>redeem_invite()</code></td><td>0006</td><td>Членство по инвайт-коду</td></tr>
+        <tr><td class="fn"><code>open_race()</code></td><td>0007</td><td>Перевод гонки в <code>open</code> со снимком пула</td></tr>
+        <tr><td class="fn"><code>keepalive_ping()</code></td><td>0008</td><td>SECURITY DEFINER, реальный UPDATE против сна free-tier</td></tr>
+        <tr><td class="fn"><code>set_race_result()</code></td><td>0009</td><td>SECURITY DEFINER, занос/правка результата (авто + вручную)</td></tr>
+        <tr><td class="fn"><code>predicted_user_ids()</code></td><td>0012</td><td>Список проголосовавших без раскрытия прогноза</td></tr>
+      </table>
+
+      <h3>Миграции по порядку</h3>
+      <table>
+        <tr><th>Файл</th><th>Суть</th></tr>
+        <tr><td>0001_schema</td><td>7 базовых таблиц</td></tr>
+        <tr><td>0002_scoring</td><td>Формула очков + view scores</td></tr>
+        <tr><td>0003_rls</td><td>RLS-политики, гранты, is_admin</td></tr>
+        <tr><td>0004_validation</td><td>Триггер состава прогноза</td></tr>
+        <tr><td>0005_is_sprint</td><td>Пометка спринт-уикендов</td></tr>
+        <tr><td>0006_invite_membership</td><td>Регистрация по инвайт-коду</td></tr>
+        <tr><td>0007_open_race</td><td>open_race() со снимком пула</td></tr>
+        <tr><td>0008_keepalive</td><td>Надёжный keep-alive через RPC</td></tr>
+        <tr><td>0009_admin_results</td><td>set_race_result() — ручной занос</td></tr>
+        <tr><td>0010_driver_standing</td><td>Позиция в чемпионате для UX/фолбэка</td></tr>
+        <tr><td>0011_telegram_announced</td><td>Не дублировать анонс при правке результата</td></tr>
+        <tr><td>0012_predicted_user_ids</td><td>Список проголосовавших</td></tr>
+        <tr><td>0013_revoke_public_execute</td><td><span style="color:var(--crimson)">Критический security-фикс</span> — закрыта эскалация прав</td></tr>
+        <tr><td>0014_gridbot_user</td><td>Аккаунт GridBot</td></tr>
+        <tr><td>0015_users_display_name_unique</td><td>Закрывает захват аккаунта GridBot</td></tr>
+      </table>
+    </section>
+
+    <section id="automation">
+      <h2>Автоматика (GitHub Actions)</h2>
+      <table>
+        <tr><th>Workflow</th><th>Триггер</th><th>Что делает</th></tr>
+        <tr><td><code>deploy.yml</code></td><td>push в main</td><td>Сборка Vite + публикация на GitHub Pages</td></tr>
+        <tr><td><code>keepalive.yml</code></td><td>2×/день</td><td>RPC <code>keepalive_ping()</code> против сна free-tier Supabase</td></tr>
+        <tr><td><code>telegram-notify.yml</code></td><td>cron + workflow_dispatch</td><td>Режимы raceweek/deadline/remind/autoresults/results/aiplayer</td></tr>
+      </table>
+
+      <h3>Расписание (UTC → МСК, круглый год UTC+3)</h3>
+      <table>
+        <tr><th>Cron (UTC)</th><th>МСК</th><th>Режимы</th></tr>
+        <tr><td>5 7 * * 1</td><td>Пн 10:05</td><td>raceweek + remind</td></tr>
+        <tr><td>5 7 * * 3</td><td>Ср 10:05</td><td>deadline</td></tr>
+        <tr><td>5 16 * * 3</td><td>Ср 19:05</td><td>deadline</td></tr>
+        <tr><td>5 7 * * 4</td><td>Чт 10:05</td><td>aiplayer + deadline (GridBot первым)</td></tr>
+        <tr><td>5 16 * * 4</td><td>Чт 19:05</td><td>deadline</td></tr>
+        <tr><td>5 */2 * * *</td><td>каждые 2ч, :05</td><td>autoresults + results (no-op до старта гонки)</td></tr>
+      </table>
+    </section>
+
+    <section id="scripts">
+      <h2>Скрипты (каждый — самостоятельный пакет)</h2>
+      <table>
+        <tr><th>Папка</th><th>Назначение</th><th>Команды</th><th>Секреты</th></tr>
+        <tr><td><code>scripts/db</code></td><td>Миграции + тесты</td><td><code>npm run rebuild</code> ⚠️, <code>npm test</code></td><td>SUPABASE_DB_URL</td></tr>
+        <tr><td><code>scripts/import</code></td><td>Импорт из Jolpica</td><td><code>npm run all</code>, <code>verify</code></td><td>SUPABASE_DB_URL</td></tr>
+        <tr><td><code>scripts/autoresults</code></td><td>Автозабор результата</td><td><code>node fetch.js</code></td><td>SUPABASE_DB_URL</td></tr>
+        <tr><td><code>scripts/ai-player</code></td><td>GridBot</td><td><code>npm run predict</code></td><td>GEMINI_API_KEY + Telegram</td></tr>
+        <tr><td><code>scripts/telegram</code></td><td>Напоминания/итоги</td><td><code>node notify.js &lt;mode&gt;</code></td><td>TELEGRAM_BOT_TOKEN/CHAT_ID</td></tr>
+        <tr><td><code>scripts/export</code></td><td>Бэкап в Sheets</td><td><code>npm run export</code></td><td>GOOGLE_SHEET_ID + ключ</td></tr>
+      </table>
+    </section>
+
+    <section id="frontend">
+      <h2>Фронтенд</h2>
+      <table>
+        <tr><th>Маршруты</th><th>Доступ</th></tr>
+        <tr><td>/login /signup /redeem /reset-password</td><td>публичные</td></tr>
+        <tr><td>/calendar /predict/:raceId /standings /results /rules</td><td>по членству (is_member)</td></tr>
+        <tr><td>/admin /admin/result/:raceId</td><td>только is_admin (AdminRoute)</td></tr>
+      </table>
+      <p style="font-size:0.86rem; color:var(--text-dim)">
+        Прогноз — drag-and-drop через <code>@dnd-kit</code> (<code>PredictionSlots</code> +
+        <code>DriverPool</code>), read-only после дедлайна, серверная валидация состава.
+        Сеть РФ↔Supabase нестабильна → авто-ретрай с backoff в <code>src/lib/db.ts</code>.
+      </p>
+    </section>
+
+    <section id="scoring">
+      <h2>Формула очков</h2>
+      <pre>points(слот i) = max(0, WEIGHTS[i] − 2·|реальная − заявленная|) + (3, если точное совпадение)
+
+WEIGHTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]   // за P1..P10</pre>
+      <p style="font-size:0.86rem; color:var(--text-dim)">
+        Источник истины — SQL-функция <code>score_prediction()</code> (0002); фронтенд-копия в
+        <code>src/lib/scoring.ts</code> только для мгновенного превью. Тайбрейкер: больше точных
+        попаданий → выше место; при равенстве — лучший результат отдельной гонки.
+      </p>
+    </section>
+
+    <section id="gridbot">
+      <h2>GridBot — ИИ-участник</h2>
+      <p>
+        Обычный аккаунт <code>public.users</code> без отдельного UI, играет по тем же правилам, что и люди.
+        Данные: пул гонки + собственные результаты сезона + 3 прошлых сезона F1 (Jolpica) → промпт →
+        Gemini structured JSON → валидация → фолбэк (сортировка по <code>drivers.standing</code>) при сбое →
+        upsert в <code>predictions</code> → объяснение в Telegram, если Gemini ответила.
+      </p>
+      <p style="font-size:0.86rem; color:var(--text-dim)">
+        Модель — <code>gemini-2.5-flash</code>. Находится по <code>display_name='GridBot'</code>, не по UUID —
+        поэтому <code>display_name</code> сделан уникальным (0015). Код — <code>scripts/ai-player/</code>.
+      </p>
+    </section>
+
+    <section id="gotchas">
+      <h2>Гварды / гочи для нового агента</h2>
+      <ul class="gotchas">
+        <li><b>pg_cron нигде не используется</b> — вся автоматика на GitHub Actions cron, несмотря на старые упоминания pg_cron в доках.</li>
+        <li><b>Результат сразу final</b>, без provisional-стадии — <code>autoresults/fetch.js</code> + <code>set_race_result()</code> пишут final при первом успешном ответе Jolpica/OpenF1.</li>
+        <li><b><code>npm run rebuild</code> в <code>scripts/db</code> дропает ВСЕ таблицы</b> в реальной облачной БД — локальной песочницы нет (Docker не работает на машине разработки).</li>
+        <li><b>Anon-ключ публичен по дизайну</b> — безопасность на RLS, не на секретности ключа.</li>
+        <li><b>МСК = UTC+3 круглый год</b> — Россия не переходит на летнее время.</li>
+        <li><b>GitHub Pages из РФ требует VPN</b> — все ссылки на сайт в Telegram сопровождаются пометкой.</li>
+        <li><b><code>predictions</code> без DELETE-политики</b> — удаление прогноза запрещено физически.</li>
+        <li><b>SECURITY DEFINER используется точечно</b> (is_admin, keepalive_ping, set_race_result) — не копировать паттерн на новые функции без явного обоснования.</li>
+        <li><b>Каждая <code>scripts/*</code>-папка независима</b> — свой package.json и .env-ридер, общий lib сознательно не шарится.</li>
+        <li><b>Репозиторий публичный</b> — минуты GitHub Actions бесплатны без лимита.</li>
+      </ul>
+    </section>
+
+    <section id="secrets">
+      <h2>Секреты</h2>
+      <table>
+        <tr><th>Секрет</th><th>Кто использует</th></tr>
+        <tr><td><code>SUPABASE_DB_URL</code></td><td>все scripts/*</td></tr>
+        <tr><td><code>TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID</code></td><td>scripts/telegram, scripts/ai-player</td></tr>
+        <tr><td><code>GEMINI_API_KEY</code></td><td>scripts/ai-player</td></tr>
+        <tr><td><code>GOOGLE_SHEET_ID / GOOGLE_SERVICE_ACCOUNT_KEY_PATH</code></td><td>scripts/export</td></tr>
+        <tr><td><code>VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY</code></td><td>фронтенд (публичные по дизайну)</td></tr>
+      </table>
+    </section>
+
+    <section id="docs">
+      <h2>Документация</h2>
+      <table>
+        <tr><th>Файл</th><th>Назначение</th></tr>
+        <tr><td><a href="../docs/plan.md">docs/plan.md</a></td><td>Единый источник правды: решения, БД, RLS, дизайн, roadmap</td></tr>
+        <tr><td><a href="../docs/constitution.md">docs/constitution.md</a></td><td>Незыблемые принципы проекта</td></tr>
+        <tr><td><a href="../README.md">README.md</a></td><td>Как пользоваться, для читателя со стороны</td></tr>
+        <tr><td><a href="../ARCHITECTURE.md">ARCHITECTURE.md</a></td><td>Человеко-читаемая карта + changelog</td></tr>
+        <tr><td><a href="../MEMORY.md">MEMORY.md</a></td><td>Журнал сессий</td></tr>
+        <tr><td><a href="./architecture-map.json">architecture-map.json</a></td><td>Та же карта, машиночитаемая — для нового агента</td></tr>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  F1 Predict — снимок архитектуры на 2026-07-26. Обновлять вручную вместе с <code>ARCHITECTURE.md</code>.
+</footer>
+
+</body>
+</html>
