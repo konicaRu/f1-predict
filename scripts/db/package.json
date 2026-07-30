@@ -13,6 +13,7 @@
     "test:predicted_user_ids": "node predicted_user_ids.test.js",
     "test:security_grants": "node security_grants.test.js",
     "test:gridbot": "node gridbot.test.js",
+    "test:guest_access": "node guest_access.test.js",
     "test": "node scoring.test.js && node view.test.js && node rls.test.js"
   },
   "dependencies": {
