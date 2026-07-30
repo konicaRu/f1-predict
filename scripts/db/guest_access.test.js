@@ -7,7 +7,7 @@ const { Client } = require('pg');
 const env = fs.readFileSync(path.join(__dirname,'..','..','.env'),'utf8');
 const connStr = env.match(/^SUPABASE_DB_URL=(.+)$/m)[1].trim();
 
-const A = '88888888-8888-8888-8888-888888888888';
+const A = '88888888-8888-8888-8888-888888880001';
 const ADMIN = '99999999-9999-9999-9999-999999999999';
 const R1 = 900000401; // open, дедлайн в будущем -> прогноз должен остаться скрыт даже при свитче ON
 const R2 = 900000402; // resulted, дедлайн в прошлом -> прогноз виден при свитче ON
