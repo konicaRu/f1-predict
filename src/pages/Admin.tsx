@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { listRaces, openRace } from '../lib/db';
+import { listRaces, openRace, getGuestAccessEnabled, setGuestAccessEnabled } from '../lib/db';
 import type { Race } from '../lib/types';
 import { isPast } from '../lib/countdown';
 import { raceCountry } from '../lib/flags';
@@ -10,13 +10,17 @@ export default function Admin() {
   const [races, setRaces] = useState<Race[] | null>(null);
   const [err, setErr] = useState('');
   const [busyId, setBusyId] = useState<number | null>(null);
+  const [guestOn, setGuestOn] = useState<boolean | null>(null);
+  const [guestBusy, setGuestBusy] = useState(false);
   const nav = useNavigate();
 
   const load = useCallback(async () => {
     setErr('');
     setRaces(null);
     try {
-      setRaces(await listRaces());
+      const [rs, g] = await Promise.all([listRaces(), getGuestAccessEnabled()]);
+      setRaces(rs);
+      setGuestOn(g);
     } catch (e: any) {
       setErr(e.message || 'Ошибка загрузки');
     }
@@ -39,6 +43,20 @@ export default function Admin() {
     }
   }
 
+  async function onToggleGuest() {
+    if (guestOn === null) return;
+    setGuestBusy(true);
+    setErr('');
+    try {
+      await setGuestAccessEnabled(!guestOn);
+      setGuestOn(!guestOn);
+    } catch (e: any) {
+      setErr(e.message || 'Не удалось переключить гостевой доступ');
+    } finally {
+      setGuestBusy(false);
+    }
+  }
+
   if (err && !races)
     return (
       <div className="stub">
@@ -52,6 +70,17 @@ export default function Admin() {
     <div className="admin">
       <h1 className="admin-h1">Админка</h1>
       {err && <p className="auth-err">{err}</p>}
+      <div className="admin-row">
+        <div className="admin-race">
+          <span className="race-name">Гостевой доступ (read-only, без аккаунта)</span>
+        </div>
+        <div className="admin-actions">
+          <button disabled={guestOn === null || guestBusy} onClick={onToggleGuest}>
+            {guestBusy ? '…' : guestOn ? 'Выключить' : 'Включить'}
+          </button>
+          <span className="admin-badge">{guestOn === null ? '…' : guestOn ? 'включён' : 'выключен'}</span>
+        </div>
+      </div>
       <div className="admin-list">
         {races.map((r) => {
           const upcoming = r.status === 'demo' && !isPast(r.deadline_utc);
