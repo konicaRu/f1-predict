@@ -18,11 +18,15 @@ export default function Admin() {
     setErr('');
     setRaces(null);
     try {
-      const [rs, g] = await Promise.all([listRaces(), getGuestAccessEnabled()]);
-      setRaces(rs);
-      setGuestOn(g);
+      setRaces(await listRaces());
     } catch (e: any) {
       setErr(e.message || 'Ошибка загрузки');
+      return;
+    }
+    try {
+      setGuestOn(await getGuestAccessEnabled());
+    } catch {
+      // non-fatal: guest-toggle status failing shouldn't block the race-admin view
     }
   }, []);
 
@@ -49,7 +53,7 @@ export default function Admin() {
     setErr('');
     try {
       await setGuestAccessEnabled(!guestOn);
-      setGuestOn(!guestOn);
+      await load();
     } catch (e: any) {
       setErr(e.message || 'Не удалось переключить гостевой доступ');
     } finally {
