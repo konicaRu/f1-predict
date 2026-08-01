@@ -212,3 +212,22 @@ export async function listDrivers(): Promise<Driver[]> {
     return (data ?? []) as Driver[];
   });
 }
+
+// ===== Гостевой доступ (read-only без аккаунта, Фаза 6) =====
+
+export async function getGuestAccessEnabled(): Promise<boolean> {
+  return withRetry(async () => {
+    const { data, error } = await supabase.rpc('guest_access_enabled');
+    if (error) throw error;
+    return data as boolean;
+  });
+}
+
+// Без ретрая — мутирующий вызов, как setRaceResult (повтор при флапе не идемпотентен по смыслу UX).
+export async function setGuestAccessEnabled(enabled: boolean): Promise<void> {
+  const { error } = await withTimeout(
+    (async () => supabase.rpc('set_guest_access', { p_enabled: enabled }))(),
+    10000,
+  );
+  if (error) throw error;
+}
