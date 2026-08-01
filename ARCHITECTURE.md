@@ -135,6 +135,14 @@ chart ✅, сброс пароля ✅, GridBot ✅, README ✅, гостево�
 
 ## Changelog
 ### 2026-08-01
+- **Telegram Mini App (голосование в чате) — brainstorm+spec+plan готовы, реализация НЕ начата.**
+  Спека `docs/superpowers/specs/2026-08-01-telegram-mini-app-design.md`, план (10 задач)
+  `docs/superpowers/plans/2026-08-01-telegram-mini-app.md`. Архитектура: новая Edge Function
+  `telegram-auth` (первый в проекте компонент такого типа — раньше всё было cloud-direct Postgres
+  RPC + фронт) обменивает подписанные Telegram-данные на настоящую Supabase-сессию, дальше весь
+  существующий UI работает без изменений. Остановлено на Task 1 (нет `TELEGRAM_BOT_TOKEN` в
+  локальном `.env`) — структура/стек ещё не менялись по факту, обновить эти разделы, когда
+  появится `supabase/functions/`.
 - **Гостевой read-only доступ ЗАКРЫТ, ветка `guest-read-access` влита в `main` (fast-forward) и
   запушена**, локальная и удалённая feature-ветка удалены. Все 8 задач плана сделаны subagent-driven
   (implementer + spec-review + code-review на каждую), смоук пройден пользователем в браузере,
