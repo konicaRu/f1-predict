@@ -39,17 +39,21 @@ f1_predict/
 │   └── superpowers/       — spec/plan по каждой фиче (brainstorming → writing-plans → subagent-driven)
 ├── src/                  — React-приложение
 │   ├── App.tsx, main.tsx
-│   ├── auth/               — AuthContext, ProtectedRoute, AdminRoute
+│   ├── auth/               — AuthContext, ProtectedRoute, AdminRoute, RootRedirect (сессия -> кабинет
+│   │                          или гостевой /g/*)
 │   ├── pages/               — Login/Signup/RedeemInvite/ResetPassword, Calendar/Predict/Standings/
-│   │                          Results/Rules, Admin/AdminResult
-│   ├── components/           — Shell, DriverChip/DriverPool/PredictionSlots/RaceCard/Flag/DriftChart
+│   │                          Results/Rules, Admin/AdminResult, GuestCalendar (гостевой, read-only)
+│   ├── components/           — Shell, GuestShell (гостевой layout), DriverChip/DriverPool/
+│   │                            PredictionSlots/RaceCard/Flag/DriftChart
 │   ├── lib/                   — supabase.ts, db.ts, scoring.ts(+test), types.ts, countdown.ts,
 │   │                            standings.ts, flags.ts
 │   └── styles/
-├── supabase/migrations/  — 0001–0015 (схема → очки → RLS → валидация → invite/membership →
+├── supabase/migrations/  — 0001–0020 (схема → очки → RLS → валидация → invite/membership →
 │                           open_race → keepalive → admin-результаты → driver_standing →
 │                           telegram_announced → predicted_user_ids → revoke_public_execute →
-│                           GridBot-аккаунт → display_name unique)
+│                           GridBot-аккаунт → display_name unique → гостевой read-only доступ
+│                           (кил-свитч `app_settings` + RLS для anon, 0016) → 4 раунда доотзыва
+│                           избыточных default-грантов Supabase (0017-0020, тот же класс, что 0013))
 ├── scripts/              — самостоятельные cloud-direct пакеты (свой `package.json` в каждом)
 │   ├── db/                  — миграции + тесты (RLS, формула очков, view, security grants, GridBot...)
 │   ├── import/                — импорт пилотов/календаря/результатов из Jolpica (Фаза 1)
@@ -68,7 +72,8 @@ f1_predict/
 0 Supabase ✅ · 1 Данные ✅ · 2 Ядро: 2a Каркас+Auth ✅ 2026-06-30 → 2b Календарь+Прогноз ✅
 2026-07-07 → 2c Админка ✅ 2026-07-14 · 3 Витрина ✅ 2026-07-15 · 4 Автоматика ✅ (GitHub Actions
 вместо `pg_cron`; автозабор + GridBot) · 5 Telegram-бот ✅ 2026-07-21 · 6 Полировка — идёт (drift
-chart ✅, сброс пароля ✅, GridBot ✅, README ✅; мобильная раскладка проверена в смоуке 2b).
+chart ✅, сброс пароля ✅, GridBot ✅, README ✅, гостевой read-only доступ ✅ 2026-08-01; мобильная
+раскладка проверена в смоуке 2b).
 **MVP достигнут 2026-07-20** — Бельгия (round 10) стала первой реально зачётной гонкой.
 
 ## Команды
@@ -89,17 +94,25 @@ chart ✅, сброс пароля ✅, GridBot ✅, README ✅; мобильн�
 ## Бэкенд Supabase
 - Облако `konicaRu_f1` (ref `kolrwuhjjsclqalapfzt`, EU-West, FREE). Локальный Docker-стек НЕ
   используется (не работает на этой машине) → миграции/тесты идут напрямую через пулер, см. `scripts/db/`.
-- `supabase/migrations/` (0001–0015): схема → формула очков (`score_prediction` + view `scores`)
+- `supabase/migrations/` (0001–0020): схема → формула очков (`score_prediction` + view `scores`)
   → RLS/гранты/`is_admin()` → валидация состава прогноза → инвайт/членство → `open_race()` →
   keep-alive RPC → занос/правка результата админом (`set_race_result`) → `driver_standing` →
   флаг анонса в Telegram → RPC для списка проголосовавших → отзыв публичного `execute` →
-  аккаунт GridBot → уникальность `display_name` (закрывает захват аккаунта GridBot).
+  аккаунт GridBot → уникальность `display_name` (закрывает захват аккаунта GridBot) → гостевой
+  read-only доступ: кил-свитч `app_settings`/`guest_access_enabled()`/`set_guest_access()` +
+  RLS-политики для `anon` на `races/drivers/results/predictions(после дедлайна)/
+  users(id+display_name)/scores` (0016) → 4 раунда доотзыва избыточных default-грантов Supabase
+  на новых и старых таблицах (0017-0020, тот же класс проблемы, что инцидент 0013).
 - Секреты — в `.env` (gitignored): `SUPABASE_DB_URL` (transaction pooler с паролем БД).
 
 ## Фронтенд
 - Vite + React 18 + TypeScript + React Router + `@supabase/supabase-js` + `@dnd-kit`.
 - Маршруты: `/login /signup /redeem /reset-password` (публичные), `/calendar /predict/:raceId
-  /standings /results /rules` (по членству), `/admin /admin/result/:raceId` (админ, `AdminRoute`).
+  /standings /results /rules` (по членству), `/admin /admin/result/:raceId` (админ, `AdminRoute`),
+  `/g/calendar /g/standings /g/results /g/rules` (гостевой read-only просмотр без аккаунта, под
+  `guest_access_enabled()`-свитчем; `Standings/Results/Rules` смонтированы на обоих деревьях
+  маршрутов без изменений в самих компонентах — гейтятся не собственной логикой, а RLS). Корень
+  `/` — `RootRedirect`: есть сессия → `/calendar`, нет → `/g/calendar`.
 - Вход по инвайт-коду (миграция 0006), доступ к данным по членству (`is_member()`).
 - Прогноз — tap/drag-to-assign через `@dnd-kit` (`PredictionSlots` + `DriverPool`), read-only после
   дедлайна, серверная валидация состава. Результаты — таблица очков + `DriftChart` (прогноз vs факт).
@@ -121,6 +134,17 @@ chart ✅, сброс пароля ✅, GridBot ✅, README ✅; мобильн�
 промпта и настройки — `README.md` § GridBot, дизайн/план — `docs/superpowers/specs/2026-07-24-ai-player-design.md`.
 
 ## Changelog
+### 2026-08-01
+- Гостевой read-only доступ (ветка `guest-read-access`, ещё не влита в `main`): все 8 задач
+  плана сделаны subagent-driven (implementer + spec-review + code-review на каждую), смоук
+  пройден пользователем в браузере, финальное ревью всей ветки (14 коммитов) закрыто. DB: кил-свитч
+  `app_settings` + RLS для `anon` (0016), 4 раунда доотзыва избыточных default-грантов Supabase
+  (0017-0020, тот же класс, что инцидент 0013 — код-ревью каждый раз находило новый экземпляр).
+  Frontend: `db.ts`-хелперы, переключатель в Админке, `GuestShell`/`GuestCalendar`, роутинг `/g/*`
+  с сессия-зависимым корнем (`RootRedirect`). Попутно ревью нашло и закрыло два внеплановых бага:
+  `Results.tsx` не показывал drift chart гостю по умолчанию, `view.test.js` коллидировал с реальным
+  Australian GP. `guest_access.test.js`: 21→23 проверки. Ветка ещё не запушена/не влита — следующий
+  шаг (push/merge/PR) по указанию пользователя.
 ### 2026-07-26
 - `ARCHITECTURE.md` актуализирован: структура/стек/roadmap/команды приведены под факт (были
   заморожены на 2a), забэкфиллены пропущенные фазы в changelog. Причина отставания — changelog

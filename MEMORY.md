@@ -62,21 +62,24 @@ Jolpica. **Бот настроен и проверен 2026-07-22** (Task 7, р�
 **README ЗАКРЫТ (2026-07-24)** — два стиля на выбор в корне, см. лог сессий.
 **Модуль project-starter «оформление README» добавлен (2026-07-24)** — см. лог сессий.
 **Продуктовый роадмап на 2 года ЗАКРЫТ (2026-07-27)** — `product-roadmap/ROADMAP.md`, влит в `main`.
-**⏸️ Гостевой read-only доступ (ветка `guest-read-access`) — ОСТАНОВЛЕНО пользователем в процессе
-Task 2, 2026-07-27.** Subagent-driven по плану `docs/superpowers/plans/2026-07-27-guest-read-access.md`
-(8 задач). Прогресс: Task 1 (миграция `0016` + кил-свитч) готов и дважды доревьюен — код-ревью
-нашло Critical (колоночный grant на `users` был no-op из-за Supabase default privileges — фикс
-`0017`) и Important (`set_guest_access` имела неявный PUBLIC execute — тоже `0017`), затем ещё один
-дешёвый доп.-фикс `0018` (excess write-grants на `users`). Task 2 (regression-тест, 21 проверка)
-реализован и прошёл 21/21, ревью нашло мелкую UUID-коллизию с `set_race_result.test.js` (исправлено)
-и ещё один экземпляр того же класса проблемы — excess default write-grants анону теперь уже на
-`races/drivers/results/predictions/race_driver_pool` (черновик `0019` создан, но **НЕ применён к
-облаку и не проверен** — пользователь остановил ровно перед `applyfile`, попросил гит-сейв). Ветка
-запушена (`origin/guest-read-access`), 0016-0018 применены к прод-БД и работают, 0019 — только
-файл на диске. Продолжить: применить 0019, проверить живьём, перезапустить `guest_access.test.js`
-(строка `'anon insert predictions blocked'` должна дать `42501` вместо `P0001` от триггера),
-закрыть код-ревью Task 2, идти дальше по плану (Task 3-8: db.ts, Админка, GuestShell/Calendar,
-роутинг `/g/*`, финальная верификация).
+**✅ Гостевой read-only доступ (ветка `guest-read-access`) ЗАВЕРШЁН 2026-08-01**, все 8 задач
+плана `docs/superpowers/plans/2026-07-27-guest-read-access.md` сделаны subagent-driven (implementer
++ spec-review + code-review на каждую), смоук-тест пользователем в браузере пройден, финальное
+ревью всей ветки (14 коммитов) сделано и закрыто. DB: миграции `0016`-`0020` — кил-свитч
+`app_settings`/`guest_access_enabled()`/`set_guest_access()` + RLS-политики для anon на
+`races/drivers/results/predictions(после дедлайна)/users(id+display_name)/scores`; `0017`-`0020` —
+четыре раунда доотзыва избыточных default-грантов Supabase (тот же класс, что инцидент `0013`),
+последний найден финальным ревью всей ветки уже после смоука (`app_settings` и `race_driver_pool`
+имели неиспользуемые фоновые гранты anon/authenticated, неэксплуатируемо из-за RLS, но отозвано на
+будущее по установленному в ветке образцу). Frontend: `db.ts`-хелперы, переключатель в Админке,
+`GuestShell`/`GuestCalendar`, роутинг `/g/*` с сессия-зависимым корнем (`RootRedirect`). Попутно
+ревью нашло и закрыло два внеплановых бага: `Results.tsx` не показывал drift chart гостю по
+умолчанию (`selPlayer` сидился от `meId`, у гостя `null`) и `view.test.js` коллидировал с реальным
+Australian GP (`round=1` занят сезоном 2026 — раньше тест писался до старта сезона). Регресс
+`guest_access.test.js` вырос 21→23 проверки (добавлены anon vs `race_driver_pool`, anon vs
+`set_guest_access`), вся регрессия (scoring/view/rls/security_grants/predicted_user_ids/gridbot/
+guest_access) зелёная. Ветка на 9 коммитов впереди `origin/guest-read-access` — push и
+финализация (merge/PR) ещё не сделаны, следующий шаг по указанию пользователя.
 
 **Цель:** закрытая лига прогнозов F1 для компании друзей.
 **Критерий MVP:** первая зачётная гонка играбельна = Фазы 0–3. **ДОСТИГНУТО 2026-07-20** — Бельгия
