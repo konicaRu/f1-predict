@@ -89,6 +89,8 @@ begin
   ${tryThrow('on: anon insert races blocked', `insert into races(round,name,deadline_utc) values(9999,'x',now())`)}
   ${tryThrow('on: anon insert predictions blocked', `insert into predictions(user_id,race_id,positions) values('${A}',${R2},'${perfect}'::jsonb)`)}
   ${tryThrow('on: anon update users blocked', `update users set display_name='hack' where id='${A}'`)}
+  ${tryThrow('on: anon select race_driver_pool blocked', `select 1 from race_driver_pool where race_id=${R2} limit 1`)}
+  ${tryThrow('on: anon set_guest_access blocked', `select public.set_guest_access(false)`)}
 
   reset role;
 
@@ -148,6 +150,6 @@ async function once(){
   }
   let pass=0,fail=0;
   for(const r of rows){ const ok=r.passed===true; ok?pass++:fail++; console.log(`${ok?'PASS':'FAIL'}  ${r.name}  — ${r.info}`); }
-  console.log(`\n=== ИТОГ: ${pass} PASS, ${fail} FAIL (строк ${rows.length}/21) ===`);
-  process.exit(fail===0&&rows.length===21?0:1);
+  console.log(`\n=== ИТОГ: ${pass} PASS, ${fail} FAIL (строк ${rows.length}/23) ===`);
+  process.exit(fail===0&&rows.length===23?0:1);
 })();
