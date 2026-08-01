@@ -36,7 +36,7 @@ export default function Results() {
       setScores(sc);
       const me = userRes.data.user?.id ?? null;
       setMeId(me);
-      setSelPlayer(me);
+      setSelPlayer(me ?? us[0]?.id ?? null);
       const resulted = rs.filter((r) => r.status === 'resulted').sort((a, b) => b.round - a.round);
       setSel(resulted[0]?.id ?? null);
     } catch (e: any) {
