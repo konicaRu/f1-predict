@@ -86,6 +86,11 @@ alter table public.telegram_links enable row level security;  -- без поли
 4. Фронт делает `supabase.auth.setSession(...)`, дальше едет по обычным маршрутам без изменений:
    сессия есть, но `is_member()` = false (нет строки в `public.users`) → `ProtectedRoute` уводит
    на `/redeem`, ровно как у нового email-пользователя сегодня.
+   Если открытие пришло по диплинку из напоминания (`start_param` вида `predict_<raceId>` в
+   `initDataUnsafe`) — корень сайта (`RootRedirect`) ведёт на `/predict/<raceId>` вместо
+   `/calendar`; `start_param` читается заново при каждом рендере корня (не сохраняется отдельно),
+   поэтому редирект срабатывает и после прохождения `/redeem` — пользователь всё равно попадает на
+   нужную гонку, а не на общий календарь.
 5. `/redeem` — существующий экран, единственная правка: поле имени предзаполняется
    именем/юзернеймом из Telegram (редактируемо), если приложение запущено внутри Mini App. Дальше
    штатный `redeem_invite()` RPC без изменений — display_name-коллизии обрабатываются уже
@@ -98,12 +103,23 @@ alter table public.telegram_links enable row level security;  -- без поли
 
 ## Напоминания (`scripts/telegram/notify.js`)
 
-Сообщение о дедлайне получает inline-кнопку `web_app`:
+> **Правка после эмпирической проверки (Task 1, 2026-08-03):** `web_app`-тип inline-кнопки — это
+> platform-ограничение Telegram Bot API, работает **только в личных чатах с ботом**; попытка
+> поставить такую кнопку в сообщение группы отклоняется с `BUTTON_TYPE_INVALID` (подтверждено
+> прямым вызовом API). Напоминания уходят в общий чат лиги (`TELEGRAM_CHAT_ID` — группа) — значит
+> кнопка там технически не может быть `web_app`.
+
+Сообщение о дедлайне получает обычную inline-кнопку `url` со ссылкой на бота через `startapp`
+(официальный способ Telegram открывать Mini App по диплинку извне личного чата — клиент Telegram
+распознаёт `t.me/<bot>?startapp=<payload>` и сам открывает Web App, передавая `payload` внутрь
+`initDataUnsafe.start_param`; сама подпись `initData` остаётся валидной, `start_param` — её часть,
+HMAC-проверка в `telegram-auth` его не трогает):
 ```js
-reply_markup: { inline_keyboard: [[{ text: 'Поставить прогноз', web_app: { url: `${SITE_URL}/predict/${raceId}` } }]] }
+reply_markup: { inline_keyboard: [[{ text: 'Поставить прогноз', url: `https://t.me/${BOT_USERNAME}?startapp=predict_${raceId}` }]] }
 ```
 Открывает Mini App сразу на нужной гонке — основной практический смысл всей фичи (не искать бота
-и не переключаться в браузер, чтобы проголосовать).
+и не переключаться в браузер, чтобы проголосовать). Фронт читает `start_param` (см. «Сценарий»,
+шаг 4) и делает клиентский редирект на `/predict/<raceId>`.
 
 ## Что НЕ меняется
 

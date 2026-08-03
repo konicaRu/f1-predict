@@ -32,7 +32,14 @@ cloud-direct раннер, как везде в проекте), React/`AuthCont
 Telegram, а не отдельная инфраструктура; есть риск, что блокировка сработает и там же. Дешевле
 узнать сейчас, чем после Task 10.
 
-- [ ] **Step 1: Отправить тестовое сообщение с inline-кнопкой `web_app` на текущий сайт**
+- [x] **Step 1: Отправить тестовое сообщение с inline-кнопкой `web_app` на текущий сайт**
+
+> **Открытие по ходу:** `web_app`-кнопки — platform-ограничение Telegram Bot API, работают
+> только в личке с ботом (`BUTTON_TYPE_INVALID` при попытке поставить в группу). Тест поэтому
+> выполнен в личном чате с ботом, а не в общем чате лиги — это же ограничение значит, что реальный
+> вход в Mini App тоже должен идти через личку с ботом (например, deep link `t.me/<bot>?startapp=`
+> из напоминания в группе, которое несёт обычную `url`-кнопку, а не `web_app`), не напрямую из
+> группового сообщения. Учесть при реализации Task 5+ (кнопка «Поставить прогноз» в напоминаниях).
 
 Взять `TELEGRAM_BOT_TOKEN`/`TELEGRAM_CHAT_ID` из корневого `.env` (те же, что использует
 `scripts/telegram/`), выполнить один раз (PowerShell):
@@ -48,14 +55,22 @@ $body = @{
 Invoke-RestMethod -Uri "https://api.telegram.org/bot$env:BOT_TOKEN/sendMessage" -Method Post -ContentType 'application/json' -Body $body
 ```
 
-- [ ] **Step 2: С телефона в РФ, БЕЗ VPN, нажать кнопку «Открыть сайт» в чате**
+- [x] **Step 2: С телефона в РФ, нажать кнопку «Открыть сайт» в чате**
 
-Ожидание/фиксация результата (запишется в план перед стартом Task 2, не в коде):
-- Если сайт открылся — блокировки внутри Mini App нет (или Telegram проксирует трафик иначе), план
-  актуален как есть, продолжаем.
-- Если не открылся — тот же риск, что и в браузере; фича всё равно имеет смысл (доп. канал для тех,
-  у кого VPN есть или кто не в РФ), но не решает проблему конкретно «неудобно включать VPN ради
-  голосования» — сообщить пользователю перед продолжением Task 2+, не тратить лишнюю работу молча.
+**Результат (2026-08-03): ТЕСТ НЕ ПОКАЗАТЕЛЕН.** Кнопка открыла гостевой Календарь внутри
+Telegram WebView без ошибок (скриншот), НО у пользователя лично Telegram сам по себе не работает
+без VPN — то есть в момент теста VPN был включён на уровне системы/сети, а не только для
+Telegram. Это значит, что сайт открылся бы точно так же и в обычном браузере при том же VPN —
+тест не изолирует специфичное поведение именно Mini App WebView (проксирует ли Telegram трафик
+изнутри себя, в обход системного VPN, или нет — по-прежнему неизвестно).
+
+**Открытие по ходу:** для этого конкретного пользователя вопрос «неудобно включать VPN ради
+голосования» Mini App НЕ решает — VPN всё равно нужен, чтобы Telegram вообще работал, значит и
+сайт будет открываться тем же VPN что и в обычном браузере, никакой доп. выгоды от WebView. Но
+для других друзей по лиге, у кого Telegram работает без VPN (в РФ Telegram и обычные сайты часто
+блокируются по-разному, не одним и тем же способом), проверка остаётся открытым вопросом —
+корректный тест требует человека, у которого Telegram открывается без VPN, с полностью
+выключенным VPN на телефоне.
 
 ---
 
@@ -507,11 +522,17 @@ git commit -m "chore(edge-fn): verify_jwt=false для telegram-auth, задеп
 
 ---
 
-### Task 7: Фронтенд — bootstrap Telegram-сессии в `AuthContext`
+### Task 7: Фронтенд — bootstrap Telegram-сессии в `AuthContext` + диплинк на гонку
 
 **Files:**
 - Modify: `index.html`
 - Modify: `src/auth/AuthContext.tsx`
+- Create: `src/lib/telegram.ts`
+- Modify: `src/auth/RootRedirect.tsx`
+
+> **Правка после Task 1:** кнопка в напоминаниях (Task 9) — не `web_app`, а `url` на
+> `t.me/<bot>?startapp=predict_<raceId>` (platform-ограничение группы, см. правку в спеке). Payload
+> приходит как `start_param` в `initDataUnsafe`; эта задача добавляет его чтение и редирект.
 
 - [ ] **Step 1: Подключить официальный Telegram Web App SDK**
 
@@ -555,7 +576,42 @@ git commit -m "chore(edge-fn): verify_jwt=false для telegram-auth, задеп
   }, []);
 ```
 
-- [ ] **Step 3: Проверить типы и собрать**
+- [ ] **Step 3: Диплинк на конкретную гонку — `src/lib/telegram.ts`**
+
+```ts
+// src/lib/telegram.ts
+export function getTelegramDeepLinkRaceId(): number | null {
+  const tg = (window as any).Telegram?.WebApp;
+  const startParam: string | undefined = tg?.initDataUnsafe?.start_param;
+  const match = startParam?.match(/^predict_(\d+)$/);
+  return match ? Number(match[1]) : null;
+}
+```
+
+- [ ] **Step 4: `RootRedirect.tsx` — редирект на гонку из диплинка**
+
+Файл целиком:
+```tsx
+import { Navigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
+import { getTelegramDeepLinkRaceId } from '../lib/telegram';
+
+// Корень сайта: есть сессия -> обычный кабинет участника (или конкретная гонка из диплинка
+// напоминания), нет сессии -> гостевой просмотр.
+export function RootRedirect() {
+  const { session, loading } = useAuth();
+  if (loading) return <div style={{ padding: 24, color: '#fff' }}>Загрузка…</div>;
+  if (!session) return <Navigate to="/g/calendar" replace />;
+  const raceId = getTelegramDeepLinkRaceId();
+  return <Navigate to={raceId ? `/predict/${raceId}` : '/calendar'} replace />;
+}
+```
+`start_param` читается заново при каждом рендере (не кэшируется) — если сессии ещё нет
+(`is_member()` = false), `ProtectedRoute` уведёт на `/redeem`; после успешного `redeem_invite()`
+`RedeemInvite.tsx` делает `nav('/')`, который снова попадает в `RootRedirect` и снова находит тот
+же `start_param` — пользователь всё равно окажется на нужной гонке, а не на общем календаре.
+
+- [ ] **Step 5: Проверить типы и собрать**
 
 ```bash
 npm run build
@@ -564,11 +620,11 @@ Expected: без ошибок. (`npx tsc -b --noEmit` отдельно лома�
 преждевременно известной проблеме TS6310 в `tsconfig.node.json` — используем `npm run build` как
 реальную проверку, как и во всех предыдущих ветках этого проекта.)
 
-- [ ] **Step 4: Коммит**
+- [ ] **Step 6: Коммит**
 
 ```bash
-git add index.html src/auth/AuthContext.tsx
-git commit -m "feat(frontend): AuthContext — обмен Telegram initData на сессию при запуске в Mini App"
+git add index.html src/auth/AuthContext.tsx src/lib/telegram.ts src/auth/RootRedirect.tsx
+git commit -m "feat(frontend): AuthContext — обмен Telegram initData на сессию + диплинк на гонку из напоминания"
 ```
 
 ---
@@ -639,10 +695,19 @@ async function sendTelegram(text, replyMarkup) {
 
 - [ ] **Step 2: Добавить хелпер и кнопку в `deadline()`**
 
-В `scripts/telegram/notify.js` добавить рядом с `siteLink`:
+> **Правка после Task 1:** `web_app`-кнопки работают только в личке с ботом, а напоминания уходят
+> в общий чат лиги (группа) — там такая кнопка отклоняется с `BUTTON_TYPE_INVALID` (проверено
+> эмпирически). Используем обычную `url`-кнопку на `t.me/<bot>?startapp=predict_<raceId>` —
+> Telegram сам открывает по ней Mini App, payload приходит как `start_param` (см. Task 7 Step 3-4).
+
+В `scripts/telegram/notify.js` добавить рядом с `SITE_URL`:
+```js
+const BOT_USERNAME = 'che_f1_predict_bot';
+```
+и рядом с `siteLink`:
 ```js
 function predictButton(raceId) {
-  return { inline_keyboard: [[{ text: 'Поставить прогноз', web_app: { url: `${SITE_URL}/predict/${raceId}` } }]] };
+  return { inline_keyboard: [[{ text: 'Поставить прогноз', url: `https://t.me/${BOT_USERNAME}?startapp=predict_${raceId}` }]] };
 }
 ```
 
@@ -669,7 +734,7 @@ const { isMskThursday, notVotedNames, podiumText, roundWinnerLine, rankStandings
 if (!check(
   'predictButton: корректная структура inline-кнопки',
   predictButton(42),
-  { inline_keyboard: [[{ text: 'Поставить прогноз', web_app: { url: 'https://konicaru.github.io/f1-predict/predict/42' } }]] },
+  { inline_keyboard: [[{ text: 'Поставить прогноз', url: 'https://t.me/che_f1_predict_bot?startapp=predict_42' }]] },
 )) fail++;
 ```
 
