@@ -36,6 +36,8 @@ f1_predict/
 │   ├── constitution.md    — незыблемые принципы проекта
 │   ├── frontend.md        — детали фронтенд-реализации
 │   ├── prototype.html     — статический референс-прототип дизайна
+│   ├── telegram-guide.txt — гайд для участников (регистрация/прогноз/навигация/очки),
+│   │                        копируется как есть в Telegram-чат
 │   └── superpowers/       — spec/plan по каждой фиче (brainstorming → writing-plans → subagent-driven)
 ├── src/                  — React-приложение
 │   ├── App.tsx, main.tsx
@@ -134,6 +136,12 @@ chart ✅, сброс пароля ✅, GridBot ✅, README ✅, гостево�
 промпта и настройки — `README.md` § GridBot, дизайн/план — `docs/superpowers/specs/2026-07-24-ai-player-design.md`.
 
 ## Changelog
+### 2026-08-03
+- `docs/telegram-guide.txt` — пользовательский гайд для участников лиги (регистрация, как ставить
+  прогноз, где что смотреть на сайте, краткая формула очков), написан для прямого копирования в
+  Telegram-чат. Инвайт-код (`F1-2026-LEAGUE`) проверен прямым запросом к облачной БД перед тем, как
+  вписать в текст, а не взят из памяти. Не привязан к коду — чисто справочный документ, roadmap не
+  затронут.
 ### 2026-08-01
 - **Telegram Mini App (голосование в чате) — brainstorm+spec+plan готовы, реализация НЕ начата.**
   Спека `docs/superpowers/specs/2026-08-01-telegram-mini-app-design.md`, план (10 задач)
