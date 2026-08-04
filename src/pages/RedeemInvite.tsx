@@ -4,7 +4,8 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../auth/AuthContext';
 
 export default function RedeemInvite() {
-  const [name, setName] = useState('');
+  const tgUser = (window as any).Telegram?.WebApp?.initDataUnsafe?.user;
+  const [name, setName] = useState(tgUser?.first_name ?? tgUser?.username ?? '');
   const [code, setCode] = useState('');
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
