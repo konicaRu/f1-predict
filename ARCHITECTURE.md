@@ -136,6 +136,20 @@ chart ✅, сброс пароля ✅, GridBot ✅, README ✅, гостево�
 промпта и настройки — `README.md` § GridBot, дизайн/план — `docs/superpowers/specs/2026-07-24-ai-player-design.md`.
 
 ## Changelog
+### 2026-08-03 (Telegram Mini App — ветка `telegram-mini-app`, Task 4-7 из 10)
+- Task 4: `supabase/functions/telegram-auth/verify.ts` — проверка HMAC-подписи Telegram `initData`
+  (TDD, 5/5). Review-фиксы: `deno.json` скоупит функцию (лок-файл больше не тянет npm-граф
+  фронтенда), `crypto.subtle.verify` вместо ручного сравнения хешей.
+- Task 5: `index.ts` — обмен `initData` на настоящую Supabase-сессию
+  (`generateLink`+`createUser`-фолбэк+`verifyOtp`). Code-review нашёл Critical: детерминированный
+  email позволял захват аккаунта через обычную `/signup` до первого захода жертвы в Mini App —
+  унаследовано из плана дословно, не ошибка реализации. Исправлено: identity резолвится через
+  `telegram_links` СНАЧАЛА, конфликт email → 409 вместо молчаливой выдачи чужой сессии. Независимо
+  перепроверено трассировкой кода.
+- Task 6: функция задеплоена в прод (`supabase functions deploy --use-api`, без Docker),
+  `verify_jwt=false`, секрет заведён. Смоук: 401 + ожидаемое тело ошибки.
+- Task 7: `AuthContext` — bootstrap Telegram-сессии при старте; `src/lib/telegram.ts` +
+  `RootRedirect.tsx` — диплинк на конкретную гонку через `start_param` (см. правку Task 1 ниже).
 ### 2026-08-03 (Telegram Mini App — ветка `telegram-mini-app`, Task 1-3 из 10)
 - Task 1 (ручная проверка): `web_app`-кнопки — platform-ограничение Telegram, работают только в
   личке с ботом, не в группах (`BUTTON_TYPE_INVALID` эмпирически). Спека и план (Task 7/9)
