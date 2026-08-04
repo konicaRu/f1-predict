@@ -40,14 +40,23 @@ export async function verifyInitData(
     secretKeyBytes,
     { name: 'HMAC', hash: 'SHA-256' },
     false,
-    ['sign'],
+    ['verify'],
   );
-  const signatureBytes = await crypto.subtle.sign('HMAC', hmacKey, encoder.encode(dataCheckString));
-  const computedHash = [...new Uint8Array(signatureBytes)]
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
 
-  if (computedHash !== hash) return { ok: false, reason: 'signature mismatch' };
+  if (!/^[0-9a-fA-F]+$/.test(hash) || hash.length % 2 !== 0) {
+    return { ok: false, reason: 'signature mismatch' };
+  }
+  const hashBytes = new Uint8Array(
+    hash.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16)),
+  );
+
+  const signatureValid = await crypto.subtle.verify(
+    'HMAC',
+    hmacKey,
+    hashBytes,
+    encoder.encode(dataCheckString),
+  );
+  if (!signatureValid) return { ok: false, reason: 'signature mismatch' };
 
   const authDate = Number(params.get('auth_date'));
   if (!authDate || Date.now() / 1000 - authDate > maxAgeSeconds) {
