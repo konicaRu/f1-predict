@@ -136,6 +136,12 @@ chart ✅, сброс пароля ✅, GridBot ✅, README ✅, гостево�
 промпта и настройки — `README.md` § GridBot, дизайн/план — `docs/superpowers/specs/2026-07-24-ai-player-design.md`.
 
 ## Changelog
+### 2026-08-03 (Telegram Mini App — ветка `telegram-mini-app`, Task 8-9 из 10)
+- Task 8: `RedeemInvite.tsx` предзаполняет имя из Telegram-профиля (UX-подсказка, редактируемо).
+- Task 9: кнопка «Поставить прогноз» (`url`-диплинк `t.me/<bot>?startapp=predict_<id>`) в живом
+  cron-напоминании о дедлайне (`scripts/telegram/notify.js`), `sendTelegram()` — опциональный
+  `reply_markup`, обратно совместимо. 16/16 тестов.
+- Осталась Task 10 (ручная настройка + сквозной смоук) и финальное ревью ветки.
 ### 2026-08-03 (Telegram Mini App — ветка `telegram-mini-app`, Task 4-7 из 10)
 - Task 4: `supabase/functions/telegram-auth/verify.ts` — проверка HMAC-подписи Telegram `initData`
   (TDD, 5/5). Review-фиксы: `deno.json` скоупит функцию (лок-файл больше не тянет npm-граф
