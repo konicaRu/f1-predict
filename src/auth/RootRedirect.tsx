@@ -9,5 +9,5 @@ export function RootRedirect() {
   if (loading) return <div style={{ padding: 24, color: '#fff' }}>Загрузка…</div>;
   if (!session) return <Navigate to="/g/calendar" replace />;
   const raceId = getTelegramDeepLinkRaceId();
-  return <Navigate to={raceId ? `/predict/${raceId}` : '/calendar'} replace />;
+  return <Navigate to={raceId !== null ? `/predict/${raceId}` : '/calendar'} replace />;
 }
