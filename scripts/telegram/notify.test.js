@@ -1,4 +1,4 @@
-const { isMskThursday, notVotedNames, podiumText, roundWinnerLine, rankStandings } = require('./notify');
+const { isMskThursday, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton } = require('./notify');
 
 function check(name, actual, expected) {
   const ok = JSON.stringify(actual) === JSON.stringify(expected);
@@ -93,5 +93,11 @@ if (
 )
   fail++;
 
-console.log(fail === 0 ? 'ВСЕ 15 PASS' : `ПРОВАЛЕНО: ${fail}`);
+if (!check(
+  'predictButton: корректная структура inline-кнопки',
+  predictButton(42),
+  { inline_keyboard: [[{ text: 'Поставить прогноз', url: 'https://t.me/che_f1_predict_bot?startapp=predict_42' }]] },
+)) fail++;
+
+console.log(fail === 0 ? 'ВСЕ 16 PASS' : `ПРОВАЛЕНО: ${fail}`);
 process.exit(fail === 0 ? 0 : 1);

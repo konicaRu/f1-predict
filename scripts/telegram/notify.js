@@ -1,10 +1,15 @@
 const { q, close, sendTelegram } = require('./lib');
 
 const SITE_URL = 'https://konicaru.github.io/f1-predict';
+const BOT_USERNAME = 'che_f1_predict_bot';
 
 // Сайт на GitHub Pages из РФ открывается только через VPN — напоминаем рядом с каждой ссылкой.
 function siteLink(path) {
   return `${SITE_URL}${path} (нужен VPN)`;
+}
+
+function predictButton(raceId) {
+  return { inline_keyboard: [[{ text: 'Поставить прогноз', url: `https://t.me/${BOT_USERNAME}?startapp=predict_${raceId}` }]] };
 }
 
 function escapeHtml(s) {
@@ -80,7 +85,7 @@ async function deadline() {
           ? '\n\nВсе уже сделали прогноз, красавцы! 👍'
           : `\n\nЕщё не сделали: ${missing.map(escapeHtml).join(', ')}`;
     }
-    await sendTelegram(text);
+    await sendTelegram(text, predictButton(r.id));
     console.log(`deadline: отправлено для ${r.name}`);
   }
 }
@@ -237,4 +242,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { isMskThursday, notVotedNames, podiumText, roundWinnerLine, rankStandings };
+module.exports = { isMskThursday, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton };

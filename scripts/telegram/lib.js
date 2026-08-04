@@ -38,13 +38,15 @@ async function close() {
   }
 }
 
-async function sendTelegram(text) {
+async function sendTelegram(text, replyMarkup) {
   const token = readEnv('TELEGRAM_BOT_TOKEN');
   const chatId = readEnv('TELEGRAM_CHAT_ID');
+  const body = { chat_id: chatId, text, parse_mode: 'HTML' };
+  if (replyMarkup) body.reply_markup = replyMarkup;
   const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
+    body: JSON.stringify(body),
   });
   const data = await res.json();
   if (!data.ok) throw new Error(`Telegram API error: ${JSON.stringify(data)}`);
