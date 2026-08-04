@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>F1 Predict</title>
+    <!-- Без Subresource Integrity намеренно: Telegram версионирует и обновляет этот файл на своей
+         стороне без анонса (канонический URL в их доке содержит query-версию, напр. ?63) — захардко-
+         женный SRI-хеш сломает Mini App при следующем обновлении скрипта, без понятной ошибки. -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
   </head>
   <body>
     <div id="root"></div>

@@ -44,11 +44,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data }) => {
-      setSession(data.session);
-      await loadMembership(data.session);
+    async function init() {
+      const tg = (window as any).Telegram?.WebApp;
+      const initData: string | undefined = tg?.initData;
+      if (initData) {
+        try {
+          const { data, error } = await supabase.functions.invoke('telegram-auth', { body: { initData } });
+          if (!error && data?.access_token && data?.refresh_token) {
+            await supabase.auth.setSession({ access_token: data.access_token, refresh_token: data.refresh_token });
+          }
+        } catch {
+          // Обмен не удался -> просто продолжаем как обычный неавторизованный визит (см. ниже).
+        }
+      }
+      const { data: sessionData } = await supabase.auth.getSession();
+      setSession(sessionData.session);
+      await loadMembership(sessionData.session);
       setLoading(false);
-    });
+    }
+    init();
     const { data: sub } = supabase.auth.onAuthStateChange(async (_e, s) => {
       setSession(s);
       await loadMembership(s);
