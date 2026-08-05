@@ -3,14 +3,18 @@ export type ResolvedEvent =
   | { event_type: 'prediction'; display_name: string; race_name: string }
   | { event_type: 'result'; race_name: string };
 
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 export function buildMessage(event: ResolvedEvent): string {
   switch (event.event_type) {
     case 'registration':
-      return `🆕 Новый участник: ${event.display_name}`;
+      return `🆕 Новый участник: ${escapeHtml(event.display_name)}`;
     case 'prediction':
-      return `📝 ${event.display_name} поставил прогноз на ${event.race_name}`;
+      return `📝 ${escapeHtml(event.display_name)} поставил прогноз на ${escapeHtml(event.race_name)}`;
     case 'result':
-      return `🏁 Результат гонки ${event.race_name} занесён в систему`;
+      return `🏁 Результат гонки ${escapeHtml(event.race_name)} занесён в систему`;
   }
 }
 

@@ -228,8 +228,8 @@ async function adminflush() {
   }
   for (const row of rows) {
     await sendTelegram(row.text, adminChatId);
+    await q('delete from admin_notification_queue where id = $1', [row.id]);
   }
-  await q('delete from admin_notification_queue where id = any($1)', [rows.map((r) => r.id)]);
   console.log(`adminflush: отправлено и удалено ${rows.length}`);
 }
 

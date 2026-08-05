@@ -20,6 +20,23 @@ Deno.test('buildMessage: result', () => {
   assertEquals(text, '🏁 Результат гонки Belgian Grand Prix занесён в систему');
 });
 
+Deno.test('buildMessage: registration — экранирует HTML в display_name', () => {
+  const text = buildMessage({ event_type: 'registration', display_name: '<b>Дима</b> & co' });
+  assertEquals(text, '🆕 Новый участник: &lt;b&gt;Дима&lt;/b&gt; &amp; co');
+});
+
+Deno.test('buildMessage: prediction — экранирует HTML в display_name и race_name', () => {
+  const text = buildMessage({
+    event_type: 'prediction',
+    display_name: '<script>Дима</script>',
+    race_name: 'Belgian & Dutch Grand Prix',
+  });
+  assertEquals(
+    text,
+    '📝 &lt;script&gt;Дима&lt;/script&gt; поставил прогноз на Belgian &amp; Dutch Grand Prix',
+  );
+});
+
 Deno.test('isQuietHours: 09:59 МСК (06:59 UTC) -> тихо', () => {
   assertEquals(isQuietHours(new Date('2026-08-06T06:59:00Z')), true);
 });
