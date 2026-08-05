@@ -6,6 +6,12 @@ import type { ResolvedEvent } from './format.ts';
 const ADMIN_CHAT_ID = Deno.env.get('TELEGRAM_ADMIN_CHAT_ID');
 
 export default {
+  // Намеренно без вторичной аутентификации сверх publishable-ключа (в отличие от
+  // telegram-auth/index.ts, который добавляет HMAC-проверку поверх той же обёртки).
+  // Любой, у кого есть anon-ключ (он и так публичный, зашит в бандл фронтенда),
+  // может дёрнуть этот эндпоинт напрямую с произвольным event_type/payload.
+  // Осознанный риск, принят на code review: худший случай — спам в личку админа
+  // в Telegram (можно замьютить/заблокировать), утечки данных нет. Не оверсайт.
   fetch: withSupabase({ auth: 'publishable' }, async (req, ctx) => {
     const botToken = Deno.env.get('TELEGRAM_BOT_TOKEN');
     if (!botToken) {
@@ -34,24 +40,33 @@ export default {
         display_name: typeof displayName === 'string' ? displayName : '(без имени)',
       };
     } else if (body.event_type === 'prediction') {
-      const { data: user } = await usersTable
+      const { data: user, error: userError } = await usersTable
         .select('display_name')
         .eq('id', body.payload?.user_id)
         .maybeSingle();
-      const { data: race } = await racesTable
+      if (userError) {
+        console.error(`admin-notify: ошибка lookup users (id=${body.payload?.user_id}):`, userError.message);
+      }
+      const { data: race, error: raceError } = await racesTable
         .select('name')
         .eq('id', body.payload?.race_id)
         .maybeSingle();
+      if (raceError) {
+        console.error(`admin-notify: ошибка lookup races (id=${body.payload?.race_id}):`, raceError.message);
+      }
       resolved = {
         event_type: 'prediction',
         display_name: user?.display_name ?? '(неизвестный участник)',
         race_name: race?.name ?? '(неизвестная гонка)',
       };
     } else if (body.event_type === 'result') {
-      const { data: race } = await racesTable
+      const { data: race, error: raceError } = await racesTable
         .select('name')
         .eq('id', body.payload?.race_id)
         .maybeSingle();
+      if (raceError) {
+        console.error(`admin-notify: ошибка lookup races (id=${body.payload?.race_id}):`, raceError.message);
+      }
       resolved = { event_type: 'result', race_name: race?.name ?? '(неизвестная гонка)' };
     } else {
       return Response.json({ error: `неизвестный event_type: ${body.event_type}` }, { status: 400 });
