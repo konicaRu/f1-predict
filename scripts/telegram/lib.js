@@ -38,9 +38,9 @@ async function close() {
   }
 }
 
-async function sendTelegram(text) {
+async function sendTelegram(text, chatIdOverride) {
   const token = readEnv('TELEGRAM_BOT_TOKEN');
-  const chatId = readEnv('TELEGRAM_CHAT_ID');
+  const chatId = chatIdOverride ?? readEnv('TELEGRAM_CHAT_ID');
   const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

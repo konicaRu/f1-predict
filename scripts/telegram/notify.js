@@ -1,4 +1,4 @@
-const { q, close, sendTelegram } = require('./lib');
+const { q, close, sendTelegram, readEnv } = require('./lib');
 
 const SITE_URL = 'https://konicaru.github.io/f1-predict';
 
@@ -219,11 +219,25 @@ async function remind() {
   }
 }
 
+async function adminflush() {
+  const adminChatId = readEnv('TELEGRAM_ADMIN_CHAT_ID');
+  const { rows } = await q('select id, text from admin_notification_queue order by created_at');
+  if (rows.length === 0) {
+    console.log('adminflush: очередь пуста');
+    return;
+  }
+  for (const row of rows) {
+    await sendTelegram(row.text, adminChatId);
+  }
+  await q('delete from admin_notification_queue where id = any($1)', [rows.map((r) => r.id)]);
+  console.log(`adminflush: отправлено и удалено ${rows.length}`);
+}
+
 async function main() {
   const mode = process.argv[2];
-  const modes = { raceweek, deadline, results, remind };
+  const modes = { raceweek, deadline, results, remind, adminflush };
   if (!modes[mode]) {
-    console.error(`ERR неизвестный режим "${mode}", ожидается raceweek|deadline|results|remind`);
+    console.error(`ERR неизвестный режим "${mode}", ожидается raceweek|deadline|results|remind|adminflush`);
     process.exit(1);
   }
   await modes[mode]();
