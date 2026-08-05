@@ -51,6 +51,12 @@ begin
 end;
 $$;
 
+-- Проактивный отзыв EXECUTE от PUBLIC (конвенция 0013/0017-0020): Postgres по умолчанию
+-- грантит EXECUTE PUBLIC на новые функции. Сейчас неэксплуатируемо (функцию с returns trigger
+-- нельзя вызвать напрямую вне триггера), но отзываем на будущее — чтобы рефактор не открыл
+-- дыру молча.
+revoke execute on function public.notify_admin_event() from public;
+
 create trigger notify_admin_on_registration
   after insert on public.users
   for each row execute function public.notify_admin_event();
