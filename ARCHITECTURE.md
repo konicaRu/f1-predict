@@ -50,32 +50,40 @@ f1_predict/
 │   ├── lib/                   — supabase.ts, db.ts, scoring.ts(+test), types.ts, countdown.ts,
 │   │                            standings.ts, flags.ts
 │   └── styles/
-├── supabase/migrations/  — 0001–0020 (схема → очки → RLS → валидация → invite/membership →
-│                           open_race → keepalive → admin-результаты → driver_standing →
-│                           telegram_announced → predicted_user_ids → revoke_public_execute →
-│                           GridBot-аккаунт → display_name unique → гостевой read-only доступ
-│                           (кил-свитч `app_settings` + RLS для anon, 0016) → 4 раунда доотзыва
-│                           избыточных default-грантов Supabase (0017-0020, тот же класс, что 0013))
+├── supabase/migrations/  — 0001–0020, 0023 на `main` (0021/0022 `telegram_links` зарезервированы
+│                           за не влитой веткой `telegram-mini-app`, см. MEMORY.md): схема → очки →
+│                           RLS → валидация → invite/membership → open_race → keepalive →
+│                           admin-результаты → driver_standing → telegram_announced →
+│                           predicted_user_ids → revoke_public_execute → GridBot-аккаунт →
+│                           display_name unique → гостевой read-only доступ (кил-свитч
+│                           `app_settings` + RLS для anon, 0016) → 4 раунда доотзыва избыточных
+│                           default-грантов Supabase (0017-0020, тот же класс, что 0013) →
+│                           admin-уведомления: очередь + триггеры + `pg_net` (0023)
+├── supabase/functions/   — Edge Functions (Deno)
+│   └── admin-notify/        — приём событий от Postgres-триггеров (`pg_net`), тексты уведомлений
+│                              + отправка/очередь по тихим часам (`format.ts`+`index.ts`)
 ├── scripts/              — самостоятельные cloud-direct пакеты (свой `package.json` в каждом)
 │   ├── db/                  — миграции + тесты (RLS, формула очков, view, security grants, GridBot...)
 │   ├── import/                — импорт пилотов/календаря/результатов из Jolpica (Фаза 1)
 │   ├── autoresults/             — автозабор результата гонки (Jolpica → OpenF1 фолбэк)
 │   ├── ai-player/                — GridBot: сбор данных, промпт Gemini, валидация/фолбэк, сохранение
-│   ├── telegram/                   — напоминания/итоги в общий чат
+│   ├── telegram/                   — напоминания/итоги в общий чат + `adminflush` (разгрузка
+│   │                                  ночной очереди admin-уведомлений)
 │   ├── export/                       — бэкап в Google Sheets
 │   └── dev/                            — разовые dev-бутстрап скрипты
 └── .github/workflows/
     ├── deploy.yml           — сборка + публикация на GitHub Pages
     ├── keepalive.yml         — 2×/день, реальный RPC против Supabase (free-tier не засыпает)
-    └── telegram-notify.yml    — cron: raceweek/deadline/remind/autoresults/results/aiplayer
+    └── telegram-notify.yml    — cron: raceweek/deadline/remind/autoresults/results/aiplayer/adminflush
 ```
 
 ## Roadmap (фазы)
 0 Supabase ✅ · 1 Данные ✅ · 2 Ядро: 2a Каркас+Auth ✅ 2026-06-30 → 2b Календарь+Прогноз ✅
 2026-07-07 → 2c Админка ✅ 2026-07-14 · 3 Витрина ✅ 2026-07-15 · 4 Автоматика ✅ (GitHub Actions
 вместо `pg_cron`; автозабор + GridBot) · 5 Telegram-бот ✅ 2026-07-21 · 6 Полировка — идёт (drift
-chart ✅, сброс пароля ✅, GridBot ✅, README ✅, гостевой read-only доступ ✅ 2026-08-01; мобильная
-раскладка проверена в смоуке 2b).
+chart ✅, сброс пароля ✅, GridBot ✅, README ✅, гостевой read-only доступ ✅ 2026-08-01,
+admin-уведомления в Telegram ✅ 2026-08-06; мобильная раскладка проверена в смоуке 2b). Telegram
+Mini App — Task 1-9/10 сделаны на не влитой ветке `telegram-mini-app`, Task 10 не начат.
 **MVP достигнут 2026-07-20** — Бельгия (round 10) стала первой реально зачётной гонкой.
 
 ## Команды
@@ -96,15 +104,23 @@ chart ✅, сброс пароля ✅, GridBot ✅, README ✅, гостево�
 ## Бэкенд Supabase
 - Облако `konicaRu_f1` (ref `kolrwuhjjsclqalapfzt`, EU-West, FREE). Локальный Docker-стек НЕ
   используется (не работает на этой машине) → миграции/тесты идут напрямую через пулер, см. `scripts/db/`.
-- `supabase/migrations/` (0001–0020): схема → формула очков (`score_prediction` + view `scores`)
-  → RLS/гранты/`is_admin()` → валидация состава прогноза → инвайт/членство → `open_race()` →
-  keep-alive RPC → занос/правка результата админом (`set_race_result`) → `driver_standing` →
-  флаг анонса в Telegram → RPC для списка проголосовавших → отзыв публичного `execute` →
-  аккаунт GridBot → уникальность `display_name` (закрывает захват аккаунта GridBot) → гостевой
-  read-only доступ: кил-свитч `app_settings`/`guest_access_enabled()`/`set_guest_access()` +
-  RLS-политики для `anon` на `races/drivers/results/predictions(после дедлайна)/
+- `supabase/migrations/` (0001–0020, 0023 на `main`): схема → формула очков (`score_prediction` +
+  view `scores`) → RLS/гранты/`is_admin()` → валидация состава прогноза → инвайт/членство →
+  `open_race()` → keep-alive RPC → занос/правка результата админом (`set_race_result`) →
+  `driver_standing` → флаг анонса в Telegram → RPC для списка проголосовавших → отзыв публичного
+  `execute` → аккаунт GridBot → уникальность `display_name` (закрывает захват аккаунта GridBot) →
+  гостевой read-only доступ: кил-свитч `app_settings`/`guest_access_enabled()`/`set_guest_access()`
+  + RLS-политики для `anon` на `races/drivers/results/predictions(после дедлайна)/
   users(id+display_name)/scores` (0016) → 4 раунда доотзыва избыточных default-грантов Supabase
-  на новых и старых таблицах (0017-0020, тот же класс проблемы, что инцидент 0013).
+  на новых и старых таблицах (0017-0020, тот же класс проблемы, что инцидент 0013) →
+  admin-уведомления: `admin_notification_queue` + триггеры `notify_admin_event()` на
+  `users`/`predictions`/`results` + `pg_net` (0023 — 0021/0022 зарезервированы за не влитой веткой
+  `telegram-mini-app`, см. MEMORY.md).
+- Edge Functions (Deno, `supabase/functions/`): `admin-notify` — принимает событие от
+  pg_net-триггера, строит текст, шлёт сразу в Telegram (10:00-22:00 МСК) или кладёт в очередь
+  (`auth: 'publishable'`, без вторичной авторизации — осознанно принятый риск, см. MEMORY.md
+  2026-08-06). `verify_jwt=false` в `config.toml` (вызывающий — своя же БД, не пользовательская
+  сессия).
 - Секреты — в `.env` (gitignored): `SUPABASE_DB_URL` (transaction pooler с паролем БД).
 
 ## Фронтенд
@@ -127,8 +143,9 @@ chart ✅, сброс пароля ✅, GridBot ✅, README ✅, гостево�
   обход RLS). Обычный `select` под RLS не считался активностью для Supabase — инцидент 2026-07-14
   (проект уснул при зелёном keepalive), с тех пор именно RPC.
 - `telegram-notify.yml` — один workflow, режимы по cron: `raceweek`/`remind` (пн), `deadline`
-  (ср/чт), `autoresults`+`results` (каждые 2ч), `aiplayer` (чт до дедлайна). Полное расписание и
-  разбор каждого режима — `README.md` § Telegram-уведомления.
+  (ср/чт), `autoresults`+`results` (каждые 2ч), `aiplayer` (чт до дедлайна), `adminflush` (10:05
+  МСК ежедневно — разгрузка ночной очереди admin-уведомлений). Полное расписание и разбор каждого
+  режима — `README.md` § Telegram-уведомления.
 
 ## GridBot (ИИ-игрок)
 Обычный аккаунт `public.users` (не отдельный UI), ставит прогноз через Gemini API по тем же
@@ -136,6 +153,16 @@ chart ✅, сброс пароля ✅, GridBot ✅, README ✅, гостево�
 промпта и настройки — `README.md` § GridBot, дизайн/план — `docs/superpowers/specs/2026-07-24-ai-player-design.md`.
 
 ## Changelog
+### 2026-08-06
+- Admin-уведомления в Telegram (ЗАКРЫТО, ветка `admin-notify` влита в `main`): миграция
+  `0023_admin_notify.sql` (таблица `admin_notification_queue`, триггеры `notify_admin_event()` на
+  `users`/`predictions`/`results`, расширение `pg_net`); новая Edge Function
+  `supabase/functions/admin-notify/` (`format.ts` — текст события + граница тихих часов 22:00-10:00
+  МСК, `index.ts` — обработчик, шлёт сразу или кладёт в очередь); режим `adminflush` в
+  `scripts/telegram/notify.js` (разгрузка очереди, новый крон-пункт 10:05 МСК). Событийная
+  архитектура (Postgres-триггер → `pg_net.http_post` асинхронно → Edge Function), не polling —
+  осознанный выбор дизайна. Эндпоинт без вторичной авторизации сверх publishable-ключа — принятый
+  риск (детали в MEMORY.md). Подробности реализации, находки ревью и смоук — см. MEMORY.md.
 ### 2026-08-03
 - `docs/telegram-guide.txt` — пользовательский гайд для участников лиги (регистрация, как ставить
   прогноз, где что смотреть на сайте, краткая формула очков), написан для прямого копирования в
