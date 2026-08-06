@@ -96,7 +96,7 @@ if (
 if (!check(
   'predictButton: корректная структура inline-кнопки',
   predictButton(42),
-  { inline_keyboard: [[{ text: 'Поставить прогноз', url: 'https://t.me/che_f1_predict_bot?startapp=predict_42' }]] },
+  { inline_keyboard: [[{ text: 'Поставить прогноз', url: 'https://t.me/che_f1_predict_bot/predict?startapp=predict_42' }]] },
 )) fail++;
 
 console.log(fail === 0 ? 'ВСЕ 16 PASS' : `ПРОВАЛЕНО: ${fail}`);

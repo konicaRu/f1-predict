@@ -790,6 +790,14 @@ git commit -m "feat(telegram): кнопка «Поставить прогноз�
 Вручную запустить `deadline` (или дождаться расписания), убедиться что в чате пришло сообщение с
 кнопкой «Поставить прогноз», нажатие открывает Mini App сразу на `/predict/<id>` нужной гонки.
 
+> **Открытие по ходу (2026-08-06):** ссылка вида `t.me/<bot>?startapp=predict_<raceId>` (без
+> короткого имени Mini App) открывается на мобильных, но даёт `BOT_INVALID` на Telegram Desktop —
+> задокументированное platform-ограничение (issues в `telegramdesktop/tdesktop` и
+> `Telegram-Mini-Apps/telegram-apps`). Исправлено регистрацией именованного Mini App через
+> BotFather (`/newapp`, короткое имя `predict`) и переходом на полный формат ссылки
+> `t.me/che_f1_predict_bot/predict?startapp=predict_<raceId>`, который работает на всех
+> платформах. `predictButton()` в `scripts/telegram/notify.js` и её тест обновлены.
+
 - [ ] **Step 4: Проверить, что обычный вход с сайта не сломался**
 
 Открыть сайт в обычном браузере (не в Telegram) → `window.Telegram` не определён → бутстрап-код

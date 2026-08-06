@@ -2,14 +2,18 @@ const { q, close, sendTelegram } = require('./lib');
 
 const SITE_URL = 'https://konicaru.github.io/f1-predict';
 const BOT_USERNAME = 'che_f1_predict_bot';
+const MINI_APP_SHORT_NAME = 'predict'; // зарегистрировано через BotFather /newapp (Task 10)
 
 // Сайт на GitHub Pages из РФ открывается только через VPN — напоминаем рядом с каждой ссылкой.
 function siteLink(path) {
   return `${SITE_URL}${path} (нужен VPN)`;
 }
 
+// Формат без короткого имени приложения (t.me/<bot>?startapp=) работает на мобильных, но даёт
+// BOT_INVALID на Telegram Desktop (известное ограничение платформы) — нужен полный вид ссылки
+// с зарегистрированным Mini App.
 function predictButton(raceId) {
-  return { inline_keyboard: [[{ text: 'Поставить прогноз', url: `https://t.me/${BOT_USERNAME}?startapp=predict_${raceId}` }]] };
+  return { inline_keyboard: [[{ text: 'Поставить прогноз', url: `https://t.me/${BOT_USERNAME}/${MINI_APP_SHORT_NAME}?startapp=predict_${raceId}` }]] };
 }
 
 function escapeHtml(s) {
