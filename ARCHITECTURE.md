@@ -136,6 +136,15 @@ chart ✅, сброс пароля ✅, GridBot ✅, README ✅, гостево�
 промпта и настройки — `README.md` § GridBot, дизайн/план — `docs/superpowers/specs/2026-07-24-ai-player-design.md`.
 
 ## Changelog
+### 2026-08-06 (Telegram Mini App — ветка `telegram-mini-app`, Task 10 в работе)
+- `predictButton()` (`scripts/telegram/notify.js`) переведён на полный формат ссылки Mini App:
+  `t.me/che_f1_predict_bot/predict?startapp=predict_<raceId>` вместо `t.me/<bot>?startapp=...` —
+  старый формат давал `BOT_INVALID` на Telegram Desktop (задокументированный platform-баг,
+  работал только на мобильных). Требует зарегистрированного через BotFather `/newapp` Mini App с
+  коротким именем `predict`. Тест обновлён, 16/16.
+- Найдено, не решено: зависание сети внутри Telegram Mini App WebView (моб.+десктоп) при
+  обращении к Supabase, backend при этом здоров — см. MEMORY.md, «Открытые вопросы» и заметку в
+  плане (Task 10).
 ### 2026-08-03 (Telegram Mini App — ветка `telegram-mini-app`, Task 8-9 из 10)
 - Task 8: `RedeemInvite.tsx` предзаполняет имя из Telegram-профиля (UX-подсказка, редактируемо).
 - Task 9: кнопка «Поставить прогноз» (`url`-диплинк `t.me/<bot>?startapp=predict_<id>`) в живом
