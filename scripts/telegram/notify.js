@@ -1,8 +1,9 @@
-const { q, close, sendTelegram } = require('./lib');
+const { q, close, sendTelegram, sendTelegramPhoto } = require('./lib');
 
 const SITE_URL = 'https://konicaru.github.io/f1-predict';
 const BOT_USERNAME = 'che_f1_predict_bot';
 const MINI_APP_SHORT_NAME = 'predict'; // зарегистрировано через BotFather /newapp (Task 10)
+const DEADLINE_BANNER_URL = `${SITE_URL}/telegram-banner.png`;
 
 // Сайт на GitHub Pages из РФ открывается только через VPN — напоминаем рядом с каждой ссылкой.
 function siteLink(path) {
@@ -89,7 +90,7 @@ async function deadline() {
           ? '\n\nВсе уже сделали прогноз, красавцы! 👍'
           : `\n\nЕщё не сделали: ${missing.map(escapeHtml).join(', ')}`;
     }
-    await sendTelegram(text, predictButton(r.id));
+    await sendTelegramPhoto(DEADLINE_BANNER_URL, text, predictButton(r.id));
     console.log(`deadline: отправлено для ${r.name}`);
   }
 }

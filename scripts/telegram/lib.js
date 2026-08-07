@@ -53,4 +53,21 @@ async function sendTelegram(text, replyMarkup) {
   return data;
 }
 
-module.exports = { readEnv, q, close, sendTelegram };
+// Фото по URL (не upload) + caption вместо простого текстового сообщения — caption ограничен
+// 1024 символами Telegram (у sendMessage — 4096), это учтено в вызывающем коде.
+async function sendTelegramPhoto(photoUrl, caption, replyMarkup) {
+  const token = readEnv('TELEGRAM_BOT_TOKEN');
+  const chatId = readEnv('TELEGRAM_CHAT_ID');
+  const body = { chat_id: chatId, photo: photoUrl, caption, parse_mode: 'HTML' };
+  if (replyMarkup) body.reply_markup = replyMarkup;
+  const res = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!data.ok) throw new Error(`Telegram API error: ${JSON.stringify(data)}`);
+  return data;
+}
+
+module.exports = { readEnv, q, close, sendTelegram, sendTelegramPhoto };
