@@ -146,6 +146,14 @@ chart ✅, сброс пароля ✅, GridBot ✅, README ✅, гостево�
   остальных мутаций; `RedeemInvite.tsx` больше не дёргает `supabase.rpc` напрямую без таймаута
   (это и был точный код-путь зависшей кнопки «Вступить»). `AuthContext.tsx`: вызов `telegram-auth`
   получил `timeout: 10000` (раньше не имел таймаута вовсе).
+- Добавлен `PasswordInput` (`src/components/PasswordInput.tsx`) — переключатель видимости пароля
+  (SVG-иконка глаза, toggle `type="password"`/`"text"`), подключён в `Login`, `Signup`,
+  `ResetPassword`.
+- Напоминания о дедлайне (`deadline()` в `scripts/telegram/notify.js`) переведены с `sendMessage`
+  на `sendPhoto`: баннер `public/telegram-banner.png` (1200×400, стиль проекта — #0B0E14, циан/
+  малиновый, Titillium Web + Inter, слоган «Лига пророков») + подпись + кнопка «Поставить прогноз».
+  `sendTelegramPhoto()` добавлена в `scripts/telegram/lib.js`. Инлайн-кнопки Telegram Bot API не
+  поддерживают кастомный цвет (тема клиента), поэтому визуальный акцент — через картинку, не кнопку.
 ### 2026-08-06 (Telegram Mini App — ветка `telegram-mini-app`, Task 10 в работе)
 - `predictButton()` (`scripts/telegram/notify.js`) переведён на полный формат ссылки Mini App:
   `t.me/che_f1_predict_bot/predict?startapp=predict_<raceId>` вместо `t.me/<bot>?startapp=...` —
