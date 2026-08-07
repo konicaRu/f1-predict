@@ -112,6 +112,13 @@ export async function nextOpenRace(): Promise<Race | null> {
   return open[0] ?? null;
 }
 
+export async function redeemInvite(code: string, displayName: string): Promise<void> {
+  return withRetry(async () => {
+    const { error } = await supabase.rpc('redeem_invite', { p_code: code, p_display_name: displayName });
+    if (error) throw error;
+  });
+}
+
 export async function savePrediction(raceId: number, driverIds: string[]): Promise<void> {
   const { data: userRes } = await supabase.auth.getUser();
   const uid = userRes.user?.id;

@@ -49,7 +49,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const initData: string | undefined = tg?.initData;
       if (initData) {
         try {
-          const { data, error } = await supabase.functions.invoke('telegram-auth', { body: { initData } });
+          const { data, error } = await supabase.functions.invoke('telegram-auth', {
+            body: { initData },
+            timeout: 10000,
+          });
           if (!error && data?.access_token && data?.refresh_token) {
             await supabase.auth.setSession({ access_token: data.access_token, refresh_token: data.refresh_token });
           }

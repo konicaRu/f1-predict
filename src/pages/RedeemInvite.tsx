@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { redeemInvite } from '../lib/db';
 import { useAuth } from '../auth/AuthContext';
 
 export default function RedeemInvite() {
@@ -16,12 +16,14 @@ export default function RedeemInvite() {
     e.preventDefault();
     setErr('');
     setBusy(true);
-    const { error } = await supabase.rpc('redeem_invite', { p_code: code, p_display_name: name });
-    setBusy(false);
-    if (error) {
-      setErr(error.message);
+    try {
+      await redeemInvite(code, name);
+    } catch (e: any) {
+      setBusy(false);
+      setErr(e.message || 'Не удалось выполнить, попробуй ещё раз');
       return;
     }
+    setBusy(false);
     await refreshMembership();
     nav('/');
   }
