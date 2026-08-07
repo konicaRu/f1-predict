@@ -136,6 +136,16 @@ chart ✅, сброс пароля ✅, GridBot ✅, README ✅, гостево�
 промпта и настройки — `README.md` § GridBot, дизайн/план — `docs/superpowers/specs/2026-07-24-ai-player-design.md`.
 
 ## Changelog
+### 2026-08-07 (Telegram Mini App — ветка `telegram-mini-app`, Task 10: root cause сетевого зависания найден)
+- Диагностика через WebView Inspector в Telegram Desktop подтвердила root cause зависания из
+  сессии 2026-08-06: включённое в Windows автообнаружение прокси (WPAD) — WebView-подпроцесс Mini
+  App проходит его заново на каждое соединение, теряя 10-30+с (иногда без завершения) ДО начала
+  самого TCP/TLS-подключения, которое само по себе быстрое. Backend/RLS ни при чём.
+- Добавлена устойчивость в коде на случай похожих задержек у любого участника: `redeemInvite()`
+  (`src/lib/db.ts`) — та же обёртка `withRetry` (таймаут+ретрай транзиентных сбоев), что и у
+  остальных мутаций; `RedeemInvite.tsx` больше не дёргает `supabase.rpc` напрямую без таймаута
+  (это и был точный код-путь зависшей кнопки «Вступить»). `AuthContext.tsx`: вызов `telegram-auth`
+  получил `timeout: 10000` (раньше не имел таймаута вовсе).
 ### 2026-08-06 (Telegram Mini App — ветка `telegram-mini-app`, Task 10 в работе)
 - `predictButton()` (`scripts/telegram/notify.js`) переведён на полный формат ссылки Mini App:
   `t.me/che_f1_predict_bot/predict?startapp=predict_<raceId>` вместо `t.me/<bot>?startapp=...` —
