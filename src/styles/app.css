@@ -29,6 +29,10 @@ body { margin: 0; background: var(--bg); color: var(--txt); font-family: Inter, 
 .auth-card { max-width: 360px; margin: 48px auto; display: flex; flex-direction: column; gap: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 24px; }
 .auth-card h1 { font-family: 'Titillium Web'; font-weight: 700; margin: 0 0 8px; }
 .auth-card input { background: var(--panel2); border: 1px solid var(--line); color: var(--txt); border-radius: 9px; padding: 11px 12px; font-size: 14px; }
+.pw-field { position: relative; }
+.auth-card .pw-field input { width: 100%; box-sizing: border-box; padding-right: 42px; }
+.pw-toggle { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); background: none !important; border: 0; padding: 4px 6px; cursor: pointer; color: var(--muted); display: flex; }
+.pw-toggle:hover { color: var(--txt); }
 .auth-card button { background: linear-gradient(90deg, var(--hot), #c01f4a); color: #fff; border: 0; border-radius: 9px; padding: 12px; font-weight: 600; cursor: pointer; }
 .auth-card button:disabled { opacity: .6; cursor: not-allowed; }
 .auth-card a { color: var(--volt); }

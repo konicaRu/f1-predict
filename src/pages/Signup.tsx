@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../auth/AuthContext';
+import PasswordInput from '../components/PasswordInput';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -38,7 +39,7 @@ export default function Signup() {
       <h1>Регистрация</h1>
       <input placeholder="имя в лиге" value={name} onChange={(e) => setName(e.target.value)} required />
       <input type="email" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-      <input type="password" placeholder="пароль (мин. 6)" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+      <PasswordInput value={password} onChange={setPassword} placeholder="пароль (мин. 6)" required minLength={6} />
       <input placeholder="инвайт-код лиги" value={code} onChange={(e) => setCode(e.target.value)} required />
       {err && <p className="auth-err">{err}</p>}
       <button disabled={busy} type="submit">{busy ? '…' : 'Создать аккаунт'}</button>

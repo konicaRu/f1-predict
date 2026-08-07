@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import PasswordInput from '../components/PasswordInput';
 
 export default function ResetPassword() {
   const [status, setStatus] = useState<'checking' | 'ready' | 'invalid'>('checking');
@@ -47,20 +48,8 @@ export default function ResetPassword() {
   return (
     <form onSubmit={submit} className="auth-card">
       <h1>Новый пароль</h1>
-      <input
-        type="password"
-        placeholder="новый пароль"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <input
-        type="password"
-        placeholder="повторите пароль"
-        value={password2}
-        onChange={(e) => setPassword2(e.target.value)}
-        required
-      />
+      <PasswordInput value={password} onChange={setPassword} placeholder="новый пароль" required />
+      <PasswordInput value={password2} onChange={setPassword2} placeholder="повторите пароль" required />
       {err && <p className="auth-err">{err}</p>}
       <button disabled={busy} type="submit">{busy ? '…' : 'Сохранить пароль'}</button>
     </form>

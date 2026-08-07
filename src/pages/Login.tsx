@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../auth/AuthContext';
+import PasswordInput from '../components/PasswordInput';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -66,7 +67,7 @@ export default function Login() {
     <form onSubmit={submit} className="auth-card">
       <h1>Вход</h1>
       <input type="email" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-      <input type="password" placeholder="пароль" value={password} onChange={(e) => setPassword(e.target.value)} required />
+      <PasswordInput value={password} onChange={setPassword} placeholder="пароль" required />
       {err && <p className="auth-err">{err}</p>}
       <button disabled={busy} type="submit">{busy ? '…' : 'Войти'}</button>
       <p>
