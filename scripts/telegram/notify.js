@@ -31,6 +31,25 @@ function notVotedNames(users, votedIds) {
     .sort((a, b) => a.localeCompare(b));
 }
 
+// Открытие гонки раньше было полностью ручным (кнопка в Админке) — если про неё забыли,
+// напоминания молча не уходят (нет открытой гонки = нечего слать). Раз расписание дедлайнов
+// известно заранее, открываем сами: вызывается на каждом запуске notify.js (main()), в том числе
+// на самом частом кроне (autoresults/results, раз в 2 часа) — переживает пропуск отдельных
+// cron-слотов GitHub Actions (см. инцидент 2026-08-31, пропало 5 слотов подряд за одно утро).
+// open_race() идемпотентна (demo->open, no-op если уже open) — безопасно вызывать каждый раз.
+async function ensureCurrentWeekOpen() {
+  const { rows } = await q(`
+    select id, name from races
+    where status = 'demo'
+      and date_trunc('week', deadline_utc at time zone 'Europe/Moscow')
+        = date_trunc('week', now() at time zone 'Europe/Moscow')
+  `);
+  for (const r of rows) {
+    await q('select open_race($1)', [r.id]);
+    console.log(`ensureOpen: автоматически открыл ${r.name} (id=${r.id})`);
+  }
+}
+
 async function thisWeekOpenRaces() {
   const { rows } = await q(`
     select id, round, name, deadline_utc
@@ -240,6 +259,7 @@ async function main() {
     console.error(`ERR неизвестный режим "${mode}", ожидается raceweek|deadline|results|remind|adminflush`);
     process.exit(1);
   }
+  await ensureCurrentWeekOpen();
   await modes[mode]();
   await close();
 }

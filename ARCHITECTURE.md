@@ -145,7 +145,9 @@ Mini App — Task 1-9/10 сделаны на не влитой ветке `teleg
 - `telegram-notify.yml` — один workflow, режимы по cron: `raceweek`/`remind` (пн), `deadline`
   (ср/чт), `autoresults`+`results` (каждые 2ч), `aiplayer` (чт до дедлайна), `adminflush` (10:05
   МСК ежедневно — разгрузка ночной очереди admin-уведомлений). Полное расписание и разбор каждого
-  режима — `README.md` § Telegram-уведомления.
+  режима — `README.md` § Telegram-уведомления. Открытие очередной гонки (`status: demo -> open`)
+  больше не ручное — `ensureCurrentWeekOpen()` в `notify.js` вызывается на каждом запуске
+  (`main()`, любой режим), сама находит гонку этой недели и открывает.
 
 ## GridBot (ИИ-игрок)
 Обычный аккаунт `public.users` (не отдельный UI), ставит прогноз через Gemini API по тем же
@@ -153,6 +155,15 @@ Mini App — Task 1-9/10 сделаны на не влитой ветке `teleg
 промпта и настройки — `README.md` § GridBot, дизайн/план — `docs/superpowers/specs/2026-07-24-ai-player-design.md`.
 
 ## Changelog
+### 2026-09-01 (автооткрытие гонки — root cause пропавшего напоминания raceweek)
+- Открытие гонки (`open_race()`) всегда было ручным (кнопка в Админке) — на round 13 (Italian GP)
+  на этой неделе никто не нажал, `raceweek`/`deadline` в `notify.js` фильтруют `status='open'` и
+  корректно ничего не отправили (пусто — не сбой). Побочно найдена и не связана напрямую: дыра в
+  8ч в расписании GitHub Actions утром 2026-08-31 (5 пропущенных прогонов подряд).
+- `ensureCurrentWeekOpen()` (`scripts/telegram/notify.js`) вызывается на каждом запуске `main()` —
+  находит гонки `status='demo'` этой недели (МСК) и сама открывает через `open_race()` (прямой
+  DB-коннект, гейт админ-проверки пропускает). Работает на самом частом кроне (раз в 2ч), переживает
+  пропуск отдельных cron-слотов. Кнопка в Админке осталась как ручной способ вмешаться.
 ### 2026-08-06
 - Admin-уведомления в Telegram (ЗАКРЫТО, ветка `admin-notify` влита в `main`): миграция
   `0023_admin_notify.sql` (таблица `admin_notification_queue`, триггеры `notify_admin_event()` на
