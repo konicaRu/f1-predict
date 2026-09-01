@@ -52,7 +52,7 @@ async function ensureCurrentWeekOpen() {
 
 async function thisWeekOpenRaces() {
   const { rows } = await q(`
-    select id, round, name, deadline_utc
+    select id, round, name, deadline_utc, raceweek_announced_at
     from races
     where status = 'open'
       and date_trunc('week', deadline_utc at time zone 'Europe/Moscow')
@@ -62,10 +62,15 @@ async function thisWeekOpenRaces() {
   return rows;
 }
 
+// Идемпотентна (гейт raceweek_announced_at, тот же приём, что у results()/telegram_announced_at) —
+// поэтому безопасно звать на КАЖДОМ запуске notify.js (см. main()), а не только по понедельничному
+// крону. Если понедельничный слот пропущен GitHub Actions — анонс всё равно уйдёт при следующем
+// прогоне (максимум через ~2ч, самый частый крон в проекте), просто без "🏁 RACE WEEK" в
+// правильный день недели.
 async function raceweek() {
-  const races = await thisWeekOpenRaces();
+  const races = (await thisWeekOpenRaces()).filter((r) => !r.raceweek_announced_at);
   if (races.length === 0) {
-    console.log('raceweek: нет открытой гонки на этой неделе, ничего не шлём');
+    console.log('raceweek: анонсировать нечего (нет новой открытой гонки на этой неделе)');
     return;
   }
   for (const r of races) {
@@ -74,6 +79,7 @@ async function raceweek() {
       `Дедлайн прогнозов — четверг ${toMskTime(r.deadline_utc)} МСК.\n` +
       `Ставь: ${siteLink('/predict')}`;
     await sendTelegram(text);
+    await q('update races set raceweek_announced_at = now() where id = $1', [r.id]);
     console.log(`raceweek: отправлено для ${r.name}`);
   }
 }
@@ -260,6 +266,7 @@ async function main() {
     process.exit(1);
   }
   await ensureCurrentWeekOpen();
+  await raceweek(); // идемпотентна — подстраховка, если понедельничный слот пропал (см. её комментарий)
   await modes[mode]();
   await close();
 }
