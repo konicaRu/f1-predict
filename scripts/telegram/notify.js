@@ -1,4 +1,4 @@
-const { q, close, sendTelegram, sendTelegramPhoto } = require('./lib');
+const { q, close, sendTelegram, sendTelegramPhoto, readEnv } = require('./lib');
 
 const SITE_URL = 'https://konicaru.github.io/f1-predict';
 const BOT_USERNAME = 'che_f1_predict_bot';
@@ -41,9 +41,28 @@ function notVotedNames(users, votedIds) {
     .sort((a, b) => a.localeCompare(b));
 }
 
+// Открытие гонки раньше было полностью ручным (кнопка в Админке) — если про неё забыли,
+// напоминания молча не уходят (нет открытой гонки = нечего слать). Раз расписание дедлайнов
+// известно заранее, открываем сами: вызывается на каждом запуске notify.js (main()), в том числе
+// на самом частом кроне (autoresults/results, раз в 2 часа) — переживает пропуск отдельных
+// cron-слотов GitHub Actions (см. инцидент 2026-08-31, пропало 5 слотов подряд за одно утро).
+// open_race() идемпотентна (demo->open, no-op если уже open) — безопасно вызывать каждый раз.
+async function ensureCurrentWeekOpen() {
+  const { rows } = await q(`
+    select id, name from races
+    where status = 'demo'
+      and date_trunc('week', deadline_utc at time zone 'Europe/Moscow')
+        = date_trunc('week', now() at time zone 'Europe/Moscow')
+  `);
+  for (const r of rows) {
+    await q('select open_race($1)', [r.id]);
+    console.log(`ensureOpen: автоматически открыл ${r.name} (id=${r.id})`);
+  }
+}
+
 async function thisWeekOpenRaces() {
   const { rows } = await q(`
-    select id, round, name, deadline_utc
+    select id, round, name, deadline_utc, raceweek_announced_at
     from races
     where status = 'open'
       and date_trunc('week', deadline_utc at time zone 'Europe/Moscow')
@@ -53,10 +72,15 @@ async function thisWeekOpenRaces() {
   return rows;
 }
 
+// Идемпотентна (гейт raceweek_announced_at, тот же приём, что у results()/telegram_announced_at) —
+// поэтому безопасно звать на КАЖДОМ запуске notify.js (см. main()), а не только по понедельничному
+// крону. Если понедельничный слот пропущен GitHub Actions — анонс всё равно уйдёт при следующем
+// прогоне (максимум через ~2ч, самый частый крон в проекте), просто без "🏁 RACE WEEK" в
+// правильный день недели.
 async function raceweek() {
-  const races = await thisWeekOpenRaces();
+  const races = (await thisWeekOpenRaces()).filter((r) => !r.raceweek_announced_at);
   if (races.length === 0) {
-    console.log('raceweek: нет открытой гонки на этой неделе, ничего не шлём');
+    console.log('raceweek: анонсировать нечего (нет новой открытой гонки на этой неделе)');
     return;
   }
   for (const r of races) {
@@ -65,6 +89,7 @@ async function raceweek() {
       `Дедлайн прогнозов — четверг ${toMskTime(r.deadline_utc)} МСК.\n` +
       `Ставь: ${siteLink('/predict')}`;
     await sendTelegram(text);
+    await q('update races set raceweek_announced_at = now() where id = $1', [r.id]);
     console.log(`raceweek: отправлено для ${r.name}`);
   }
 }
@@ -229,13 +254,29 @@ async function remind() {
   }
 }
 
+async function adminflush() {
+  const adminChatId = readEnv('TELEGRAM_ADMIN_CHAT_ID');
+  const { rows } = await q('select id, text from admin_notification_queue order by created_at');
+  if (rows.length === 0) {
+    console.log('adminflush: очередь пуста');
+    return;
+  }
+  for (const row of rows) {
+    await sendTelegram(row.text, adminChatId);
+    await q('delete from admin_notification_queue where id = $1', [row.id]);
+  }
+  console.log(`adminflush: отправлено и удалено ${rows.length}`);
+}
+
 async function main() {
   const mode = process.argv[2];
-  const modes = { raceweek, deadline, results, remind };
+  const modes = { raceweek, deadline, results, remind, adminflush };
   if (!modes[mode]) {
-    console.error(`ERR неизвестный режим "${mode}", ожидается raceweek|deadline|results|remind`);
+    console.error(`ERR неизвестный режим "${mode}", ожидается raceweek|deadline|results|remind|adminflush`);
     process.exit(1);
   }
+  await ensureCurrentWeekOpen();
+  await raceweek(); // идемпотентна — подстраховка, если понедельничный слот пропал (см. её комментарий)
   await modes[mode]();
   await close();
 }

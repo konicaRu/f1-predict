@@ -415,3 +415,6 @@ enabled = true
 
 [functions.telegram-auth]
 verify_jwt = false
+
+[functions.admin-notify]
+verify_jwt = false
