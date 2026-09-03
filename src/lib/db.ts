@@ -220,6 +220,51 @@ export async function listDrivers(): Promise<Driver[]> {
   });
 }
 
+// ===== Состав пилотов гонки (правка вручную из Админки, замена SQL-костыля) =====
+
+// Best-effort: у браузера нет TELEGRAM_BOT_TOKEN, поэтому сообщение шлёт Edge Function admin-notify
+// (тот же паттерн, что уже используют триггеры registration/prediction/result). Сбой уведомления не
+// должен ронять сохранение состава — только выводится в консоль для отладки.
+async function notifyPoolChange(payload: {
+  race_id: number;
+  driver_id: string;
+  action: 'added' | 'out';
+  reason?: string;
+}): Promise<void> {
+  try {
+    await supabase.functions.invoke('admin-notify', {
+      body: { event_type: 'pool_change', payload },
+      timeout: 8000,
+    });
+  } catch (e) {
+    console.warn('notifyPoolChange: не удалось отправить уведомление', e);
+  }
+}
+
+export async function addDriverToPool(raceId: number, driverId: string): Promise<void> {
+  await withRetry(async () => {
+    const { error } = await supabase
+      .from('race_driver_pool')
+      .insert({ race_id: raceId, driver_id: driverId });
+    if (error) throw error;
+  });
+  await notifyPoolChange({ race_id: raceId, driver_id: driverId, action: 'added' });
+}
+
+export async function setDriverOutReason(raceId: number, driverId: string, reason: string | null): Promise<void> {
+  await withRetry(async () => {
+    const { error } = await supabase
+      .from('race_driver_pool')
+      .update({ out_reason: reason })
+      .eq('race_id', raceId)
+      .eq('driver_id', driverId);
+    if (error) throw error;
+  });
+  if (reason) {
+    await notifyPoolChange({ race_id: raceId, driver_id: driverId, action: 'out', reason });
+  }
+}
+
 // ===== Гостевой доступ (read-only без аккаунта, Фаза 6) =====
 
 export async function getGuestAccessEnabled(): Promise<boolean> {
