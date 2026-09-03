@@ -72,6 +72,7 @@ body { margin: 0; background: var(--bg); color: var(--txt); font-family: Inter, 
 .chip-compact { padding: 6px 8px; }
 .chip-sel { border-color: var(--volt); box-shadow: 0 0 0 1px var(--volt) inset; }
 .chip-dim { opacity: .32; cursor: default; }
+.chip-dnf { font-family: Inter; font-weight: 600; font-size: 10px; letter-spacing: .04em; color: var(--hot); border: 1px solid var(--hot); border-radius: 4px; padding: 1px 4px; }
 
 /* ===== Прогноз ===== */
 .predict { display: flex; flex-direction: column; gap: 14px; }
