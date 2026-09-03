@@ -41,27 +41,32 @@ f1_predict/
 │   └── superpowers/       — spec/plan по каждой фиче (brainstorming → writing-plans → subagent-driven)
 ├── src/                  — React-приложение
 │   ├── App.tsx, main.tsx
-│   ├── auth/               — AuthContext, ProtectedRoute, AdminRoute, RootRedirect (сессия -> кабинет
-│   │                          или гостевой /g/*)
+│   ├── auth/               — AuthContext (+ Telegram Mini App bootstrap), ProtectedRoute, AdminRoute,
+│   │                          RootRedirect (сессия -> кабинет или гостевой /g/*)
 │   ├── pages/               — Login/Signup/RedeemInvite/ResetPassword, Calendar/Predict/Standings/
-│   │                          Results/Rules, Admin/AdminResult, GuestCalendar (гостевой, read-only)
-│   ├── components/           — Shell, GuestShell (гостевой layout), DriverChip/DriverPool/
-│   │                            PredictionSlots/RaceCard/Flag/DriftChart
+│   │                          Results/Rules, Admin/AdminResult/AdminPool (состав пилотов гонки),
+│   │                          GuestCalendar (гостевой, read-only)
+│   ├── components/           — Shell, GuestShell (гостевой layout), PasswordInput, DriverChip/
+│   │                            DriverPool/PredictionSlots/RaceCard/Flag/DriftChart
 │   ├── lib/                   — supabase.ts, db.ts, scoring.ts(+test), types.ts, countdown.ts,
-│   │                            standings.ts, flags.ts
+│   │                            standings.ts, flags.ts, telegram.ts (start_param диплинк Mini App)
 │   └── styles/
-├── supabase/migrations/  — 0001–0020, 0023 на `main` (0021/0022 `telegram_links` зарезервированы
-│                           за не влитой веткой `telegram-mini-app`, см. MEMORY.md): схема → очки →
-│                           RLS → валидация → invite/membership → open_race → keepalive →
-│                           admin-результаты → driver_standing → telegram_announced →
-│                           predicted_user_ids → revoke_public_execute → GridBot-аккаунт →
-│                           display_name unique → гостевой read-only доступ (кил-свитч
-│                           `app_settings` + RLS для anon, 0016) → 4 раунда доотзыва избыточных
-│                           default-грантов Supabase (0017-0020, тот же класс, что 0013) →
-│                           admin-уведомления: очередь + триггеры + `pg_net` (0023)
+├── supabase/migrations/  — 0001–0026 на `main`: схема → очки → RLS → валидация → invite/membership →
+│                           open_race → keepalive → admin-результаты → driver_standing →
+│                           telegram_announced → predicted_user_ids → revoke_public_execute →
+│                           GridBot-аккаунт → display_name unique → гостевой read-only доступ
+│                           (кил-свитч `app_settings` + RLS для anon, 0016) → 4 раунда доотзыва
+│                           избыточных default-грантов Supabase (0017-0020, тот же класс, что 0013) →
+│                           Telegram Mini App identity-линковка (0021 `telegram_links` + 0022 revoke) →
+│                           admin-уведомления: очередь + триггеры + `pg_net` (0023) →
+│                           raceweek_announced (0024) → пул гонки: `out_reason`/`added_reason`
+│                           (0025/0026 — DNF-пометка и пометка «добавлен позже снимка»)
 ├── supabase/functions/   — Edge Functions (Deno)
-│   └── admin-notify/        — приём событий от Postgres-триггеров (`pg_net`), тексты уведомлений
-│                              + отправка/очередь по тихим часам (`format.ts`+`index.ts`)
+│   ├── admin-notify/        — приём событий от Postgres-триггеров (`pg_net`) И от фронта напрямую
+│   │                          (anon-ключ, `event_type: 'pool_change'` из АдминPool); тексты
+│   │                          уведомлений + отправка/очередь по тихим часам (`format.ts`+`index.ts`)
+│   └── telegram-auth/        — обмен подписанных Telegram Mini App `initData` на настоящую
+│                                Supabase-сессию (`verify.ts`+`index.ts`)
 ├── scripts/              — самостоятельные cloud-direct пакеты (свой `package.json` в каждом)
 │   ├── db/                  — миграции + тесты (RLS, формула очков, view, security grants, GridBot...)
 │   ├── import/                — импорт пилотов/календаря/результатов из Jolpica (Фаза 1)
@@ -83,7 +88,9 @@ f1_predict/
 вместо `pg_cron`; автозабор + GridBot) · 5 Telegram-бот ✅ 2026-07-21 · 6 Полировка — идёт (drift
 chart ✅, сброс пароля ✅, GridBot ✅, README ✅, гостевой read-only доступ ✅ 2026-08-01,
 admin-уведомления в Telegram ✅ 2026-08-06; мобильная раскладка проверена в смоуке 2b). Telegram
-Mini App — Task 1-9/10 сделаны на не влитой ветке `telegram-mini-app`, Task 10 не начат.
+Mini App влита в `main` 2026-09-03 (Task 1-9 готовы, **Task 10 — сквозной живой смоук так и не
+прогнан**, см. MEMORY.md «Открытые вопросы»). Автопроверка состава пилотов + Админка без SQL ✅
+2026-09-03.
 **MVP достигнут 2026-07-20** — Бельгия (round 10) стала первой реально зачётной гонкой.
 
 ## Команды
@@ -104,7 +111,7 @@ Mini App — Task 1-9/10 сделаны на не влитой ветке `teleg
 ## Бэкенд Supabase
 - Облако `konicaRu_f1` (ref `kolrwuhjjsclqalapfzt`, EU-West, FREE). Локальный Docker-стек НЕ
   используется (не работает на этой машине) → миграции/тесты идут напрямую через пулер, см. `scripts/db/`.
-- `supabase/migrations/` (0001–0020, 0023 на `main`): схема → формула очков (`score_prediction` +
+- `supabase/migrations/` (0001–0026 на `main`): схема → формула очков (`score_prediction` +
   view `scores`) → RLS/гранты/`is_admin()` → валидация состава прогноза → инвайт/членство →
   `open_race()` → keep-alive RPC → занос/правка результата админом (`set_race_result`) →
   `driver_standing` → флаг анонса в Telegram → RPC для списка проголосовавших → отзыв публичного
@@ -113,14 +120,22 @@ Mini App — Task 1-9/10 сделаны на не влитой ветке `teleg
   + RLS-политики для `anon` на `races/drivers/results/predictions(после дедлайна)/
   users(id+display_name)/scores` (0016) → 4 раунда доотзыва избыточных default-грантов Supabase
   на новых и старых таблицах (0017-0020, тот же класс проблемы, что инцидент 0013) →
+  Telegram Mini App: таблица связи `telegram_links`+revoke дефолтных грантов (0021/0022) →
   admin-уведомления: `admin_notification_queue` + триггеры `notify_admin_event()` на
-  `users`/`predictions`/`results` + `pg_net` (0023 — 0021/0022 зарезервированы за не влитой веткой
-  `telegram-mini-app`, см. MEMORY.md).
-- Edge Functions (Deno, `supabase/functions/`): `admin-notify` — принимает событие от
-  pg_net-триггера, строит текст, шлёт сразу в Telegram (10:00-22:00 МСК) или кладёт в очередь
-  (`auth: 'publishable'`, без вторичной авторизации — осознанно принятый риск, см. MEMORY.md
-  2026-08-06). `verify_jwt=false` в `config.toml` (вызывающий — своя же БД, не пользовательская
-  сессия).
+  `users`/`predictions`/`results` + `pg_net` (0023) → `races.raceweek_announced_at` (0024) →
+  `race_driver_pool.out_reason`/`added_reason` (0025/0026 — DNF-пометка «не участвует» и пометка
+  «добавлен в пул позже исходного снимка», обе с причиной в тексте).
+- Edge Functions (Deno, `supabase/functions/`):
+  - `admin-notify` — принимает событие от pg_net-триггера ИЛИ напрямую от фронта (anon-ключ,
+    `event_type: 'pool_change'` из Админки состава пилотов), строит текст, шлёт сразу в Telegram
+    (админ-чат — 10:00-22:00 МСК, общий чат для `pool_change` — всегда сразу без задержки) или
+    кладёт в очередь (`auth: 'publishable'`, без вторичной авторизации — осознанно принятый риск,
+    см. MEMORY.md 2026-08-06). Для `pool_change` `action`/`reason` берутся из реального состояния
+    `race_driver_pool` в БД, а не из тела запроса — иначе anon-ключ позволил бы разослать в общий
+    чат лиги произвольную дезинформацию (найдено code-review 2026-09-03). `verify_jwt=false` в
+    `config.toml` (вызывающий — своя же БД или фронт с anon-ключом, не пользовательская сессия).
+  - `telegram-auth` — обменивает подписанный Telegram Mini App `initData` (HMAC-проверка) на
+    настоящую Supabase-сессию через identity в `telegram_links`; `verify_jwt=false`.
 - Секреты — в `.env` (gitignored): `SUPABASE_DB_URL` (transaction pooler с паролем БД).
 
 ## Фронтенд
@@ -148,6 +163,11 @@ Mini App — Task 1-9/10 сделаны на не влитой ветке `teleg
   режима — `README.md` § Telegram-уведомления. Открытие очередной гонки (`status: demo -> open`)
   больше не ручное — `ensureCurrentWeekOpen()` в `notify.js` вызывается на каждом запуске
   (`main()`, любой режим), сама находит гонку этой недели и открывает.
+- На режимах `raceweek`/`deadline` дополнительно (best-effort, не рвёт основной режим при сбое)
+  запускается `checkDriverPool()`: подтягивает `drivers` из Jolpica, сверяет с составом ближайшей
+  сессии OpenF1, расширяет `race_driver_pool` открытых гонок и шлёт уведомление в оба чата, если
+  что-то реально добавилось. Подстраховка на случай замены пилота между открытием гонки и
+  дедлайном — основной путь починки живьём остаётся ручным через Админку `/admin/pool/:raceId`.
 
 ## GridBot (ИИ-игрок)
 Обычный аккаунт `public.users` (не отдельный UI), ставит прогноз через Gemini API по тем же
@@ -155,6 +175,32 @@ Mini App — Task 1-9/10 сделаны на не влитой ветке `teleg
 промпта и настройки — `README.md` § GridBot, дизайн/план — `docs/superpowers/specs/2026-07-24-ai-player-design.md`.
 
 ## Changelog
+### 2026-09-03 (живой инцидент Аджар/Цунода → автопроверка состава пилотов + Админка без SQL; telegram-mini-app влита в main)
+- Живой инцидент: Аджар травмирован, замена — Цунода, которого вообще не было в `drivers`.
+  Найдено: `race_driver_pool` — разовый снимок при `open_race()`, никогда не обновляется, и
+  `set_race_result` тоже валидирует состав против пула (сломался бы и автозанос результата).
+  Почин вручную через SQL прямо во время гонки, смержено сразу в `main` отдельной веткой
+  `fix/dnf-out-badge`: `race_driver_pool.out_reason` (`0025`) + бейдж DNF на `DriverChip`.
+- Полный цикл brainstorming → spec → plan → subagent-driven-development (13 задач в изолированном
+  worktree) на постоянное решение: `checkDriverPool()` (`scripts/telegram/notify.js`, крон
+  raceweek/deadline) — Jolpica+OpenF1 сверка, автодополнение пула, уведомление в оба чата;
+  Админка `/admin/pool/:raceId` (`src/pages/AdminPool.tsx`) — ручное добавление/пометка «не
+  участвует» без SQL; `admin-notify` расширен `event_type: 'pool_change'`.
+- **Security-находка code-review (Critical), исправлена до мержа:** `pool_change` изначально
+  доверял `action`/`reason` из тела запроса — публично достижимый anon-ключом эндпоинт позволял
+  разослать в общий чат лиги произвольную дезинформацию под видом реальной замены пилота. Почин:
+  `action`/`reason` теперь читаются из `race_driver_pool` в БД, а не из payload.
+- Три внеплановых бага найдены и починены по ходу (два — живым тестированием, не код-ревью):
+  `require()` чужого модуля без `require.main === module` убивал бы процесс; простаивающее
+  DB-соединение в `scripts/telegram/lib.js` рвалось пулером Supabase без обработчика `error`
+  (процесс падал целиком); `checkDriverPool()` в `main()` без своего try/catch могла утопить
+  настоящее deadline-напоминание того же крон-слота.
+- Симметричный бейдж «ЗАМЕНА» (`race_driver_pool.added_reason`, `0026`) — `NULL` значит «в
+  исходном снимке», заполнено — «добавлен позже» (вручную с причиной или автопроверкой). DNF
+  теперь нельзя выбрать в новом прогнозе (уже сделанные прогнозы не трогаются).
+- Ветка `telegram-mini-app` целиком влита в `main` и запушена (осознанный выбор — вычленять
+  только правки про пул было бы рискованно конфликтами из-за пересекающихся файлов). **Task 10
+  Mini App (сквозной живой смоук) при этом НЕ прогнан** — см. MEMORY.md «Открытые вопросы».
 ### 2026-09-01 (автооткрытие гонки — root cause пропавшего напоминания raceweek)
 - Открытие гонки (`open_race()`) всегда было ручным (кнопка в Админке) — на round 13 (Italian GP)
   на этой неделе никто не нажал, `raceweek`/`deadline` в `notify.js` фильтруют `status='open'` и
