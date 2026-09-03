@@ -55,13 +55,13 @@ export async function getRaceWithPool(raceId: number): Promise<{ race: Race; poo
     if (e1) throw e1;
     const { data: poolRows, error: e2 } = await supabase
       .from('race_driver_pool')
-      .select('drivers(id, code, name, team, team_color, standing)')
+      .select('out_reason, drivers(id, code, name, team, team_color, standing)')
       .eq('race_id', raceId);
     if (e2) throw e2;
     // Порядок как в чемпионате: по позиции (standing), безпозиционные — в конец, затем по коду.
     const pool = (poolRows ?? [])
-      .map((r: any) => r.drivers as Driver)
-      .filter(Boolean)
+      .map((r: any) => (r.drivers ? ({ ...r.drivers, out_reason: r.out_reason } as Driver) : null))
+      .filter((d): d is Driver => !!d)
       .sort((a, b) => {
         const sa = a.standing ?? 999;
         const sb = b.standing ?? 999;

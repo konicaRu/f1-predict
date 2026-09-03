@@ -14,9 +14,11 @@ export function DriverChip({ driver, onClick, selected, dimmed, compact }: {
       disabled={!onClick}
       className={'chip' + (selected ? ' chip-sel' : '') + (dimmed ? ' chip-dim' : '') + (compact ? ' chip-compact' : '')}
       style={{ borderLeftColor: driver.team_color || '#888' }}
+      title={driver.out_reason || undefined}
     >
       <span className="chip-code">{driver.code}</span>
       {!compact && <span className="chip-name">{driver.name}</span>}
+      {driver.out_reason && <span className="chip-dnf">DNF</span>}
     </button>
   );
 }
