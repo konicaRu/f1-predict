@@ -62,7 +62,7 @@ async function ensureCurrentWeekOpen() {
 
 async function thisWeekOpenRaces() {
   const { rows } = await q(`
-    select id, round, name, deadline_utc, raceweek_announced_at
+    select id, round, name, deadline_utc, race_datetime_utc, raceweek_announced_at
     from races
     where status = 'open'
       and date_trunc('week', deadline_utc at time zone 'Europe/Moscow')
@@ -102,6 +102,7 @@ const OPENF1_WINDOW_MS = 3 * 24 * 60 * 60 * 1000; // ±3 дня — тот же 
 // данными (уикенд ещё не начался — это ожидаемо, не ошибка). Бросает исключение при сетевой/HTTP
 // ошибке — вызывающий код сам решает, что с этим делать (см. checkDriverPool).
 async function fetchOpenF1SessionCodes(raceDatetimeUtc) {
+  if (!raceDatetimeUtc) return null;
   const res = await fetch('https://api.openf1.org/v1/sessions?year=2026');
   if (!res.ok) throw new Error(`OpenF1 sessions HTTP ${res.status}`);
   const sessions = await res.json();
@@ -167,14 +168,12 @@ async function checkDriverPool() {
     const additions = diffPoolAdditions(currentPoolIds, activeIds, openf1Codes, codeToId);
     if (additions.length === 0) continue;
 
-    for (const { driverId } of additions) {
-      await q('insert into race_driver_pool(race_id, driver_id) values ($1,$2) on conflict do nothing', [race.id, driverId]);
-    }
-
     const codes = additions.map((a) => infoById.get(a.driverId)?.code || a.driverId);
     const adminLines = additions
       .map((a) => `${infoById.get(a.driverId)?.code || a.driverId} (${infoById.get(a.driverId)?.name || '?'}) — источник: ${a.sources.join('+')}`)
       .join('\n');
+    // Шлём ДО записи в БД: если отправка сорвётся, инсерты не произойдут и diffPoolAdditions
+    // пересчитает те же additions на следующем прогоне (тот же приём, что у raceweek()).
     await sendTelegram(
       `🔄 Автопроверка состава — ${escapeHtml(race.name)}:\n${escapeHtml(adminLines)}`,
       readEnv('TELEGRAM_ADMIN_CHAT_ID'),
@@ -182,6 +181,10 @@ async function checkDriverPool() {
     await sendTelegram(
       `🔄 Состав ${escapeHtml(race.name)} обновлён: добавлен${codes.length > 1 ? 'ы' : ''} ${escapeHtml(codes.join(', '))}.`,
     );
+
+    for (const { driverId } of additions) {
+      await q('insert into race_driver_pool(race_id, driver_id) values ($1,$2) on conflict do nothing', [race.id, driverId]);
+    }
     console.log(`checkDriverPool: ${race.name} — добавлено ${codes.join(', ')}`);
   }
 }
