@@ -14,6 +14,7 @@ import GuestCalendar from './pages/GuestCalendar';
 import Predict from './pages/Predict';
 import Admin from './pages/Admin';
 import AdminResult from './pages/AdminResult';
+import AdminPool from './pages/AdminPool';
 import Standings from './pages/Standings';
 import Results from './pages/Results';
 import Rules from './pages/Rules';
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="/rules" element={<Rules />} />
             <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
             <Route path="/admin/result/:raceId" element={<AdminRoute><AdminResult /></AdminRoute>} />
+            <Route path="/admin/pool/:raceId" element={<AdminRoute><AdminPool /></AdminRoute>} />
           </Route>
 
           <Route path="/" element={<RootRedirect />} />

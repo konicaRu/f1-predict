@@ -104,6 +104,9 @@ export default function Admin() {
                     {busyId === r.id ? '…' : 'Открыть гонку'}
                   </button>
                 )}
+                {(opened || resulted) && (
+                  <button onClick={() => nav(`/admin/pool/${r.id}`)}>Состав пилотов</button>
+                )}
                 {opened && (
                   <button onClick={() => nav(`/admin/result/${r.id}`)}>Занести результат</button>
                 )}
