@@ -26,6 +26,7 @@ telegram-token*
 # IDE
 .vscode/
 .idea/
+.claude/settings.local.json
 
 # Черновики брейншторм-мокапов (superpowers)
 .superpowers/
