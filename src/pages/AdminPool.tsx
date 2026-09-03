@@ -42,18 +42,19 @@ export default function AdminPool() {
 
   async function onAdd() {
     if (!race || !addId) return;
-    setBusyId(addId);
+    const targetId = addId;
+    setBusyId(targetId);
     setErr('');
     setMsg('');
     try {
-      await addDriverToPool(race.id, addId);
+      await addDriverToPool(race.id, targetId);
       setMsg('Пилот добавлен в пул');
       setAddId('');
       setReload((n) => n + 1);
     } catch (e: any) {
       setErr(e.message || 'Не удалось добавить');
     } finally {
-      setBusyId(null);
+      setBusyId((cur) => (cur === targetId ? null : cur));
     }
   }
 
@@ -71,7 +72,7 @@ export default function AdminPool() {
     } catch (e: any) {
       setErr(e.message || 'Не удалось сохранить');
     } finally {
-      setBusyId(null);
+      setBusyId((cur) => (cur === driverId ? null : cur));
     }
   }
 
@@ -85,7 +86,7 @@ export default function AdminPool() {
     } catch (e: any) {
       setErr(e.message || 'Не удалось снять пометку');
     } finally {
-      setBusyId(null);
+      setBusyId((cur) => (cur === driverId ? null : cur));
     }
   }
 
