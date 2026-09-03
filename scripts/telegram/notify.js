@@ -123,6 +123,69 @@ async function fetchOpenF1SessionCodes(raceDatetimeUtc) {
   return new Set(drivers.map((d) => d.name_acronym).filter(Boolean));
 }
 
+// Автопроверка состава: подтягивает Jolpica (importDrivers, безопасно — только active=true,
+// никого не деактивирует), сверяет с OpenF1 по ближайшей сессии уикенда (best-effort, часто пусто
+// до пятницы — это ожидаемо), расширяет race_driver_pool открытых на этой неделе гонок и шлёт
+// уведомление в оба чата, если что-то реально добавилось. Вызывается только из main() при
+// mode === 'raceweek' || mode === 'deadline' (см. ниже) — не на каждом 2-часовом autoresults-крон.
+async function checkDriverPool() {
+  try {
+    const { importDrivers } = require('../import/import.js');
+    await importDrivers();
+  } catch (e) {
+    console.warn('checkDriverPool: importDrivers сорвался, продолжаем с уже имеющимися данными:', e.message);
+  } finally {
+    try {
+      await require('../import/lib').close();
+    } catch (_) {
+      /* уже закрыт или не открывался */
+    }
+  }
+
+  const races = await thisWeekOpenRaces();
+  if (races.length === 0) {
+    console.log('checkDriverPool: нет открытых гонок на этой неделе');
+    return;
+  }
+
+  const { rows: driverRows } = await q('select id, code, name, active from drivers');
+  const activeIds = new Set(driverRows.filter((d) => d.active).map((d) => d.id));
+  const codeToId = new Map(driverRows.map((d) => [d.code, d.id]));
+  const infoById = new Map(driverRows.map((d) => [d.id, d]));
+
+  for (const race of races) {
+    const { rows: poolRows } = await q('select driver_id from race_driver_pool where race_id = $1', [race.id]);
+    const currentPoolIds = new Set(poolRows.map((r) => r.driver_id));
+
+    let openf1Codes = null;
+    try {
+      openf1Codes = await fetchOpenF1SessionCodes(race.race_datetime_utc);
+    } catch (e) {
+      console.warn(`checkDriverPool: OpenF1 недоступен для ${race.name}:`, e.message);
+    }
+
+    const additions = diffPoolAdditions(currentPoolIds, activeIds, openf1Codes, codeToId);
+    if (additions.length === 0) continue;
+
+    for (const { driverId } of additions) {
+      await q('insert into race_driver_pool(race_id, driver_id) values ($1,$2) on conflict do nothing', [race.id, driverId]);
+    }
+
+    const codes = additions.map((a) => infoById.get(a.driverId)?.code || a.driverId);
+    const adminLines = additions
+      .map((a) => `${infoById.get(a.driverId)?.code || a.driverId} (${infoById.get(a.driverId)?.name || '?'}) — источник: ${a.sources.join('+')}`)
+      .join('\n');
+    await sendTelegram(
+      `🔄 Автопроверка состава — ${escapeHtml(race.name)}:\n${escapeHtml(adminLines)}`,
+      readEnv('TELEGRAM_ADMIN_CHAT_ID'),
+    );
+    await sendTelegram(
+      `🔄 Состав ${escapeHtml(race.name)} обновлён: добавлен${codes.length > 1 ? 'ы' : ''} ${escapeHtml(codes.join(', '))}.`,
+    );
+    console.log(`checkDriverPool: ${race.name} — добавлено ${codes.join(', ')}`);
+  }
+}
+
 // Идемпотентна (гейт raceweek_announced_at, тот же приём, что у results()/telegram_announced_at) —
 // поэтому безопасно звать на КАЖДОМ запуске notify.js (см. main()), а не только по понедельничному
 // крону. Если понедельничный слот пропущен GitHub Actions — анонс всё равно уйдёт при следующем
@@ -328,6 +391,7 @@ async function main() {
   }
   await ensureCurrentWeekOpen();
   await raceweek(); // идемпотентна — подстраховка, если понедельничный слот пропал (см. её комментарий)
+  if (mode === 'raceweek' || mode === 'deadline') await checkDriverPool();
   await modes[mode]();
   await close();
 }
