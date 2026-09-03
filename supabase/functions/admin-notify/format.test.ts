@@ -56,3 +56,49 @@ Deno.test('isQuietHours: 22:00 МСК (19:00 UTC) -> тихо', () => {
 Deno.test('isQuietHours: 00:00 МСК (21:00 UTC предыдущего дня) -> тихо', () => {
   assertEquals(isQuietHours(new Date('2026-08-05T21:00:00Z')), true);
 });
+
+Deno.test('buildMessage: pool_change — добавлен в состав', () => {
+  const text = buildMessage({
+    event_type: 'pool_change',
+    race_name: 'Italian Grand Prix',
+    driver_code: 'TSU',
+    driver_name: 'Yuki Tsunoda',
+    action: 'added',
+  });
+  assertEquals(text, '🔄 Italian Grand Prix: Yuki Tsunoda (TSU) добавлен в состав.');
+});
+
+Deno.test('buildMessage: pool_change — не участвует, с причиной', () => {
+  const text = buildMessage({
+    event_type: 'pool_change',
+    race_name: 'Italian Grand Prix',
+    driver_code: 'HAD',
+    driver_name: 'Isack Hadjar',
+    action: 'out',
+    reason: 'Травма запястья',
+  });
+  assertEquals(text, '🔄 Italian Grand Prix: Isack Hadjar (HAD) отмечен как не участвует — Травма запястья.');
+});
+
+Deno.test('buildMessage: pool_change — не участвует, без причины', () => {
+  const text = buildMessage({
+    event_type: 'pool_change',
+    race_name: 'Italian Grand Prix',
+    driver_code: 'HAD',
+    driver_name: 'Isack Hadjar',
+    action: 'out',
+  });
+  assertEquals(text, '🔄 Italian Grand Prix: Isack Hadjar (HAD) отмечен как не участвует.');
+});
+
+Deno.test('buildMessage: pool_change — экранирует HTML в причине', () => {
+  const text = buildMessage({
+    event_type: 'pool_change',
+    race_name: 'Italian Grand Prix',
+    driver_code: 'HAD',
+    driver_name: 'Isack Hadjar',
+    action: 'out',
+    reason: '<b>травма</b>',
+  });
+  assertEquals(text, '🔄 Italian Grand Prix: Isack Hadjar (HAD) отмечен как не участвует — &lt;b&gt;травма&lt;/b&gt;.');
+});
