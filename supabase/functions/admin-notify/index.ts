@@ -68,11 +68,56 @@ export default {
         console.error(`admin-notify: ошибка lookup races (id=${body.payload?.race_id}):`, raceError.message);
       }
       resolved = { event_type: 'result', race_name: race?.name ?? '(неизвестная гонка)' };
+    } else if (body.event_type === 'pool_change') {
+      const driversTable = supabaseAdmin.from('drivers') as any;
+      const { data: race, error: raceError } = await racesTable
+        .select('name')
+        .eq('id', body.payload?.race_id)
+        .maybeSingle();
+      if (raceError) {
+        console.error(`admin-notify: ошибка lookup races (id=${body.payload?.race_id}):`, raceError.message);
+      }
+      const { data: driver, error: driverError } = await driversTable
+        .select('code, name')
+        .eq('id', body.payload?.driver_id)
+        .maybeSingle();
+      if (driverError) {
+        console.error(`admin-notify: ошибка lookup drivers (id=${body.payload?.driver_id}):`, driverError.message);
+      }
+      const action = body.payload?.action === 'out' ? 'out' : 'added';
+      const reason = typeof body.payload?.reason === 'string' ? body.payload.reason : undefined;
+      resolved = {
+        event_type: 'pool_change',
+        race_name: race?.name ?? '(неизвестная гонка)',
+        driver_code: driver?.code ?? '?',
+        driver_name: driver?.name ?? '(неизвестный пилот)',
+        action,
+        reason,
+      };
     } else {
       return Response.json({ error: `неизвестный event_type: ${body.event_type}` }, { status: 400 });
     }
 
     const text = buildMessage(resolved);
+
+    // pool_change — редкое и важное для игроков сообщение (замена/травма пилота), в отличие от
+    // registration/prediction (породивших правило тихих часов) откладывать на утро не нужно —
+    // уходит в общий чат сразу и безусловно, независимо от тихих часов админ-чата ниже.
+    if (resolved.event_type === 'pool_change') {
+      const generalChatId = Deno.env.get('TELEGRAM_CHAT_ID');
+      if (!generalChatId) {
+        return Response.json({ error: 'TELEGRAM_CHAT_ID не настроен' }, { status: 500 });
+      }
+      const generalRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: generalChatId, text, parse_mode: 'HTML' }),
+      });
+      const generalData = await generalRes.json();
+      if (!generalData.ok) {
+        return Response.json({ error: `Telegram API error (общий чат): ${JSON.stringify(generalData)}` }, { status: 500 });
+      }
+    }
 
     if (isQuietHours(new Date())) {
       const { error } = await (supabaseAdmin.from('admin_notification_queue') as any).insert({ text });
