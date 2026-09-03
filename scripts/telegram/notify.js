@@ -394,7 +394,15 @@ async function main() {
   }
   await ensureCurrentWeekOpen();
   await raceweek(); // идемпотентна — подстраховка, если понедельничный слот пропал (см. её комментарий)
-  if (mode === 'raceweek' || mode === 'deadline') await checkDriverPool();
+  if (mode === 'raceweek' || mode === 'deadline') {
+    // Best-effort, как и её собственные подшаги (importDrivers/OpenF1) — падение автопроверки
+    // состава не должно рвать основной режим этого крон-слота (deadline-напоминание и т.п.).
+    try {
+      await checkDriverPool();
+    } catch (e) {
+      console.warn('checkDriverPool: сорвалась целиком, продолжаем основной режим:', e.message);
+    }
+  }
   await modes[mode]();
   await close();
 }
