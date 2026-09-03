@@ -8,15 +8,18 @@ export function DriverPool({ pool, assigned, onPick }: {
 }) {
   return (
     <div className="pool">
-      {pool.map((d) => (
-        <DriverChip
-          key={d.id}
-          driver={d}
-          compact
-          dimmed={assigned.has(d.id)}
-          onClick={assigned.has(d.id) ? undefined : () => onPick(d.id)}
-        />
-      ))}
+      {pool.map((d) => {
+        const disabled = assigned.has(d.id) || !!d.out_reason;
+        return (
+          <DriverChip
+            key={d.id}
+            driver={d}
+            compact
+            dimmed={disabled}
+            onClick={disabled ? undefined : () => onPick(d.id)}
+          />
+        );
+      })}
     </div>
   );
 }

@@ -25,10 +25,10 @@ export function buildMessage(event: ResolvedEvent): string {
       return `🏁 Результат гонки ${escapeHtml(event.race_name)} занесён в систему`;
     case 'pool_change': {
       const driver = `${escapeHtml(event.driver_name)} (${escapeHtml(event.driver_code)})`;
-      if (event.action === 'added') {
-        return `🔄 ${escapeHtml(event.race_name)}: ${driver} добавлен в состав.`;
-      }
       const reason = event.reason ? ` — ${escapeHtml(event.reason)}` : '';
+      if (event.action === 'added') {
+        return `🔄 ${escapeHtml(event.race_name)}: ${driver} добавлен в состав${reason}.`;
+      }
       return `🔄 ${escapeHtml(event.race_name)}: ${driver} отмечен как не участвует${reason}.`;
     }
   }

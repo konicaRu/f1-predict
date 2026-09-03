@@ -10,6 +10,7 @@ export default function AdminPool() {
   const [pool, setPool] = useState<Driver[]>([]);
   const [allDrivers, setAllDrivers] = useState<Driver[]>([]);
   const [addId, setAddId] = useState('');
+  const [addReason, setAddReason] = useState('');
   const [reasonDrafts, setReasonDrafts] = useState<Record<string, string>>({});
   const [busyId, setBusyId] = useState<string | null>(null);
   const [msg, setMsg] = useState('');
@@ -47,9 +48,10 @@ export default function AdminPool() {
     setErr('');
     setMsg('');
     try {
-      await addDriverToPool(race.id, targetId);
+      await addDriverToPool(race.id, targetId, addReason.trim() || undefined);
       setMsg('Пилот добавлен в пул');
       setAddId('');
+      setAddReason('');
       setReload((n) => n + 1);
     } catch (e: any) {
       setErr(e.message || 'Не удалось добавить');
@@ -112,6 +114,9 @@ export default function AdminPool() {
             <div className="admin-race">
               <span className="race-name">{d.code} — {d.name}</span>
               {d.out_reason && <span className="chip-dnf">DNF</span>}
+              {d.added_reason && (
+                <span className="chip-sub" title={d.added_reason}>ЗАМЕНА</span>
+              )}
             </div>
             <div className="admin-actions">
               {d.out_reason ? (
@@ -150,6 +155,12 @@ export default function AdminPool() {
               <option key={d.id} value={d.id}>{d.code} — {d.name}</option>
             ))}
           </select>
+          <input
+            className="reason-input"
+            placeholder="причина замены (напр. заменяет Аджара)"
+            value={addReason}
+            onChange={(e) => setAddReason(e.target.value)}
+          />
         </div>
         <div className="admin-actions">
           <button disabled={!addId || busyId === addId} onClick={onAdd}>

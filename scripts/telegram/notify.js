@@ -182,8 +182,11 @@ async function checkDriverPool() {
       `🔄 Состав ${escapeHtml(race.name)} обновлён: добавлен${codes.length > 1 ? 'ы' : ''} ${escapeHtml(codes.join(', '))}.`,
     );
 
-    for (const { driverId } of additions) {
-      await q('insert into race_driver_pool(race_id, driver_id) values ($1,$2) on conflict do nothing', [race.id, driverId]);
+    for (const { driverId, sources } of additions) {
+      await q(
+        'insert into race_driver_pool(race_id, driver_id, added_reason) values ($1,$2,$3) on conflict do nothing',
+        [race.id, driverId, `автопроверка: ${sources.join('+')}`],
+      );
     }
     console.log(`checkDriverPool: ${race.name} — добавлено ${codes.join(', ')}`);
   }

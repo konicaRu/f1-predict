@@ -68,6 +68,18 @@ Deno.test('buildMessage: pool_change — добавлен в состав', () =
   assertEquals(text, '🔄 Italian Grand Prix: Yuki Tsunoda (TSU) добавлен в состав.');
 });
 
+Deno.test('buildMessage: pool_change — добавлен в состав, с причиной', () => {
+  const text = buildMessage({
+    event_type: 'pool_change',
+    race_name: 'Italian Grand Prix',
+    driver_code: 'TSU',
+    driver_name: 'Yuki Tsunoda',
+    action: 'added',
+    reason: 'заменяет Аджара',
+  });
+  assertEquals(text, '🔄 Italian Grand Prix: Yuki Tsunoda (TSU) добавлен в состав — заменяет Аджара.');
+});
+
 Deno.test('buildMessage: pool_change — не участвует, с причиной', () => {
   const text = buildMessage({
     event_type: 'pool_change',

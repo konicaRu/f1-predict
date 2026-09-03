@@ -89,7 +89,7 @@ export default {
       // РЕАЛЬНО сейчас в БД, иначе кто угодно с публичным anon-ключом мог бы разослать в общий чат
       // произвольный выдуманный текст под видом настоящей замены пилота.
       const { data: poolRow, error: poolError } = await poolTable
-        .select('out_reason')
+        .select('out_reason, added_reason')
         .eq('race_id', body.payload?.race_id)
         .eq('driver_id', body.payload?.driver_id)
         .maybeSingle();
@@ -100,7 +100,7 @@ export default {
         return Response.json({ error: 'pool_change: пилот не найден в пуле этой гонки' }, { status: 404 });
       }
       const action = poolRow.out_reason ? 'out' : 'added';
-      const reason = poolRow.out_reason ?? undefined;
+      const reason = (action === 'out' ? poolRow.out_reason : poolRow.added_reason) ?? undefined;
       resolved = {
         event_type: 'pool_change',
         race_name: race?.name ?? '(неизвестная гонка)',

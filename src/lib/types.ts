@@ -19,6 +19,7 @@ export interface Driver {
   team_color: string | null;
   standing: number | null;
   out_reason?: string | null;
+  added_reason?: string | null;
 }
 
 export type SaveErrorCode = 'deadline' | 'shape' | 'pool' | 'admin' | 'unknown';

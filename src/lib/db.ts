@@ -55,12 +55,14 @@ export async function getRaceWithPool(raceId: number): Promise<{ race: Race; poo
     if (e1) throw e1;
     const { data: poolRows, error: e2 } = await supabase
       .from('race_driver_pool')
-      .select('out_reason, drivers(id, code, name, team, team_color, standing)')
+      .select('out_reason, added_reason, drivers(id, code, name, team, team_color, standing)')
       .eq('race_id', raceId);
     if (e2) throw e2;
     // Порядок как в чемпионате: по позиции (standing), безпозиционные — в конец, затем по коду.
     const pool = (poolRows ?? [])
-      .map((r: any) => (r.drivers ? ({ ...r.drivers, out_reason: r.out_reason } as Driver) : null))
+      .map((r: any) =>
+        r.drivers ? ({ ...r.drivers, out_reason: r.out_reason, added_reason: r.added_reason } as Driver) : null,
+      )
       .filter((d): d is Driver => !!d)
       .sort((a, b) => {
         const sa = a.standing ?? 999;
@@ -241,14 +243,14 @@ async function notifyPoolChange(payload: {
   }
 }
 
-export async function addDriverToPool(raceId: number, driverId: string): Promise<void> {
+export async function addDriverToPool(raceId: number, driverId: string, reason?: string): Promise<void> {
   await withRetry(async () => {
     const { error } = await supabase
       .from('race_driver_pool')
-      .insert({ race_id: raceId, driver_id: driverId });
+      .insert({ race_id: raceId, driver_id: driverId, added_reason: reason || null });
     if (error) throw error;
   });
-  await notifyPoolChange({ race_id: raceId, driver_id: driverId, action: 'added' });
+  await notifyPoolChange({ race_id: raceId, driver_id: driverId, action: 'added', reason });
 }
 
 export async function setDriverOutReason(raceId: number, driverId: string, reason: string | null): Promise<void> {
