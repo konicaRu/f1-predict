@@ -95,6 +95,34 @@ function diffPoolAdditions(currentPoolIds, activeDriverIds, openf1Codes, codeToI
     .sort((a, b) => a.driverId.localeCompare(b.driverId));
 }
 
+const OPENF1_WINDOW_MS = 3 * 24 * 60 * 60 * 1000; // ±3 дня — тот же паттерн, что scripts/autoresults/openf1.js
+
+// Состав пилотов ближайшей по дате сессии этого гоночного уикенда (Practice/Qualifying/Race — любая,
+// нужен самый ранний доступный сигнал). Возвращает null, если в окне ±3 дня вообще нет сессий с
+// данными (уикенд ещё не начался — это ожидаемо, не ошибка). Бросает исключение при сетевой/HTTP
+// ошибке — вызывающий код сам решает, что с этим делать (см. checkDriverPool).
+async function fetchOpenF1SessionCodes(raceDatetimeUtc) {
+  const res = await fetch('https://api.openf1.org/v1/sessions?year=2026');
+  if (!res.ok) throw new Error(`OpenF1 sessions HTTP ${res.status}`);
+  const sessions = await res.json();
+  const target = new Date(raceDatetimeUtc).getTime();
+  let best = null;
+  let bestDiff = Infinity;
+  for (const s of sessions) {
+    const diff = Math.abs(new Date(s.date_start).getTime() - target);
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      best = s;
+    }
+  }
+  if (!best || bestDiff > OPENF1_WINDOW_MS) return null;
+
+  const driversRes = await fetch(`https://api.openf1.org/v1/drivers?session_key=${best.session_key}`);
+  if (!driversRes.ok) throw new Error(`OpenF1 drivers HTTP ${driversRes.status}`);
+  const drivers = await driversRes.json();
+  return new Set(drivers.map((d) => d.name_acronym).filter(Boolean));
+}
+
 // Идемпотентна (гейт raceweek_announced_at, тот же приём, что у results()/telegram_announced_at) —
 // поэтому безопасно звать на КАЖДОМ запуске notify.js (см. main()), а не только по понедельничному
 // крону. Если понедельничный слот пропущен GitHub Actions — анонс всё равно уйдёт при следующем
