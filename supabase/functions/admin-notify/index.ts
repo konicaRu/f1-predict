@@ -70,6 +70,7 @@ export default {
       resolved = { event_type: 'result', race_name: race?.name ?? '(неизвестная гонка)' };
     } else if (body.event_type === 'pool_change') {
       const driversTable = supabaseAdmin.from('drivers') as any;
+      const poolTable = supabaseAdmin.from('race_driver_pool') as any;
       const { data: race, error: raceError } = await racesTable
         .select('name')
         .eq('id', body.payload?.race_id)
@@ -84,8 +85,22 @@ export default {
       if (driverError) {
         console.error(`admin-notify: ошибка lookup drivers (id=${body.payload?.driver_id}):`, driverError.message);
       }
-      const action = body.payload?.action === 'out' ? 'out' : 'added';
-      const reason = typeof body.payload?.reason === 'string' ? body.payload.reason : undefined;
+      // Не доверяем action/reason из payload напрямую — сообщение может описывать только то, что
+      // РЕАЛЬНО сейчас в БД, иначе кто угодно с публичным anon-ключом мог бы разослать в общий чат
+      // произвольный выдуманный текст под видом настоящей замены пилота.
+      const { data: poolRow, error: poolError } = await poolTable
+        .select('out_reason')
+        .eq('race_id', body.payload?.race_id)
+        .eq('driver_id', body.payload?.driver_id)
+        .maybeSingle();
+      if (poolError) {
+        console.error(`admin-notify: ошибка lookup race_driver_pool (race_id=${body.payload?.race_id}, driver_id=${body.payload?.driver_id}):`, poolError.message);
+      }
+      if (!poolRow) {
+        return Response.json({ error: 'pool_change: пилот не найден в пуле этой гонки' }, { status: 404 });
+      }
+      const action = poolRow.out_reason ? 'out' : 'added';
+      const reason = poolRow.out_reason ?? undefined;
       resolved = {
         event_type: 'pool_change',
         race_name: race?.name ?? '(неизвестная гонка)',
@@ -115,7 +130,9 @@ export default {
       });
       const generalData = await generalRes.json();
       if (!generalData.ok) {
-        return Response.json({ error: `Telegram API error (общий чат): ${JSON.stringify(generalData)}` }, { status: 500 });
+        // Не прерываем запрос — реальное изменение пула уже произошло, и админ должен узнать
+        // о нём независимо от того, ушло ли сообщение в общий чат игрокам.
+        console.error(`admin-notify: Telegram API error (общий чат): ${JSON.stringify(generalData)}`);
       }
     }
 
