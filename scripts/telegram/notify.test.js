@@ -1,4 +1,4 @@
-const { isMskThursday, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton } = require('./notify');
+const { isMskThursday, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions } = require('./notify');
 
 function check(name, actual, expected) {
   const ok = JSON.stringify(actual) === JSON.stringify(expected);
@@ -99,5 +99,39 @@ if (!check(
   { inline_keyboard: [[{ text: 'Поставить прогноз', url: 'https://t.me/che_f1_predict_bot/predict?startapp=predict_42' }]] },
 )) fail++;
 
-console.log(fail === 0 ? 'ВСЕ 16 PASS' : `ПРОВАЛЕНО: ${fail}`);
+const currentPoolIds = new Set(['hamilton', 'norris']);
+const activeDriverIds = new Set(['hamilton', 'norris', 'tsunoda']);
+const codeToId = new Map([['TSU', 'tsunoda'], ['HAD', 'hadjar']]);
+
+if (!check(
+  'diffPoolAdditions: новый активный пилот вне пула -> добавление, источник jolpica',
+  diffPoolAdditions(currentPoolIds, activeDriverIds, null, codeToId),
+  [{ driverId: 'tsunoda', sources: ['jolpica'] }],
+)) fail++;
+
+if (!check(
+  'diffPoolAdditions: OpenF1 подтверждает того же пилота -> оба источника',
+  diffPoolAdditions(currentPoolIds, activeDriverIds, new Set(['TSU']), codeToId),
+  [{ driverId: 'tsunoda', sources: ['jolpica', 'openf1'] }],
+)) fail++;
+
+if (!check(
+  'diffPoolAdditions: OpenF1 видит пилота, которого ещё нет среди active -> тоже добавляется, источник openf1',
+  diffPoolAdditions(currentPoolIds, new Set(['hamilton', 'norris']), new Set(['HAD']), codeToId),
+  [{ driverId: 'hadjar', sources: ['openf1'] }],
+)) fail++;
+
+if (!check(
+  'diffPoolAdditions: всё уже в пуле -> пусто',
+  diffPoolAdditions(new Set(['hamilton', 'norris', 'tsunoda']), activeDriverIds, null, codeToId),
+  [],
+)) fail++;
+
+if (!check(
+  'diffPoolAdditions: OpenF1-код без соответствия в drivers -> игнорируется',
+  diffPoolAdditions(currentPoolIds, new Set(['hamilton', 'norris']), new Set(['XXX']), codeToId),
+  [],
+)) fail++;
+
+console.log(fail === 0 ? 'ВСЕ 21 PASS' : `ПРОВАЛЕНО: ${fail}`);
 process.exit(fail === 0 ? 0 : 1);

@@ -72,6 +72,29 @@ async function thisWeekOpenRaces() {
   return rows;
 }
 
+// Сравнивает текущий пул гонки с активными по Jolpica и увиденными в OpenF1 пилотами.
+// Возвращает, кого добавить и откуда узнали (для админ-сообщения) — отсортировано по driverId
+// для детерминированного вывода. openf1Codes может быть null (сессий уикенда ещё нет — это ожидаемо).
+function diffPoolAdditions(currentPoolIds, activeDriverIds, openf1Codes, codeToId) {
+  const bySource = new Map();
+  for (const id of activeDriverIds) {
+    if (currentPoolIds.has(id)) continue;
+    if (!bySource.has(id)) bySource.set(id, new Set());
+    bySource.get(id).add('jolpica');
+  }
+  if (openf1Codes) {
+    for (const code of openf1Codes) {
+      const id = codeToId.get(code);
+      if (!id || currentPoolIds.has(id)) continue;
+      if (!bySource.has(id)) bySource.set(id, new Set());
+      bySource.get(id).add('openf1');
+    }
+  }
+  return [...bySource.entries()]
+    .map(([driverId, sources]) => ({ driverId, sources: [...sources].sort() }))
+    .sort((a, b) => a.driverId.localeCompare(b.driverId));
+}
+
 // Идемпотентна (гейт raceweek_announced_at, тот же приём, что у results()/telegram_announced_at) —
 // поэтому безопасно звать на КАЖДОМ запуске notify.js (см. main()), а не только по понедельничному
 // крону. Если понедельничный слот пропущен GitHub Actions — анонс всё равно уйдёт при следующем
@@ -288,4 +311,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { isMskThursday, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton };
+module.exports = { isMskThursday, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions };
