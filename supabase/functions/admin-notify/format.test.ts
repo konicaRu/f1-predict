@@ -102,3 +102,17 @@ Deno.test('buildMessage: pool_change — экранирует HTML в причи
   });
   assertEquals(text, '🔄 Italian Grand Prix: Isack Hadjar (HAD) отмечен как не участвует — &lt;b&gt;травма&lt;/b&gt;.');
 });
+
+Deno.test('buildMessage: pool_change — экранирует HTML в имени/коде/гонке', () => {
+  const text = buildMessage({
+    event_type: 'pool_change',
+    race_name: 'Belgian & Dutch Grand Prix',
+    driver_code: '<X>',
+    driver_name: '<script>Тест</script>',
+    action: 'added',
+  });
+  assertEquals(
+    text,
+    '🔄 Belgian &amp; Dutch Grand Prix: &lt;script&gt;Тест&lt;/script&gt; (&lt;X&gt;) добавлен в состав.',
+  );
+});
