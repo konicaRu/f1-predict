@@ -86,4 +86,7 @@ async function main(){
   else { console.error('usage: drivers|calendar|results|all'); process.exit(2); }
   await close();
 }
-main().catch(async e=>{ console.error('ERR', e.code||'', e.message); await close(); process.exit(1); });
+if (require.main === module) {
+  main().catch(async e=>{ console.error('ERR', e.code||'', e.message); await close(); process.exit(1); });
+}
+module.exports = { importDrivers };
