@@ -14,7 +14,7 @@ function siteLink(path) {
 // BOT_INVALID на Telegram Desktop (известное ограничение платформы) — нужен полный вид ссылки
 // с зарегистрированным Mini App.
 function predictButton(raceId) {
-  return { inline_keyboard: [[{ text: 'Поставить прогноз', url: `https://t.me/${BOT_USERNAME}/${MINI_APP_SHORT_NAME}?startapp=predict_${raceId}` }]] };
+  return { inline_keyboard: [[{ text: 'Сделать прогноз', url: `https://t.me/${BOT_USERNAME}/${MINI_APP_SHORT_NAME}?startapp=predict_${raceId}` }]] };
 }
 
 function escapeHtml(s) {
