@@ -81,17 +81,31 @@ async function sendTelegram(text, chatIdOverride) {
   return data;
 }
 
-// Фото по URL (не upload) + caption вместо простого текстового сообщения — caption ограничен
-// 1024 символами Telegram (у sendMessage — 4096), это учтено в вызывающем коде.
+// Caption ограничен 1024 символами Telegram (у sendMessage — 4096), это учтено в вызывающем коде.
+//
+// Скачиваем файл сами и грузим как multipart, а не передаём photoUrl напрямую — Telegram живьём
+// (2026-09-10) стабильно отвечал 400 "failed to get HTTP URL content" на баннер с GitHub Pages,
+// хотя файл нормально отдавался (200, 525КБ, 2400×800 — все лимиты Telegram по URL-фото с запасом).
+// Известная нестабильность их собственного фетчера по URL, не проблема на нашей стороне — обходим,
+// не полагаясь на их сеть.
 async function sendTelegramPhoto(photoUrl, caption, replyMarkup) {
   const token = readEnv('TELEGRAM_BOT_TOKEN');
   const chatId = readEnv('TELEGRAM_CHAT_ID');
-  const body = { chat_id: chatId, photo: photoUrl, caption, parse_mode: 'HTML' };
-  if (replyMarkup) body.reply_markup = replyMarkup;
+
+  const imgRes = await fetch(photoUrl);
+  if (!imgRes.ok) throw new Error(`Не удалось скачать баннер ${photoUrl}: HTTP ${imgRes.status}`);
+  const imgBuf = Buffer.from(await imgRes.arrayBuffer());
+
+  const form = new FormData();
+  form.append('chat_id', chatId);
+  form.append('caption', caption);
+  form.append('parse_mode', 'HTML');
+  if (replyMarkup) form.append('reply_markup', JSON.stringify(replyMarkup));
+  form.append('photo', new Blob([imgBuf]), 'banner.png');
+
   const res = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    body: form,
   });
   const data = await res.json();
   if (!data.ok) throw new Error(`Telegram API error: ${JSON.stringify(data)}`);
