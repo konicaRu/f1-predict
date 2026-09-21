@@ -1,4 +1,4 @@
-const { isMskThursday, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions } = require('./notify');
+const { mskWeekday, isDeadlineDayMsk, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions } = require('./notify');
 
 function check(name, actual, expected) {
   const ok = JSON.stringify(actual) === JSON.stringify(expected);
@@ -8,12 +8,20 @@ function check(name, actual, expected) {
 
 let fail = 0;
 
-if (!check('isMskThursday: среда 12:00 UTC -> false', isMskThursday(new Date('2026-07-22T12:00:00Z')), false)) fail++;
-if (!check('isMskThursday: четверг 09:00 UTC -> true', isMskThursday(new Date('2026-07-23T09:00:00Z')), true)) fail++;
-if (!check('isMskThursday: четверг 16:00 UTC -> true', isMskThursday(new Date('2026-07-23T16:00:00Z')), true)) fail++;
-if (!check('isMskThursday: пятница 09:00 UTC -> false', isMskThursday(new Date('2026-07-24T09:00:00Z')), false)) fail++;
-if (!check('isMskThursday: граница 23:59 МСК четверга -> true', isMskThursday(new Date('2026-07-23T20:59:00Z')), true)) fail++;
-if (!check('isMskThursday: граница 00:01 МСК пятницы -> false', isMskThursday(new Date('2026-07-23T21:01:00Z')), false)) fail++;
+const DEADLINE_THU = '2026-07-23T20:00:00Z'; // обычная гонка — дедлайн в четверг
+const DEADLINE_WED = '2026-09-23T20:00:00Z'; // Azerbaijan GP round 15 — дедлайн сдвинут на среду
+
+if (!check('isDeadlineDayMsk: день до дедлайна -> false', isDeadlineDayMsk(DEADLINE_THU, new Date('2026-07-22T12:00:00Z')), false)) fail++;
+if (!check('isDeadlineDayMsk: день дедлайна утром -> true', isDeadlineDayMsk(DEADLINE_THU, new Date('2026-07-23T09:00:00Z')), true)) fail++;
+if (!check('isDeadlineDayMsk: день дедлайна вечером -> true', isDeadlineDayMsk(DEADLINE_THU, new Date('2026-07-23T16:00:00Z')), true)) fail++;
+if (!check('isDeadlineDayMsk: день после дедлайна -> false', isDeadlineDayMsk(DEADLINE_THU, new Date('2026-07-24T09:00:00Z')), false)) fail++;
+if (!check('isDeadlineDayMsk: граница 23:59 МСК дня дедлайна -> true', isDeadlineDayMsk(DEADLINE_THU, new Date('2026-07-23T20:59:00Z')), true)) fail++;
+if (!check('isDeadlineDayMsk: граница 00:01 МСК следующего дня -> false', isDeadlineDayMsk(DEADLINE_THU, new Date('2026-07-23T21:01:00Z')), false)) fail++;
+if (!check('isDeadlineDayMsk: сдвинутый дедлайн (среда) -> true в среду', isDeadlineDayMsk(DEADLINE_WED, new Date('2026-09-23T10:00:00Z')), true)) fail++;
+if (!check('isDeadlineDayMsk: сдвинутый дедлайн (среда) -> false в четверг', isDeadlineDayMsk(DEADLINE_WED, new Date('2026-09-24T10:00:00Z')), false)) fail++;
+
+if (!check('mskWeekday: четверг', mskWeekday(DEADLINE_THU), 'четверг')) fail++;
+if (!check('mskWeekday: среда (сдвинутый дедлайн Баку)', mskWeekday(DEADLINE_WED), 'среда')) fail++;
 
 const users = [
   { id: '1', display_name: 'Павел' },
@@ -133,5 +141,5 @@ if (!check(
   [],
 )) fail++;
 
-console.log(fail === 0 ? 'ВСЕ 21 PASS' : `ПРОВАЛЕНО: ${fail}`);
+console.log(fail === 0 ? 'ВСЕ 25 PASS' : `ПРОВАЛЕНО: ${fail}`);
 process.exit(fail === 0 ? 0 : 1);

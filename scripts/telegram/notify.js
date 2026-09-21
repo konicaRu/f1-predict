@@ -29,8 +29,18 @@ function toMskTime(iso) {
   });
 }
 
-function isMskThursday(date = new Date()) {
-  return date.toLocaleString('en-US', { timeZone: 'Europe/Moscow', weekday: 'short' }) === 'Thu';
+// Название дня недели дедлайна по МСК — раньше в текстах сообщений было зашито строкой
+// «четверг», что давало неверный текст для гонок со сдвинутым уикендом (напр. Azerbaijan GP
+// round 15, дедлайн в среду — гонка в субботу вместо воскресенья, см. MEMORY.md 2026-09-15).
+function mskWeekday(iso) {
+  return new Date(iso).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', weekday: 'long' });
+}
+
+// true, если СЕГОДНЯ (по календарной дате МСК) — день дедлайна ЭТОЙ гонки. Раньше было жёстко
+// isMskThursday() — не подходило по той же причине, что и mskWeekday() выше.
+function isDeadlineDayMsk(deadlineUtc, date = new Date()) {
+  const mskDate = (d) => d.toLocaleDateString('en-CA', { timeZone: 'Europe/Moscow' });
+  return mskDate(new Date(deadlineUtc)) === mskDate(date);
 }
 
 function notVotedNames(users, votedIds) {
@@ -206,7 +216,7 @@ async function raceweek() {
   for (const r of races) {
     const text =
       `🏁 RACE WEEK! На очереди <b>${escapeHtml(r.name)}</b> (раунд ${r.round}).\n` +
-      `Дедлайн прогнозов — четверг ${toMskTime(r.deadline_utc)} МСК.\n` +
+      `Дедлайн прогнозов — ${mskWeekday(r.deadline_utc)} ${toMskTime(r.deadline_utc)} МСК.\n` +
       `Ставь: ${siteLink('/predict')}`;
     await sendTelegram(text);
     await q('update races set raceweek_announced_at = now() where id = $1', [r.id]);
@@ -220,13 +230,12 @@ async function deadline() {
     console.log('deadline: нет открытой гонки с дедлайном впереди, ничего не шлём');
     return;
   }
-  const thursday = isMskThursday();
   for (const r of races) {
     let text =
       `⏰ Не забудь сделать прогноз на <b>${escapeHtml(r.name)}</b>!\n` +
-      `Дедлайн — четверг ${toMskTime(r.deadline_utc)} МСК.\n` +
+      `Дедлайн — ${mskWeekday(r.deadline_utc)} ${toMskTime(r.deadline_utc)} МСК.\n` +
       siteLink('/predict');
-    if (thursday) {
+    if (isDeadlineDayMsk(r.deadline_utc)) {
       const { rows: predRows } = await q('select user_id from predictions where race_id = $1', [r.id]);
       const { rows: userRows } = await q('select id, display_name from users');
       const missing = notVotedNames(userRows, predRows.map((p) => p.user_id));
@@ -417,4 +426,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { isMskThursday, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions };
+module.exports = { mskWeekday, isDeadlineDayMsk, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions };
