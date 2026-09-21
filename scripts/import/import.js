@@ -58,7 +58,12 @@ async function importCalendar(){
 
 async function importResults(){
   let loaded=0;
-  for(let round=1; round<=22; round++){
+  // Верхняя граница раньше была жёстко 22 — устарела при добавлении Bahrain Grand Prix in
+  // Malaysia (round 16, 2026-10) в календарь: гонки после него сдвинулись, раундов стало 23.
+  // Берём максимум прямо из БД, чтобы больше не отставать при следующих правках календаря.
+  const { rows: maxRow } = await q('select max(round) as max_round from races where season = 2026');
+  const maxRound = maxRow[0].max_round || 22;
+  for(let round=1; round<=maxRound; round++){
     const d = await fetchJolpica(`2026/${round}/results`);
     const races = d.MRData.RaceTable.Races;
     if(!races.length || !races[0].Results || races[0].Results.length < 10) continue; // не завершён
