@@ -15,6 +15,42 @@ Deno.test('buildMessage: prediction', () => {
   assertEquals(text, '📝 Дима поставил прогноз на Belgian Grand Prix');
 });
 
+Deno.test('buildMessage: prediction — шутка клеится тем же сообщением', () => {
+  const text = buildMessage({
+    event_type: 'prediction',
+    display_name: 'Дима',
+    race_name: 'Belgian Grand Prix',
+    joke: 'Опять ANT первым — это уже не прогноз, а ритуал 🤩',
+  });
+  assertEquals(
+    text,
+    '📝 Дима поставил прогноз на Belgian Grand Prix\n\nОпять ANT первым — это уже не прогноз, а ритуал 🤩',
+  );
+});
+
+Deno.test('buildMessage: prediction — экранирует HTML в шутке', () => {
+  const text = buildMessage({
+    event_type: 'prediction',
+    display_name: 'Дима',
+    race_name: 'Belgian Grand Prix',
+    joke: '<b>опять</b> ANT & Co',
+  });
+  assertEquals(
+    text,
+    '📝 Дима поставил прогноз на Belgian Grand Prix\n\n&lt;b&gt;опять&lt;/b&gt; ANT &amp; Co',
+  );
+});
+
+Deno.test('buildMessage: prediction — пустая шутка не добавляет хвост', () => {
+  const text = buildMessage({
+    event_type: 'prediction',
+    display_name: 'Дима',
+    race_name: 'Belgian Grand Prix',
+    joke: '',
+  });
+  assertEquals(text, '📝 Дима поставил прогноз на Belgian Grand Prix');
+});
+
 Deno.test('buildMessage: result', () => {
   const text = buildMessage({ event_type: 'result', race_name: 'Belgian Grand Prix' });
   assertEquals(text, '🏁 Результат гонки Belgian Grand Prix занесён в систему');
