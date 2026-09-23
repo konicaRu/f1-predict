@@ -12,6 +12,19 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const transient = e => e.code === undefined || e.code === '57014' ||
   /terminated|ECONN|ETIMEDOUT|EPIPE|EAI_AGAIN|fetch failed|network/i.test(e.message || '');
 
+// fetch() сам по себе не таймаутится, если TCP-соединение подвисло (не ошибка, а именно зависание) —
+// живьём поймано 2026-09-23: predict.js висел много минут вместо секунд на флапающей сети этой
+// машины, ретраи в fetchJolpica не спасали, потому что fetch() просто не возвращал управление.
+async function fetchWithTimeout(url, options, timeoutMs) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 let client = null;
 async function ensure() {
   if (client) return client;
@@ -38,7 +51,7 @@ async function fetchJolpica(p) {
   const url = `https://api.jolpi.ca/ergast/f1/${p}.json?limit=100`;
   for (let a = 1; a <= 5; a++) {
     try {
-      const res = await fetch(url, { headers: { accept: 'application/json' } });
+      const res = await fetchWithTimeout(url, { headers: { accept: 'application/json' } }, 15000);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return await res.json();
     } catch (e) { if (a === 5) throw e; await sleep(800 * a); }
@@ -64,7 +77,11 @@ async function askGemini(prompt) {
       },
     },
   };
-  const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const res = await fetchWithTimeout(
+    url,
+    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) },
+    30000,
+  );
   if (!res.ok) throw new Error(`Gemini HTTP ${res.status}: ${await res.text()}`);
   const data = await res.json();
   const text = data && data.candidates && data.candidates[0] && data.candidates[0].content
@@ -85,11 +102,15 @@ function escapeHtml(s) {
 async function sendTelegram(text) {
   const token = readEnv('TELEGRAM_BOT_TOKEN');
   const chatId = readEnv('TELEGRAM_CHAT_ID');
-  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
-  });
+  const res = await fetchWithTimeout(
+    `https://api.telegram.org/bot${token}/sendMessage`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
+    },
+    15000,
+  );
   const data = await res.json();
   if (!data.ok) throw new Error(`Telegram API error: ${JSON.stringify(data)}`);
   return data;
