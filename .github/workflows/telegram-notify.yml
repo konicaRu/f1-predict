@@ -9,11 +9,7 @@ on:
     # запланированные запуски могут задерживаться или пропускаться при высокой
     # нагрузке, а начало каждого часа — самое нагруженное время.
     - cron: '5 7 * * 1'    # Пн 10:05 МСК — raceweek + remind
-    # ВРЕМЕННО (только Азербайджан, round 15): у этой гонки календарь сдвинут на день раньше
-    # обычного (гонка в субботу, а не в воскресенье) — дедлайн перенесён на среду 2026-09-23,
-    # поэтому aiplayer тоже временно переехал сюда с четверга. ОБЯЗАТЕЛЬНО вернуть обратно
-    # (aiplayer — на четверг, здесь — просто deadline) после дедлайна Баку!
-    - cron: '5 7 * * 3'    # Ср 10:05 МСК — aiplayer (прогноз ИИ до дедлайна) + deadline
+    - cron: '5 7 * * 3'    # Ср 10:05 МСК — deadline
     - cron: '5 16 * * 3'   # Ср 19:05 МСК — deadline
     - cron: '5 7 * * 4'    # Чт 10:05 МСК — deadline
     - cron: '5 16 * * 4'   # Чт 19:05 МСК — deadline
@@ -43,10 +39,7 @@ jobs:
           else
             case "${{ github.event.schedule }}" in
               '5 7 * * 1') echo "modes=raceweek remind" >> "$GITHUB_OUTPUT" ;;
-              # ВРЕМЕННО (Баку, round 15) — aiplayer на среде, а не на четверге, см. комментарий у cron выше.
-              '5 7 * * 3') echo "modes=aiplayer deadline" >> "$GITHUB_OUTPUT" ;;
-              '5 16 * * 3'|'5 16 * * 4') echo "modes=deadline" >> "$GITHUB_OUTPUT" ;;
-              '5 7 * * 4') echo "modes=deadline" >> "$GITHUB_OUTPUT" ;;
+              '5 7 * * 3'|'5 16 * * 3'|'5 7 * * 4'|'5 16 * * 4') echo "modes=deadline" >> "$GITHUB_OUTPUT" ;;
               '5 */2 * * *') echo "modes=autoresults results" >> "$GITHUB_OUTPUT" ;;
               '5 7 * * *') echo "modes=adminflush" >> "$GITHUB_OUTPUT" ;;
               *) echo "ERR неизвестное расписание: ${{ github.event.schedule }}"; exit 1 ;;

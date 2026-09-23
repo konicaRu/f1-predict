@@ -414,6 +414,16 @@ async function main() {
     } catch (e) {
       console.warn('checkDriverPool: сорвалась целиком, продолжаем основной режим:', e.message);
     }
+    // Раньше aiplayer жил только на одном отдельном крон-слоте раз в неделю — если тот единственный
+    // слот пропадал (баг GitHub Actions, см. MEMORY.md, живьём поймано 2026-09-23), GridBot молча
+    // не участвовал в гонке. Теперь зовём на каждом raceweek/deadline прогоне (их 5 в неделю) —
+    // сам no-op, если уже поставил прогноз или дедлайн прошёл (гейты внутри predict.js main()).
+    try {
+      const { main: runAiPlayer } = require('../ai-player/predict.js');
+      await runAiPlayer();
+    } catch (e) {
+      console.warn('aiplayer: сорвался целиком, продолжаем основной режим:', e.message);
+    }
   }
   await modes[mode]();
   await close();

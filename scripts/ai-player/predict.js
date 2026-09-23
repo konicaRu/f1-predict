@@ -111,6 +111,11 @@ async function gridBotUserId() {
   return rows[0].id;
 }
 
+async function alreadyPredicted(userId, raceId) {
+  const { rows } = await q('select 1 from predictions where user_id = $1 and race_id = $2', [userId, raceId]);
+  return rows.length > 0;
+}
+
 async function savePrediction(userId, raceId, codeToDriverId, top10Codes) {
   const positions = top10Codes.map((code) => codeToDriverId.get(code));
   await q(
@@ -120,10 +125,27 @@ async function savePrediction(userId, raceId, codeToDriverId, top10Codes) {
   );
 }
 
+// Раньше запускался только на одном крон-слоте раз в неделю — если тот единственный слот пропадал
+// (известный баг GitHub Actions, см. MEMORY.md, живьём поймано 2026-09-23), GridBot молча не
+// участвовал в гонке без второго шанса. Теперь main() безопасно звать на КАЖДОМ прогоне
+// raceweek/deadline (см. notify.js) — самовосстанавливается, как raceweek()/checkDriverPool():
+// гейты "дедлайн уже прошёл" и "уже поставил прогноз" делают повторные вызовы no-op.
 async function main() {
   const race = await openRaceThisWeek();
   if (!race) {
     console.log('aiplayer: нет открытой гонки с дедлайном на этой неделе, пропускаем');
+    await close();
+    return;
+  }
+  if (new Date(race.deadline_utc) <= new Date()) {
+    console.log(`aiplayer: дедлайн "${race.name}" уже прошёл, пропускаем`);
+    await close();
+    return;
+  }
+
+  const userId = await gridBotUserId();
+  if (await alreadyPredicted(userId, race.id)) {
+    console.log(`aiplayer: GridBot уже поставил прогноз на "${race.name}", пропускаем`);
     await close();
     return;
   }
@@ -151,7 +173,6 @@ async function main() {
     top10Codes = fallbackTop10(pool);
   }
 
-  const userId = await gridBotUserId();
   await savePrediction(userId, race.id, codeToDriverId, top10Codes);
   console.log(`aiplayer: прогноз на "${race.name}" сохранён — ${top10Codes.join('-')}`);
 
@@ -169,7 +190,7 @@ async function main() {
   await close();
 }
 
-module.exports = { isValidTop10, fallbackTop10, escapeHtml, buildPrompt };
+module.exports = { isValidTop10, fallbackTop10, escapeHtml, buildPrompt, main };
 
 if (require.main === module) {
   main().catch((e) => {
