@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\claude_code_projects\\f1_predict\\.archify\\architecture-f1-predict-overview-20260929-111130\\candidate.json",
+    "sha256": "14089fd553122997c5290d59cc73f76a24138e4e96b2fe9f6d293986c1905a91",
+    "bytes": 6788
+  },
+  "artifact": {
+    "path": "C:\\claude_code_projects\\f1_predict\\.archify\\architecture-f1-predict-overview-20260929-111130\\f1-predict-architecture.html",
+    "sha256": "59995d3aadbf8866b002069fac399212354c989575e0de1986e817df52b677ea",
+    "bytes": 778837
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\claude_code_projects\\f1_predict\\.archify\\architecture-f1-predict-overview-20260929-111130\\f1-predict-architecture.finalize.json",
+    "summaryReceipt": "C:\\claude_code_projects\\f1_predict\\.archify\\architecture-f1-predict-overview-20260929-111130\\f1-predict-architecture.finalize-summary.json",
+    "browserCheckReceipt": "C:\\claude_code_projects\\f1_predict\\.archify\\architecture-f1-predict-overview-20260929-111130\\f1-predict-architecture.browser-check.json"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 2451,
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "resolvedCrossovers": 2,
+      "routesOverSuggestedBends": 1
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [
+        {
+          "left": {
+            "id": "ghacron-bot",
+            "from": "gha_cron",
+            "to": "bot",
+            "label": "напоминания",
+            "collectionIndex": 10,
+            "artifactIndex": 11
+          },
+          "right": {
+            "id": "adminnotify-gemini",
+            "from": "admin_notify_fn",
+            "to": "gemini",
+            "label": "шутка",
+            "collectionIndex": 14,
+            "artifactIndex": 15
+          },
+          "point": [
+            995,
+            532
+          ]
+        },
+        {
+          "left": {
+            "id": "ghacron-gemini",
+            "from": "gha_cron",
+            "to": "gemini",
+            "label": "прогноз",
+            "collectionIndex": 12,
+            "artifactIndex": 13
+          },
+          "right": {
+            "id": "ghacron-openf1",
+            "from": "gha_cron",
+            "to": "openf1",
+            "label": "фолбэк",
+            "collectionIndex": 13,
+            "artifactIndex": 14
+          },
+          "point": [
+            719,
+            588
+          ],
+          "sharedNode": "gha_cron"
+        }
+      ],
+      "detours": [
+        {
+          "relationship": {
+            "id": "ghacron-gemini",
+            "from": "gha_cron",
+            "to": "gemini",
+            "label": "прогноз",
+            "collectionIndex": 12,
+            "artifactIndex": 13
+          },
+          "bends": 4,
+          "stretch": 1.308
+        }
+      ],
+      "truncated": false
+    },
+    "hints": [
+      "gha_cron → bot crosses admin_notify_fn → gemini: move the node of whichever is a branch, return, or second entrance to the other side of the main path, so that relationship runs through an empty corridor.",
+      "gha_cron → gemini and gha_cron → openf1 cross next to gha_cron: move node gemini or openf1 so the two reach gha_cron from different sides (for example one level with it, one directly above or below it).",
+      "gha_cron → gemini needs 4 bends: move node gha_cron or gemini so they share a row or column with matching centers, or sit diagonally with a clear corner."
+    ],
+    "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+  }
+}

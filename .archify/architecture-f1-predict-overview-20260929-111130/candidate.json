@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "F1 Predict — архитектура",
+    "subtitle": "Лига прогнозов на гонки Ф1: сайт, Supabase, GitHub Actions",
+    "output": "f1-predict-architecture.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/konicaRu/f1-predict.git",
+      "provider": "github",
+      "revision": "c11d7fbf1883fbcb727eb209ec02f27dcd9850f0"
+    }
+  },
+  "components": [
+    { "id": "player", "type": "external", "label": "Участник лиги", "sublabel": "браузер / Telegram", "pos": [40, 280], "size": [150, 64] },
+    { "id": "frontend", "type": "frontend", "label": "Веб-приложение", "sublabel": "React + Vite, GitHub Pages", "pos": [330, 280], "size": [160, 64], "sources": [ { "path": "src/lib/supabase.ts", "line": 1, "end_line": 9, "label": "createClient" } ] },
+    { "id": "db", "type": "database", "label": "Postgres", "sublabel": "Supabase, RLS", "pos": [630, 280], "size": [150, 64], "sources": [ { "path": "supabase/migrations/0001_schema.sql", "line": 45, "end_line": 63, "label": "predictions/results" }, { "path": "supabase/migrations/0003_rls.sql", "line": 10, "end_line": 19, "label": "RLS-гранты" } ] },
+    { "id": "admin_notify_fn", "type": "backend", "label": "admin-notify", "sublabel": "Edge Function", "pos": [920, 280], "size": [150, 64], "sources": [ { "path": "supabase/functions/admin-notify/index.ts", "line": 144, "end_line": 178, "label": "fetch handler" } ] },
+    { "id": "bot", "type": "external", "label": "Telegram", "sublabel": "бот + чаты лиги", "pos": [1210, 280], "size": [150, 64] },
+
+    { "id": "telegram_auth_fn", "type": "backend", "label": "telegram-auth", "sublabel": "Edge Function", "pos": [600, 80], "size": [150, 64], "sources": [ { "path": "supabase/functions/telegram-auth/index.ts", "line": 59, "end_line": 110, "label": "generateLink/verifyOtp" } ] },
+    { "id": "auth", "type": "security", "label": "Supabase Auth", "sublabel": "email/пароль + Telegram", "pos": [870, 80], "size": [160, 64], "sources": [ { "path": "src/auth/AuthContext.tsx", "line": 47, "end_line": 69, "label": "bootstrap сессии" } ] },
+
+    { "id": "gha_deploy", "type": "cloud", "label": "GitHub Actions", "sublabel": "deploy.yml", "pos": [250, 500], "size": [150, 64], "sources": [ { "path": ".github/workflows/deploy.yml", "line": 1, "end_line": 33, "label": "build + Pages" } ] },
+    { "id": "gha_keepalive", "type": "cloud", "label": "GitHub Actions", "sublabel": "keepalive.yml", "pos": [430, 500], "size": [150, 64], "sources": [ { "path": ".github/workflows/keepalive.yml", "line": 9, "end_line": 24, "label": "×2/день" } ] },
+    { "id": "gha_cron", "type": "cloud", "label": "GitHub Actions", "sublabel": "telegram-notify.yml", "pos": [625, 500], "size": [160, 64], "sources": [ { "path": ".github/workflows/telegram-notify.yml", "line": 11, "end_line": 17, "label": "расписание" } ] },
+    { "id": "gemini", "type": "external", "label": "Gemini", "sublabel": "gemini-2.5-flash", "pos": [860, 500], "size": [140, 64], "sources": [ { "path": "scripts/ai-player/lib.js", "line": 65, "label": "GridBot" }, { "path": "supabase/functions/admin-notify/joke.ts", "line": 154, "label": "шутка к прогнозу" } ] },
+
+    { "id": "jolpica", "type": "external", "label": "Jolpica API", "sublabel": "результаты F1", "pos": [470, 660], "size": [140, 60], "sources": [ { "path": "scripts/autoresults/jolpica.js", "line": 4, "label": "fetch results" } ] },
+    { "id": "openf1", "type": "external", "label": "OpenF1 API", "sublabel": "фолбэк", "pos": [650, 660], "size": [140, 60], "sources": [ { "path": "scripts/autoresults/openf1.js", "line": 6, "label": "fetch results" } ] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Supabase", "wraps": ["telegram_auth_fn", "auth", "db", "admin_notify_fn"], "pad": 24 },
+    { "kind": "region", "label": "GitHub Actions", "wraps": ["gha_deploy", "gha_keepalive", "gha_cron"], "pad": 24 }
+  ],
+  "connections": [
+    { "id": "player-frontend", "from": "player", "to": "frontend", "label": "открывает" },
+    { "id": "frontend-db", "from": "frontend", "to": "db", "label": "REST/RLS" },
+    { "id": "db-adminnotify", "from": "db", "to": "admin_notify_fn", "label": "триггер" },
+    { "id": "adminnotify-bot", "from": "admin_notify_fn", "to": "bot", "label": "sendMessage" },
+
+    { "id": "frontend-telegramauth", "from": "frontend", "to": "telegram_auth_fn", "label": "initData", "fromSide": "top", "toSide": "bottom" },
+    { "id": "frontend-auth", "from": "frontend", "to": "auth", "label": "email/пароль", "fromSide": "top", "toSide": "bottom" },
+    { "id": "telegramauth-auth", "from": "telegram_auth_fn", "to": "auth", "label": "generateLink" },
+
+    { "id": "ghadeploy-frontend", "from": "gha_deploy", "to": "frontend", "label": "публикует", "fromSide": "top", "toSide": "bottom" },
+    { "id": "ghacron-db", "from": "gha_cron", "to": "db", "label": "прямой SQL", "fromSide": "top", "toSide": "bottom" },
+    { "id": "ghakeepalive-db", "from": "gha_keepalive", "to": "db", "label": "RPC ping", "fromSide": "top", "toSide": "bottom" },
+
+    { "id": "ghacron-jolpica", "from": "gha_cron", "to": "jolpica", "label": "результаты", "fromSide": "bottom", "toSide": "top" },
+    { "id": "ghacron-openf1", "from": "gha_cron", "to": "openf1", "label": "фолбэк", "fromSide": "bottom", "toSide": "top" },
+    { "id": "ghacron-gemini", "from": "gha_cron", "to": "gemini", "label": "прогноз", "fromSide": "right", "toSide": "left" },
+    { "id": "adminnotify-gemini", "from": "admin_notify_fn", "to": "gemini", "label": "шутка", "fromSide": "bottom", "toSide": "top" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Слепой прогноз", "items": ["RLS скрывает чужие прогнозы до дедлайна гонки", "admin-notify: шутка строится только на прошлых гонках, свежий прогноз в промпт не попадает"] },
+    { "dot": "emerald", "title": "Админ-панель", "items": ["Правка состава пилотов шлёт событие pool_change в admin-notify напрямую (anon-ключ), минуя БД (src/lib/db.ts:227-242)"] },
+    { "dot": "amber", "title": "GridBot", "items": ["Пятый, автоматический участник лиги: тот же прогноз, что у людей, ставит telegram-notify.yml через Gemini"] },
+    { "dot": "slate", "title": "Напоминания и итоги", "items": ["Cron-скрипты шлют напоминания и итоги гонки в тот же Telegram напрямую, в обход admin-notify (scripts/telegram/lib.js)"] }
+  ]
+}
