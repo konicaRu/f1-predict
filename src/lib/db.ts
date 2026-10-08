@@ -159,6 +159,8 @@ function mapSaveError(error: { message?: string; code?: string }): SaveError {
     return new SaveError('shape', 'Нужно заполнить все 10 мест разными пилотами');
   if (m.includes('race pool'))
     return new SaveError('pool', 'Пилот не из состава этой гонки (обнови страницу)');
+  if (m.includes('out of this race'))
+    return new SaveError('pool', 'Пилот снят с этой гонки (DNF) — замени его (обнови страницу)');
   return new SaveError('unknown', 'Не удалось сохранить, попробуй ещё раз');
 }
 

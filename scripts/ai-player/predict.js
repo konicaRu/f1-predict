@@ -15,12 +15,14 @@ async function openRaceThisWeek() {
   return rows[0] || null;
 }
 
+// Без пилотов с out_reason (снят с гонки, 0025): иначе GridBot ставит выбывшего — живьём на R13
+// поставил HAD 8-м. С 0029 такой прогноз отклонит и сам validate_prediction.
 async function poolDrivers(raceId) {
   const { rows } = await q(`
     select d.id, d.code, d.name, d.team, d.standing
     from race_driver_pool p
     join drivers d on d.id = p.driver_id
-    where p.race_id = $1
+    where p.race_id = $1 and p.out_reason is null
     order by coalesce(d.standing, 999), d.code
   `, [raceId]);
   return rows;

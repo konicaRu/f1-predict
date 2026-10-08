@@ -62,7 +62,9 @@ f1_predict/
 │                           raceweek_announced (0024) → пул гонки: `out_reason`/`added_reason`
 │                           (0025/0026 — DNF-пометка и пометка «добавлен позже снимка») →
 │                           `prediction_jokes` (0027) → сторож: `job_runs`/`watchdog_incidents` +
-│                           `pg_cron`-задание `watchdog` каждые 15 мин (0028)
+│                           `pg_cron`-задание `watchdog` каждые 15 мин (0028) → выбывший пилот
+│                           (`out_reason`) отклоняется сервером (0029) → таймаут `pg_net` для
+│                           admin-notify 60 с (0030)
 ├── supabase/functions/   — Edge Functions (Deno)
 │   ├── admin-notify/        — приём событий от Postgres-триггеров (`pg_net`) И от фронта напрямую
 │   │                          (anon-ключ, `event_type: 'pool_change'` из АдминPool); тексты
@@ -123,7 +125,7 @@ Mini App влита в `main` 2026-09-03 (Task 1-9 готовы, **Task 10 — �
 ## Бэкенд Supabase
 - Облако `konicaRu_f1` (ref `kolrwuhjjsclqalapfzt`, EU-West, FREE). Локальный Docker-стек НЕ
   используется (не работает на этой машине) → миграции/тесты идут напрямую через пулер, см. `scripts/db/`.
-- `supabase/migrations/` (0001–0026 на `main`): схема → формула очков (`score_prediction` +
+- `supabase/migrations/` (0001–0030): схема → формула очков (`score_prediction` +
   view `scores`) → RLS/гранты/`is_admin()` → валидация состава прогноза → инвайт/членство →
   `open_race()` → keep-alive RPC → занос/правка результата админом (`set_race_result`) →
   `driver_standing` → флаг анонса в Telegram → RPC для списка проголосовавших → отзыв публичного
@@ -139,7 +141,10 @@ Mini App влита в `main` 2026-09-03 (Task 1-9 готовы, **Task 10 — �
   «добавлен в пул позже исходного снимка», обе с причиной в тексте) → `prediction_jokes` (0027 —
   история шуток-комментариев к прогнозам, чисто админская: RLS без политик, только service-role) →
   `job_runs` (пульс автоматики) + `watchdog_incidents` (журнал инцидентов сторожа) + `pg_cron`-задание
-  `watchdog` (0028 — первое использование `pg_cron` в проекте, проверено живьём 2026-10-08).
+  `watchdog` (0028 — первое использование `pg_cron` в проекте, проверено живьём 2026-10-08) →
+  `validate_prediction` отклоняет пилота с `out_reason` (0029 — нового нельзя добавить, уже
+  стоявший до пометки при правке остаётся, как в UI) → `notify_admin_event()` с таймаутом `pg_net`
+  60 с вместо 5 (0030 — шутка Gemini идёт 15-30 с, журнал `net._http_response` был полон ложных таймаутов).
 - Edge Functions (Deno, `supabase/functions/`):
   - `admin-notify` — принимает событие от pg_net-триггера ИЛИ напрямую от фронта (anon-ключ,
     `event_type: 'pool_change'` из Админки состава пилотов), строит текст, шлёт сразу в Telegram
@@ -253,6 +258,15 @@ Mini App влита в `main` 2026-09-03 (Task 1-9 готовы, **Task 10 — �
 промпта и настройки — `README.md` § GridBot, дизайн/план — `docs/superpowers/specs/2026-07-24-ai-player-design.md`.
 
 ## Changelog
+### 2026-10-08 (ревью №2/№3/№7: выбывший пилот на сервере и у GridBot, таймаут pg_net)
+- **№2.** `0029_prediction_out_reason.sql`: `validate_prediction` отклоняет пилота с
+  `race_driver_pool.out_reason` («driver X is out of this race»); на `update` пилот, уже бывший в
+  `old.positions`, допустим — уже сделанные прогнозы не ломаются. Фронт: понятный текст ошибки в
+  `mapSaveError`. Тесты — `scripts/db/gridbot.test.js` (5/5).
+- **№3.** GridBot `poolDrivers()` исключает `out_reason` (на R13 ставил выбывшего HAD 8-м).
+- **№7.** `0030_admin_notify_timeout.sql`: `net.http_post` в `notify_admin_event()` с
+  `timeout_milliseconds := 60000` (как у сторожа). Поведение не меняется — только журнал правдивый.
+- Перед правками снята резервная копия `2026-10-08_1426_MSK` (18 таблиц, 0 расхождений).
 ### 2026-10-08 (сторож на pg_cron, ревью всего кода, фикс экрана прогноза, резервная копия)
 - **Сторож.** Миграция `0028_watchdog.sql`: таблицы `job_runs` (пульс, с `run_key` против дублей
   при ретрае) и `watchdog_incidents`, `pg_cron` (впервые в проекте; пробное задание исполнялось точно
