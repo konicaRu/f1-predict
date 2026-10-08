@@ -1,4 +1,4 @@
-const { mskWeekday, isDeadlineDayMsk, isAlertQuietHours, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions } = require('./notify');
+const { mskWeekday, isDeadlineDayMsk, isAlertQuietHours, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions, resultDiff } = require('./notify');
 
 function check(name, actual, expected) {
   const ok = JSON.stringify(actual) === JSON.stringify(expected);
@@ -147,5 +147,19 @@ if (!check('isAlertQuietHours: 23:00 МСК — тихо', isAlertQuietHours(new
 if (!check('isAlertQuietHours: 09:59 МСК — тихо', isAlertQuietHours(new Date('2026-10-08T06:59:00Z')), true)) fail++;
 if (!check('isAlertQuietHours: 10:00 МСК — можно', isAlertQuietHours(new Date('2026-10-08T07:00:00Z')), false)) fail++;
 
-console.log(fail === 0 ? 'ВСЕ 29 PASS' : `ПРОВАЛЕНО: ${fail}`);
+// Пересмотр результата после штрафа — реальный случай Монако 2026 (Гасли 3 → 7).
+const monCodes = new Map([['gas', 'GAS'], ['had', 'HAD'], ['pia', 'PIA'], ['law', 'LAW'], ['lin', 'LIN'], ['x', 'X'], ['y', 'Y']]);
+if (!check(
+  'resultDiff: сдвиги внутри топ-10, по новой позиции',
+  resultDiff(['a', 'b', 'gas', 'had', 'pia', 'law', 'lin'], ['a', 'b', 'had', 'pia', 'law', 'lin', 'gas'], monCodes),
+  'HAD 4→3, PIA 5→4, LAW 6→5, LIN 7→6, GAS 3→7',
+)) fail++;
+if (!check(
+  'resultDiff: вылет из топ-10 и новичок в нём',
+  resultDiff(['a', 'x'], ['a', 'y'], monCodes),
+  'Y вне топ-10→2, X 2→вне топ-10',
+)) fail++;
+if (!check('resultDiff: без изменений -> пусто', resultDiff(['a', 'b'], ['a', 'b'], monCodes), '')) fail++;
+
+console.log(fail === 0 ? 'ВСЕ 32 PASS' : `ПРОВАЛЕНО: ${fail}`);
 process.exit(fail === 0 ? 0 : 1);

@@ -78,7 +78,8 @@ f1_predict/
 │   ├── db/                  — миграции + тесты (RLS, формула очков, view, security grants, GridBot...);
 │   │                          резервная копия/восстановление данных (`backup.js`/`restore.js`/`RESTORE.md`)
 │   ├── import/                — импорт пилотов/календаря/результатов из Jolpica (Фаза 1)
-│   ├── autoresults/             — автозабор результата гонки (Jolpica → OpenF1 фолбэк)
+│   ├── autoresults/             — автозабор результата гонки (Jolpica → OpenF1 фолбэк) +
+│   │                              автопересмотр 3 дня после гонки по Jolpica (штрафы после финиша)
 │   ├── ai-player/                — GridBot: сбор данных, промпт Gemini, валидация/фолбэк, сохранение
 │   ├── telegram/                   — напоминания/итоги в общий чат + `adminflush` (разгрузка
 │   │                                  ночной очереди admin-уведомлений)
@@ -258,6 +259,14 @@ Mini App влита в `main` 2026-09-03 (Task 1-9 готовы, **Task 10 — �
 промпта и настройки — `README.md` § GridBot, дизайн/план — `docs/superpowers/specs/2026-07-24-ai-player-design.md`.
 
 ## Changelog
+### 2026-10-08 (ревью №4: автопересмотр результата после штрафов)
+- Вместо отменённого двухфазного заноса (provisional/final) — автопересмотр: `autoresults/fetch.js`
+  `recheck()` 3 дня после старта гонки сверяет `results` с Jolpica; при расхождении
+  `set_race_result(..., 'auto-recheck: Jolpica')` + сброс `races.telegram_announced_at`. `notify.js`
+  `results()` в том же прогоне объявляет итоги заново: последняя НЕхолостая правка с причиной
+  `auto-recheck*` → шапка 🔁 «пересмотрен» + `resultDiff()` (кто куда сдвинулся; тесты 32/32).
+  Без миграции. Обоснование и правило — `docs/constitution.md` §3. Аудит сезона перед решением:
+  7/7 зачётных гонок совпадают с актуальной Jolpica, расходится только демо-Монако (Гасли 3 → 7).
 ### 2026-10-08 (ревью №2/№3/№7: выбывший пилот на сервере и у GridBot, таймаут pg_net)
 - **№2.** `0029_prediction_out_reason.sql`: `validate_prediction` отклоняет пилота с
   `race_driver_pool.out_reason` («driver X is out of this race»); на `update` пилот, уже бывший в

@@ -296,6 +296,22 @@ function rankStandings(rows) {
   });
 }
 
+// Кто куда сдвинулся при пересмотре результата: «GAS 3→7, HAD 4→3». Сначала по новой позиции,
+// выбывшие из топ-10 — в конце. Пусто, если ничего не изменилось.
+function resultDiff(before, after, codeOf) {
+  const posOf = (arr, id) => (arr.indexOf(id) === -1 ? null : arr.indexOf(id) + 1);
+  const ids = [...new Set([...after, ...before])];
+  return ids
+    .map((id) => ({ id, from: posOf(before, id), to: posOf(after, id) }))
+    .filter((m) => m.from !== m.to)
+    .sort((a, b) => (a.to ?? 99) - (b.to ?? 99))
+    .map((m) => `${codeFor(m.id, codeOf)} ${m.from ?? 'вне топ-10'}→${m.to ?? 'вне топ-10'}`)
+    .join(', ');
+}
+
+// Причина, с которой autoresults/fetch.js заносит пересмотренный результат (см. recheck там).
+const RECHECK_REASON = 'auto-recheck';
+
 async function results() {
   const { rows } = await q(`
     select id, round, name
@@ -354,8 +370,24 @@ async function results() {
 
     const winnerLine = roundWinnerLine(scoreRows);
 
+    // Повторное объявление после автопересмотра (штраф после финиша): fetch.js сбросил
+    // telegram_announced_at и записал правку с причиной RECHECK_REASON — показываем, что изменилось.
+    // Холостые записи (before = after: ретрай q() или перезанос тем же) пропускаем, иначе diff пуст.
+    const { rows: lastChange } = await q(
+      `select before, after, reason from result_changes
+       where race_id = $1 and before is distinct from after
+       order by changed_at desc, id desc limit 1`,
+      [r.id],
+    );
+    const ch = lastChange[0];
+    const isRecheck = ch && ch.before && ch.reason && ch.reason.startsWith(RECHECK_REASON);
+    const header = isRecheck
+      ? `🔁 Результат <b>${escapeHtml(r.name)}</b> пересмотрен (штрафы после финиша), очки пересчитаны.\n` +
+        `Изменилось: ${resultDiff(ch.before, ch.after, codeOf)}\n\n`
+      : `🏁 Финиш <b>${escapeHtml(r.name)}</b>!\n\n`;
+
     const text =
-      `🏁 Финиш <b>${escapeHtml(r.name)}</b>!\n\n` +
+      header +
       `Топ-10:\n${top10}\n\n` +
       `Прогнозы и очки:\n${scoresText}\n\n` +
       (winnerLine ? `${winnerLine}\n\n` : '') +
@@ -518,4 +550,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { mskWeekday, isDeadlineDayMsk, isAlertQuietHours, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions };
+module.exports = { mskWeekday, isDeadlineDayMsk, isAlertQuietHours, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions, resultDiff };
