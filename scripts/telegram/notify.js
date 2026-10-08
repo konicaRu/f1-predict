@@ -1,4 +1,4 @@
-const { q, close, sendTelegram, sendTelegramPhoto, readEnv } = require('./lib');
+const { q, close, recordRun, sendTelegram, sendTelegramPhoto, readEnv } = require('./lib');
 
 const SITE_URL = 'https://konicaru.github.io/f1-predict';
 const BOT_USERNAME = 'che_f1_predict_bot';
@@ -139,12 +139,14 @@ async function fetchOpenF1SessionCodes(raceDatetimeUtc) {
 // до пятницы — это ожидаемо), расширяет race_driver_pool открытых на этой неделе гонок и шлёт
 // уведомление в оба чата, если что-то реально добавилось. Вызывается только из main() при
 // mode === 'raceweek' || mode === 'deadline' (см. ниже) — не на каждом 2-часовом autoresults-крон.
-async function checkDriverPool() {
+// warnings — сюда складываются проглоченные сбои подшагов: прогон не валим, но сторож о них сообщит.
+async function checkDriverPool(warnings = []) {
   try {
     const { importDrivers } = require('../import/import.js');
     await importDrivers();
   } catch (e) {
     console.warn('checkDriverPool: importDrivers сорвался, продолжаем с уже имеющимися данными:', e.message);
+    warnings.push(`checkDriverPool: синк пилотов из Jolpica сорвался: ${e.message}`);
   } finally {
     try {
       await require('../import/lib').close();
@@ -173,6 +175,7 @@ async function checkDriverPool() {
       openf1Codes = await fetchOpenF1SessionCodes(race.race_datetime_utc);
     } catch (e) {
       console.warn(`checkDriverPool: OpenF1 недоступен для ${race.name}:`, e.message);
+      warnings.push(`checkDriverPool: OpenF1 недоступен для ${race.name}: ${e.message}`);
     }
 
     const additions = diffPoolAdditions(currentPoolIds, activeIds, openf1Codes, codeToId);
@@ -397,6 +400,52 @@ async function adminflush() {
   console.log(`adminflush: отправлено и удалено ${rows.length}`);
 }
 
+// Тихие часы для тревог — 23:00-10:00 МСК, как у сторожа (supabase/functions/watchdog/checks.ts).
+function isAlertQuietHours(date = new Date()) {
+  const h = Number(date.toLocaleString('en-GB', { timeZone: 'Europe/Moscow', hour: '2-digit', hourCycle: 'h23' }));
+  return h >= 23 || h < 10;
+}
+
+function toMskDateTime(iso) {
+  return new Date(iso).toLocaleString('ru-RU', {
+    timeZone: 'Europe/Moscow',
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+const WATCHDOG_STALE_MS = 60 * 60 * 1000; // сторож ходит раз в 15 мин — час тишины значит, что он мёртв
+const ALERT_REMIND_MS = 6 * 60 * 60 * 1000;
+
+// Обратное наблюдение. Сторож живёт в Supabase (pg_cron) и сообщает обо всём, кроме собственной
+// смерти — её видно только отсюда, из независимой инфраструктуры GitHub Actions. Повторы гасит тот же
+// журнал watchdog_incidents, а закроет инцидент и пришлёт «восстановилось» сам оживший сторож.
+async function checkWatchdogAlive(now = new Date()) {
+  const { rows } = await q("select max(ran_at) as last from job_runs where job = 'watchdog' and ok");
+  const last = rows[0].last;
+  if (!last) return; // сторож ещё ни разу не отработал успешно (до деплоя) — тревожить не о чем
+  if (now - new Date(last) < WATCHDOG_STALE_MS) return;
+
+  const details =
+    `Сторож (pg_cron → Edge Function watchdog) не отмечался успешно с ${toMskDateTime(last)} МСК — ` +
+    `проверки не выполняются. Смотреть: Supabase Dashboard → Edge Functions → watchdog → Logs.`;
+  await q(
+    `insert into watchdog_incidents (key, details) values ('watchdog_silent', $1)
+     on conflict (key) where resolved_at is null do update set details = excluded.details, last_seen_at = now()`,
+    [details],
+  );
+  const { rows: open } = await q(
+    "select id, notified_at from watchdog_incidents where key = 'watchdog_silent' and resolved_at is null",
+  );
+  const incident = open[0];
+  if (!incident || isAlertQuietHours(now)) return;
+  if (incident.notified_at && now - new Date(incident.notified_at) < ALERT_REMIND_MS) return;
+  await sendTelegram(`🚨 <b>Сторож F1 Predict</b>\n\n🔴 ${escapeHtml(details)}`, readEnv('TELEGRAM_ADMIN_CHAT_ID'));
+  await q('update watchdog_incidents set notified_at = now() where id = $1', [incident.id]);
+}
+
 async function main() {
   const mode = process.argv[2];
   const modes = { raceweek, deadline, results, remind, adminflush };
@@ -404,40 +453,62 @@ async function main() {
     console.error(`ERR неизвестный режим "${mode}", ожидается raceweek|deadline|results|remind|adminflush`);
     process.exit(1);
   }
-  await ensureCurrentWeekOpen();
-  await raceweek(); // идемпотентна — подстраховка, если понедельничный слот пропал (см. её комментарий)
-  // Раньше очередь разгружал только один крон-слот раз в сутки (07:05 UTC) — если именно он
-  // пропадал (баг GitHub Actions, см. MEMORY.md; живьём поймано 2026-10-08: пропало ~4 часа
-  // подряд, включая этот слот, два уведомления о прогнозах зависли в очереди на часы), очередь
-  // стояла до следующего утра. adminflush() идемпотентна (пустая очередь — no-op), поэтому теперь
-  // зовём на КАЖДОМ прогоне (их 12+/неделю, включая /2ч results) — любой другой уцелевший слот
-  // разгрузит очередь вместо пропавшего.
+  const job = `notify:${mode}`;
+  // Проглоченные сбои best-effort-подшагов: прогон из-за них не валим, но пишем в пульс —
+  // сторож пришлёт админу разовое предупреждение (раньше они уходили только в лог Actions).
+  const warnings = [];
   try {
-    await adminflush();
+    await ensureCurrentWeekOpen();
+    await raceweek(); // идемпотентна — подстраховка, если понедельничный слот пропал (см. её комментарий)
+    // Раньше очередь разгружал только один крон-слот раз в сутки (07:05 UTC) — если именно он
+    // пропадал (баг GitHub Actions, см. MEMORY.md; живьём поймано 2026-10-08: пропало ~4 часа
+    // подряд, включая этот слот, два уведомления о прогнозах зависли в очереди на часы), очередь
+    // стояла до следующего утра. adminflush() идемпотентна (пустая очередь — no-op), поэтому теперь
+    // зовём на КАЖДОМ прогоне (их 12+/неделю, включая /2ч results) — любой другой уцелевший слот
+    // разгрузит очередь вместо пропавшего.
+    try {
+      await adminflush();
+    } catch (e) {
+      console.warn('adminflush: сорвался целиком, продолжаем основной режим:', e.message);
+      warnings.push(`adminflush: ${e.message}`);
+    }
+    if (mode === 'raceweek' || mode === 'deadline') {
+      // Best-effort, как и её собственные подшаги (importDrivers/OpenF1) — падение автопроверки
+      // состава не должно рвать основной режим этого крон-слота (deadline-напоминание и т.п.).
+      try {
+        await checkDriverPool(warnings);
+      } catch (e) {
+        console.warn('checkDriverPool: сорвалась целиком, продолжаем основной режим:', e.message);
+        warnings.push(`checkDriverPool: ${e.message}`);
+      }
+      // Раньше aiplayer жил только на одном отдельном крон-слоте раз в неделю — если тот единственный
+      // слот пропадал (баг GitHub Actions, см. MEMORY.md, живьём поймано 2026-09-23), GridBot молча
+      // не участвовал в гонке. Теперь зовём на каждом raceweek/deadline прогоне (их 5 в неделю) —
+      // сам no-op, если уже поставил прогноз или дедлайн прошёл (гейты внутри predict.js main()).
+      try {
+        const { main: runAiPlayer } = require('../ai-player/predict.js');
+        const aiWarnings = (await runAiPlayer()) || [];
+        warnings.push(...aiWarnings.map((w) => `aiplayer: ${w}`));
+      } catch (e) {
+        console.warn('aiplayer: сорвался целиком, продолжаем основной режим:', e.message);
+        warnings.push(`aiplayer: ${e.message}`);
+      }
+    }
+    await modes[mode]();
+    try {
+      await checkWatchdogAlive();
+    } catch (e) {
+      warnings.push(`проверка сторожа: ${e.message}`);
+    }
+    await recordRun(job, true, warnings);
   } catch (e) {
-    console.warn('adminflush: сорвался целиком, продолжаем основной режим:', e.message);
+    // Если упала сама БД, пульс тоже не запишется — тогда сработает шаг if: failure() в workflow
+    // (прямое сообщение в Telegram), а сторож заметит отсутствие пульса.
+    await recordRun(job, false, [e.message, ...warnings]);
+    throw e;
+  } finally {
+    await close();
   }
-  if (mode === 'raceweek' || mode === 'deadline') {
-    // Best-effort, как и её собственные подшаги (importDrivers/OpenF1) — падение автопроверки
-    // состава не должно рвать основной режим этого крон-слота (deadline-напоминание и т.п.).
-    try {
-      await checkDriverPool();
-    } catch (e) {
-      console.warn('checkDriverPool: сорвалась целиком, продолжаем основной режим:', e.message);
-    }
-    // Раньше aiplayer жил только на одном отдельном крон-слоте раз в неделю — если тот единственный
-    // слот пропадал (баг GitHub Actions, см. MEMORY.md, живьём поймано 2026-09-23), GridBot молча
-    // не участвовал в гонке. Теперь зовём на каждом raceweek/deadline прогоне (их 5 в неделю) —
-    // сам no-op, если уже поставил прогноз или дедлайн прошёл (гейты внутри predict.js main()).
-    try {
-      const { main: runAiPlayer } = require('../ai-player/predict.js');
-      await runAiPlayer();
-    } catch (e) {
-      console.warn('aiplayer: сорвался целиком, продолжаем основной режим:', e.message);
-    }
-  }
-  await modes[mode]();
-  await close();
 }
 
 if (require.main === module) {
@@ -447,4 +518,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { mskWeekday, isDeadlineDayMsk, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions };
+module.exports = { mskWeekday, isDeadlineDayMsk, isAlertQuietHours, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions };

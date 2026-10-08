@@ -77,3 +77,23 @@ jobs:
               node scripts/telegram/notify.js "$m"
             fi
           done
+      # Прямая тревога, минуя Supabase: если прогон упал из-за самой БД (недоступна, проект уснул),
+      # пульс в job_runs не запишется и сторож в Supabase тоже может быть мёртв — тогда это единственный
+      # канал. В тихие часы (23:00-10:00 МСК) молчим: утром сторож сообщит по отсутствию пульса, а если
+      # лежит и Supabase — первый же упавший дневной прогон пришлёт это сообщение.
+      - name: Тревога админу, если прогон упал
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_ADMIN_CHAT_ID: ${{ secrets.TELEGRAM_ADMIN_CHAT_ID }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          MODES: ${{ steps.mode.outputs.modes }}
+        run: |
+          h=$(TZ=Europe/Moscow date +%H)
+          if [ "$h" -ge 23 ] || [ "$h" -lt 10 ]; then
+            echo "Тихие часы (МСК ${h}:xx) — не будим, утром сообщит сторож"
+            exit 0
+          fi
+          curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_ADMIN_CHAT_ID}" \
+            --data-urlencode "text=🚨 Сторож F1 Predict: прогон telegram-notify (${MODES:-?}) в GitHub Actions упал. Лог: ${RUN_URL}"

@@ -27,6 +27,21 @@ async function q(text, params) {
   return c.query(text, params);
 }
 
+// Пульс для сторожа (миграция 0028), тот же контракт, что в scripts/telegram/lib.js: best-effort,
+// никогда не бросает — отсутствие пульса сторож и так заметит.
+async function recordRun(job, ok, errors = []) {
+  try {
+    await q('insert into job_runs (job, ok, errors, run_key) values ($1, $2, $3, $4) on conflict (run_key) do nothing', [
+      job,
+      ok,
+      errors.map((e) => String(e).slice(0, 500)),
+      require('crypto').randomUUID(),
+    ]);
+  } catch (e) {
+    console.warn(`recordRun: не удалось записать пульс ${job}: ${e.message}`);
+  }
+}
+
 async function close() {
   if (client) {
     try {
@@ -38,4 +53,4 @@ async function close() {
   }
 }
 
-module.exports = { readEnv, q, close };
+module.exports = { readEnv, q, close, recordRun };

@@ -60,16 +60,21 @@ f1_predict/
 │                           Telegram Mini App identity-линковка (0021 `telegram_links` + 0022 revoke) →
 │                           admin-уведомления: очередь + триггеры + `pg_net` (0023) →
 │                           raceweek_announced (0024) → пул гонки: `out_reason`/`added_reason`
-│                           (0025/0026 — DNF-пометка и пометка «добавлен позже снимка»)
+│                           (0025/0026 — DNF-пометка и пометка «добавлен позже снимка») →
+│                           `prediction_jokes` (0027) → сторож: `job_runs`/`watchdog_incidents` +
+│                           `pg_cron`-задание `watchdog` каждые 15 мин (0028)
 ├── supabase/functions/   — Edge Functions (Deno)
 │   ├── admin-notify/        — приём событий от Postgres-триггеров (`pg_net`) И от фронта напрямую
 │   │                          (anon-ключ, `event_type: 'pool_change'` из АдминPool); тексты
 │   │                          уведомлений + отправка/очередь по тихим часам (`format.ts`+`index.ts`);
 │   │                          шутка-комментарий к прогнозу по прошлым голосованиям (`joke.ts`)
-│   └── telegram-auth/        — обмен подписанных Telegram Mini App `initData` на настоящую
-│                                Supabase-сессию (`verify.ts`+`index.ts`)
+│   ├── telegram-auth/        — обмен подписанных Telegram Mini App `initData` на настоящую
+│   │                            Supabase-сессию (`verify.ts`+`index.ts`)
+│   └── watchdog/             — сторож: проверки пульса/инвариантов (`checks.ts`, чистая логика
+│                                с тестами) + журнал инцидентов и тревоги админу (`index.ts`)
 ├── scripts/              — самостоятельные cloud-direct пакеты (свой `package.json` в каждом)
-│   ├── db/                  — миграции + тесты (RLS, формула очков, view, security grants, GridBot...)
+│   ├── db/                  — миграции + тесты (RLS, формула очков, view, security grants, GridBot...);
+│   │                          резервная копия/восстановление данных (`backup.js`/`restore.js`/`RESTORE.md`)
 │   ├── import/                — импорт пилотов/календаря/результатов из Jolpica (Фаза 1)
 │   ├── autoresults/             — автозабор результата гонки (Jolpica → OpenF1 фолбэк)
 │   ├── ai-player/                — GridBot: сбор данных, промпт Gemini, валидация/фолбэк, сохранение
@@ -79,8 +84,10 @@ f1_predict/
 │   └── dev/                            — разовые dev-бутстрап скрипты
 └── .github/workflows/
     ├── deploy.yml           — сборка + публикация на GitHub Pages
-    ├── keepalive.yml         — 2×/день, реальный RPC против Supabase (free-tier не засыпает)
-    └── telegram-notify.yml    — cron: raceweek/deadline/remind/autoresults/results/aiplayer/adminflush
+    ├── keepalive.yml         — 2×/день, реальный RPC против Supabase (free-tier не засыпает);
+    │                          упал → прямая тревога в Telegram (`if: failure()`)
+    └── telegram-notify.yml    — cron: raceweek/deadline/remind/autoresults/results/adminflush;
+                               упал → прямая тревога в Telegram (`if: failure()`)
 ```
 
 ## Roadmap (фазы)
@@ -105,7 +112,11 @@ Mini App влита в `main` 2026-09-03 (Task 1-9 готовы, **Task 10 — �
 - Автозабор результата (`cd scripts/autoresults && npm install`): `node fetch.js`.
 - GridBot (`cd scripts/ai-player && npm install`): `npm run predict`, `npm test`.
 - Telegram (`cd scripts/telegram && npm install`): `node notify.js <raceweek|deadline|results|remind>`.
-- Экспорт в Sheets (`cd scripts/export && npm install`): `npm run export`.
+- Экспорт в Sheets (`cd scripts/export && npm install`): `npm run export` (человекочитаемый, НЕ для восстановления).
+- **Резервная копия перед рискованными правками:** `node scripts/db/backup.js` → полная копия данных
+  в `C:/claude_code_projects/f1_predict_backups/<дата>_MSK/` (вне репо — там личные данные и хеши
+  паролей), каждая таблица сверена с живой построчно. Восстановление: `node scripts/db/restore.js
+  <папка> <схема.таблица>...` (просмотр) → то же с `--apply`. Подробно — `scripts/db/RESTORE.md`.
 - Подключение к облаку: transaction-пулер `:6543` (см. `.env`), у каждой папки свой `.env`-ридер.
 - Фронтенд (корневой `package.json`): `npm run dev`, `npm run build` (`tsc -b && vite build`).
 
@@ -126,7 +137,9 @@ Mini App влита в `main` 2026-09-03 (Task 1-9 готовы, **Task 10 — �
   `users`/`predictions`/`results` + `pg_net` (0023) → `races.raceweek_announced_at` (0024) →
   `race_driver_pool.out_reason`/`added_reason` (0025/0026 — DNF-пометка «не участвует» и пометка
   «добавлен в пул позже исходного снимка», обе с причиной в тексте) → `prediction_jokes` (0027 —
-  история шуток-комментариев к прогнозам, чисто админская: RLS без политик, только service-role).
+  история шуток-комментариев к прогнозам, чисто админская: RLS без политик, только service-role) →
+  `job_runs` (пульс автоматики) + `watchdog_incidents` (журнал инцидентов сторожа) + `pg_cron`-задание
+  `watchdog` (0028 — первое использование `pg_cron` в проекте, проверено живьём 2026-10-08).
 - Edge Functions (Deno, `supabase/functions/`):
   - `admin-notify` — принимает событие от pg_net-триггера ИЛИ напрямую от фронта (anon-ключ,
     `event_type: 'pool_change'` из Админки состава пилотов), строит текст, шлёт сразу в Telegram
@@ -142,8 +155,19 @@ Mini App влита в `main` 2026-09-03 (Task 1-9 готовы, **Task 10 — �
     Перед обращением к Gemini проверяется, что прогноз реально есть в БД: эндпоинт открыт под
     публичным anon-ключом, без проверки любой желающий жёг бы квоту платного API. Любой сбой
     (нет ключа, Gemini лежит, таймаут) → уходит прежний сухой текст, уведомление не теряется.
+    Пишет в пульс `job_runs` только проблемы (5xx, пропавшая шутка, замена пилота не ушла в общий
+    чат) — их сторож покажет разовым предупреждением. 4xx (запросы извне с anon-ключом) не пишет.
   - `telegram-auth` — обменивает подписанный Telegram Mini App `initData` (HMAC-проверка) на
     настоящую Supabase-сессию через identity в `telegram_links`; `verify_jwt=false`.
+  - `watchdog` — сторож. Каждые 15 минут его дёргает `pg_cron` (через `pg_net`), независимо от
+    GitHub. Проверяет: GitHub Actions молчит > 4 ч; последний прогон задачи упал; проглоченные
+    ошибки подшагов; keepalive > 26 ч; очередь admin-уведомлений застряла; GridBot без прогноза за
+    6 ч до дедлайна; результат не занесён через 12 ч после гонки; анонс недели не ушёл; в день
+    дедлайна не было напоминания. Ведёт `watchdog_incidents`: одно сообщение на инцидент,
+    напоминание раз в 6 ч, «восстановилось»; разовые предупреждения — без напоминаний. Тихие часы
+    тревог 23:00-10:00 МСК (не 22-10, как у admin-уведомлений) — ночное досылается утром. Тело
+    запроса игнорирует (вызвать может кто угодно с anon-ключом — выдумать тревогу нельзя).
+    До первого пульса GitHub (после пуша нового кода) проверки, завязанные на GitHub, на паузе.
 - Секреты — в `.env` (gitignored): `SUPABASE_DB_URL` (transaction pooler с паролем БД).
 
 ## Фронтенд
@@ -195,7 +219,14 @@ Mini App влита в `main` 2026-09-03 (Task 1-9 готовы, **Task 10 — �
   github status — operational). Гипотеза «деградация без недавнего push» опровергнута. Причина не
   найдена. Смягчается идемпотентным дизайном `raceweek()`/`ensureCurrentWeekOpen()`/
   `checkDriverPool()`/`predict.js:main()`/`adminflush()` — все безопасно вызывать многократно,
-  самовосстанавливаются на следующем подходящем прогоне. Детали — `MEMORY.md` § Открытые вопросы.
+  самовосстанавливаются на следующем подходящем прогоне. С 2026-10-08 о пропажах сообщает сторож
+  (Edge Function `watchdog` на `pg_cron`, вне GitHub). Детали — `MEMORY.md` § Открытые вопросы.
+- **Сторож и пульс (с 2026-10-08):** каждый прогон `notify.js` и `autoresults/fetch.js` пишет строку
+  в `job_runs` (успех + проглоченные ошибки best-effort-подшагов, либо фатальная ошибка); GridBot
+  возвращает свои предупреждения (откат на запасной алгоритм) в `notify.js`. `notify.js` же проверяет
+  обратное — что сторож отмечался успешно за последний час — и сам шлёт тревогу, если нет. Если
+  прогон упал целиком (например, БД недоступна и пульс не записать), шаг `if: failure()` в workflow
+  шлёт админу сообщение напрямую через Telegram API, минуя Supabase (кроме тихих часов 23-10).
 - Тексты `raceweek()`/`deadline()` («Дедлайн — <день недели> HH:MM МСК», список «ещё не сделали»)
   вычисляют день недели и «сегодня ли дедлайн» из самой даты (`mskWeekday()`,
   `isDeadlineDayMsk()`, `notify.js`) — раньше день недели был зашит строкой «четверг», что дало
@@ -222,6 +253,27 @@ Mini App влита в `main` 2026-09-03 (Task 1-9 готовы, **Task 10 — �
 промпта и настройки — `README.md` § GridBot, дизайн/план — `docs/superpowers/specs/2026-07-24-ai-player-design.md`.
 
 ## Changelog
+### 2026-10-08 (сторож на pg_cron, ревью всего кода, фикс экрана прогноза, резервная копия)
+- **Сторож.** Миграция `0028_watchdog.sql`: таблицы `job_runs` (пульс, с `run_key` против дублей
+  при ретрае) и `watchdog_incidents`, `pg_cron` (впервые в проекте; пробное задание исполнялось точно
+  по минутам) раз в 15 минут дёргает новую Edge Function `watchdog` через `pg_net` с таймаутом 60 с.
+  Логика решений — чистые функции `checks.ts`, 29 тестов. Пульс пишут `notify.js` (+ проглоченные
+  ошибки `adminflush`/`checkDriverPool`/GridBot), `autoresults/fetch.js` (+ сбои по отдельным
+  гонкам), `admin-notify` (только проблемы: 5xx, пропавшая шутка — `makeJoke` теперь бросает на
+  настоящих сбоях вместо молчаливого null). Обратное наблюдение: `notify.js` тревожит, если сторож
+  не отмечался час. Шаги `if: failure()` в обоих workflow — прямая тревога через Telegram API.
+  Тихие часы тревог 23:00-10:00 МСК (решение пользователя). Смоук в проде: тестовый сбой → «🔴 Новое»,
+  повтор подавлен, «✅ Восстановилось»; автоматический запуск по расписанию в 10:30 UTC отработал.
+- **Ревью всего кода** — отчёт в MEMORY.md (лог сессий 2026-10-08). Главное исправлено сразу:
+  `getMyPrediction`/`getMyPredictionRaceIds` (`src/lib/db.ts`) не фильтровали по `user_id`, а RLS на
+  `predictions` после дедлайна отдаёт все строки гонки — экран прогноза закрытой гонки падал на
+  `maybeSingle()` (под ролью Dim по гонке 18 видно 4 строки), календарь ставил «✓ прогноз» за чужие.
+- **Резервная копия:** `scripts/db/backup.js` (порциями ≤2.5 КБ, каждая сверяется с живой таблицей
+  через `json_populate_recordset` + `EXCEPT ALL`), `restore.js` (просмотр по умолчанию, `--apply` —
+  заливка мелкими порциями в `_restore_staging` и замена одним маленьким атомарным сообщением с
+  выключенными триггерами), `RESTORE.md`. Почему так: с машины разработчика (VPN) до пулера не
+  проходят сообщения > ~8 КБ ни туда, ни обратно — `pg_dump`/`psql \copy` виснут (SSL EOF ~20 с).
+  Первая копия снята и проверена (18 таблиц, 0 расхождений), `--apply` проверен живьём на `result_changes`.
 ### 2026-10-08 (adminflush стал самовосстанавливающимся — 5-й пропавший крон-эпизод)
 - Живой инцидент: GitHub Actions не триггерился ~4 часа подряд (05:50-09:53 UTC) — пропали все
   запланированные запуски ОБОИХ workflow, включая утренний `adminflush` (07:05 UTC). Прогнозы

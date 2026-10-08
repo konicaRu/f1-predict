@@ -418,3 +418,6 @@ verify_jwt = false
 
 [functions.admin-notify]
 verify_jwt = false
+
+[functions.watchdog]
+verify_jwt = false

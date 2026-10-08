@@ -1,4 +1,4 @@
-const { mskWeekday, isDeadlineDayMsk, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions } = require('./notify');
+const { mskWeekday, isDeadlineDayMsk, isAlertQuietHours, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions } = require('./notify');
 
 function check(name, actual, expected) {
   const ok = JSON.stringify(actual) === JSON.stringify(expected);
@@ -141,5 +141,11 @@ if (!check(
   [],
 )) fail++;
 
-console.log(fail === 0 ? 'ВСЕ 25 PASS' : `ПРОВАЛЕНО: ${fail}`);
+// Тихие часы тревог сторожа — 23:00-10:00 МСК (МСК = UTC+3).
+if (!check('isAlertQuietHours: 22:59 МСК — можно', isAlertQuietHours(new Date('2026-10-08T19:59:00Z')), false)) fail++;
+if (!check('isAlertQuietHours: 23:00 МСК — тихо', isAlertQuietHours(new Date('2026-10-08T20:00:00Z')), true)) fail++;
+if (!check('isAlertQuietHours: 09:59 МСК — тихо', isAlertQuietHours(new Date('2026-10-08T06:59:00Z')), true)) fail++;
+if (!check('isAlertQuietHours: 10:00 МСК — можно', isAlertQuietHours(new Date('2026-10-08T07:00:00Z')), false)) fail++;
+
+console.log(fail === 0 ? 'ВСЕ 29 PASS' : `ПРОВАЛЕНО: ${fail}`);
 process.exit(fail === 0 ? 0 : 1);

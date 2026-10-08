@@ -130,24 +130,27 @@ async function savePrediction(userId, raceId, codeToDriverId, top10Codes) {
 // участвовал в гонке без второго шанса. Теперь main() безопасно звать на КАЖДОМ прогоне
 // raceweek/deadline (см. notify.js) — самовосстанавливается, как raceweek()/checkDriverPool():
 // гейты "дедлайн уже прошёл" и "уже поставил прогноз" делают повторные вызовы no-op.
+// Возвращает предупреждения (Gemini недоступна -> прогноз по запасному алгоритму, объяснение не ушло
+// в Telegram): прогноз всё равно поставлен, но notify.js кладёт их в пульс, и сторож сообщит админу.
 async function main() {
+  const warnings = [];
   const race = await openRaceThisWeek();
   if (!race) {
     console.log('aiplayer: нет открытой гонки с дедлайном на этой неделе, пропускаем');
     await close();
-    return;
+    return warnings;
   }
   if (new Date(race.deadline_utc) <= new Date()) {
     console.log(`aiplayer: дедлайн "${race.name}" уже прошёл, пропускаем`);
     await close();
-    return;
+    return warnings;
   }
 
   const userId = await gridBotUserId();
   if (await alreadyPredicted(userId, race.id)) {
     console.log(`aiplayer: GridBot уже поставил прогноз на "${race.name}", пропускаем`);
     await close();
-    return;
+    return warnings;
   }
 
   const pool = await poolDrivers(race.id);
@@ -166,10 +169,12 @@ async function main() {
       reasoning = answer.reasoning;
     } else {
       console.warn('aiplayer: ответ Gemini не прошёл валидацию, используем fallback');
+      warnings.push(`ответ Gemini не прошёл валидацию — прогноз на "${race.name}" поставлен запасным алгоритмом`);
       top10Codes = fallbackTop10(pool);
     }
   } catch (e) {
     console.warn(`aiplayer: Gemini недоступна (${e.message}), используем fallback`);
+    warnings.push(`Gemini недоступна (${e.message}) — прогноз на "${race.name}" поставлен запасным алгоритмом`);
     top10Codes = fallbackTop10(pool);
   }
 
@@ -184,10 +189,12 @@ async function main() {
       console.log('aiplayer: объяснение отправлено в Telegram');
     } catch (e) {
       console.warn(`aiplayer: не удалось отправить в Telegram: ${e.message}`);
+      warnings.push(`объяснение прогноза не ушло в Telegram: ${e.message}`);
     }
   }
 
   await close();
+  return warnings;
 }
 
 module.exports = { isValidTop10, fallbackTop10, escapeHtml, buildPrompt, main };

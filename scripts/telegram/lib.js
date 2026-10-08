@@ -67,6 +67,23 @@ async function close() {
   }
 }
 
+// Пульс для сторожа (миграция 0028): одна строка на прогон. Best-effort — никогда не бросает:
+// если не записали пульс, сторож сам заметит отсутствие пульса, а основной прогон важнее.
+// run_key генерируем ДО q(): его ретрай повторяет вставку с тем же ключом, и если первая на самом
+// деле прошла (ответ потерялся при обрыве соединения), повтор тихо упрётся в on conflict.
+async function recordRun(job, ok, errors = []) {
+  try {
+    await q('insert into job_runs (job, ok, errors, run_key) values ($1, $2, $3, $4) on conflict (run_key) do nothing', [
+      job,
+      ok,
+      errors.map((e) => String(e).slice(0, 500)),
+      require('crypto').randomUUID(),
+    ]);
+  } catch (e) {
+    console.warn(`recordRun: не удалось записать пульс ${job}: ${e.message}`);
+  }
+}
+
 async function sendTelegram(text, chatIdOverride) {
   const token = readEnv('TELEGRAM_BOT_TOKEN');
   const chatId = chatIdOverride ?? readEnv('TELEGRAM_CHAT_ID');
@@ -112,4 +129,4 @@ async function sendTelegramPhoto(photoUrl, caption, replyMarkup) {
   return data;
 }
 
-module.exports = { readEnv, q, close, sendTelegram, sendTelegramPhoto };
+module.exports = { readEnv, q, close, recordRun, sendTelegram, sendTelegramPhoto };

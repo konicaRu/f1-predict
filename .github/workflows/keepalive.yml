@@ -28,3 +28,21 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      # Keepalive упал = БД не ответила на пинг (уснула или недоступна). Сторож в Supabase в этом
+      # случае сам ничего не пришлёт — сообщаем напрямую. Тихие часы 23:00-10:00 МСК: ночью молчим,
+      # следующий слот (утром) пришлёт, если проблема осталась.
+      - name: Тревога админу, если keepalive упал
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_ADMIN_CHAT_ID: ${{ secrets.TELEGRAM_ADMIN_CHAT_ID }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          h=$(TZ=Europe/Moscow date +%H)
+          if [ "$h" -ge 23 ] || [ "$h" -lt 10 ]; then
+            echo "Тихие часы (МСК ${h}:xx) — не будим"
+            exit 0
+          fi
+          curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_ADMIN_CHAT_ID}" \
+            --data-urlencode "text=🚨 Сторож F1 Predict: keepalive не достучался до Supabase — БД уснула или недоступна. Проверить дэшборд Supabase. Лог: ${RUN_URL}"

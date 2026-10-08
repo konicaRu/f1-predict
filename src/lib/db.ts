@@ -40,9 +40,22 @@ export async function listRaces(): Promise<Race[]> {
   });
 }
 
+// RLS на predictions — «свой прогноз ИЛИ любой после дедлайна», поэтому «мои» запросы обязаны
+// фильтровать по user_id явно. Без фильтра после дедлайна приходили чужие строки: живьём
+// 2026-10-08 под ролью Dim по гонке 18 видно 4 строки — maybeSingle() в getMyPrediction падал
+// (экран прогноза закрытой гонки выдавал ошибку), а календарь ставил «✓ прогноз» на гонки,
+// где голосовали другие. getSession() — локально, без сетевого запроса (в отличие от getUser()).
+async function currentUserId(): Promise<string> {
+  const { data } = await supabase.auth.getSession();
+  const uid = data.session?.user.id;
+  if (!uid) throw new Error('Не авторизован');
+  return uid;
+}
+
 export async function getMyPredictionRaceIds(): Promise<Set<number>> {
+  const uid = await currentUserId();
   return withRetry(async () => {
-    const { data, error } = await supabase.from('predictions').select('race_id');
+    const { data, error } = await supabase.from('predictions').select('race_id').eq('user_id', uid);
     if (error) throw error;
     return new Set((data ?? []).map((r: { race_id: number }) => r.race_id));
   });
@@ -74,9 +87,10 @@ export async function getRaceWithPool(raceId: number): Promise<{ race: Race; poo
 }
 
 export async function getMyPrediction(raceId: number): Promise<string[] | null> {
+  const uid = await currentUserId();
   return withRetry(async () => {
     const { data, error } = await supabase
-      .from('predictions').select('positions').eq('race_id', raceId).maybeSingle();
+      .from('predictions').select('positions').eq('race_id', raceId).eq('user_id', uid).maybeSingle();
     if (error) throw error;
     return data ? (data.positions as string[]) : null;
   });

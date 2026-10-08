@@ -11,8 +11,11 @@ const ADMIN_CHAT_ID = Deno.env.get('TELEGRAM_ADMIN_CHAT_ID');
 // нет: промпт пухнет, а закономерностей в истории всё равно конечное число.
 const PAST_JOKES_LIMIT = 5;
 
-// Возвращает шутку про участника или null, если пошутить не вышло. Никогда не бросает наружу
-// так, чтобы потерялось само уведомление: уведомление о прогнозе важнее шутки.
+// Возвращает шутку про участника; null — только когда шутить не положено (прогноза нет в БД,
+// событие выдумано). Любой настоящий сбой бросает исключение: вызывающий код гасит его, чтобы
+// не потерять само уведомление, но записывает в пульс — сторож сообщит админу (раньше такие
+// сбои уходили только в лог Edge Function, и пропавшую шутку Iceman 2026-10-08 нечем было объяснить).
+// warnings — некритичные проблемы, после которых шутка всё равно получилась.
 async function makeJoke(
   supabaseAdmin: any,
   userId: string,
@@ -20,16 +23,11 @@ async function makeJoke(
   displayName: string,
   raceName: string,
   season: unknown,
+  warnings: string[],
 ): Promise<string | null> {
   const apiKey = Deno.env.get('GEMINI_API_KEY');
-  if (!apiKey) {
-    console.warn('admin-notify: GEMINI_API_KEY не настроен, шутка пропущена');
-    return null;
-  }
-  if (typeof season !== 'number') {
-    console.warn('admin-notify: сезон гонки неизвестен, шутка пропущена');
-    return null;
-  }
+  if (!apiKey) throw new Error('GEMINI_API_KEY не настроен в секретах Supabase');
+  if (typeof season !== 'number') throw new Error('сезон гонки неизвестен (гонка не найдена в БД)');
 
   // Антизлоупотребление. Эндпоинт намеренно открыт под публичным anon-ключом (см. комментарий
   // у fetch ниже), поэтому событие может быть и выдуманным. Пока худшим случаем был спам в личку,
@@ -61,12 +59,9 @@ async function makeJoke(
     ['scores', scoreRows], ['drivers', drivers],
   ].filter(([, r]: any) => r.error);
   if (failed.length > 0) {
-    console.error(
-      `admin-notify: история для шутки не собралась: ${
-        failed.map(([name, r]: any) => `${name}: ${r.error.message}`).join('; ')
-      }`,
+    throw new Error(
+      `история для шутки не собралась: ${failed.map(([name, r]: any) => `${name}: ${r.error.message}`).join('; ')}`,
     );
-    return null;
   }
 
   const codeOf = new Map((drivers.data ?? []).map((d: any) => [d.id, d.code]));
@@ -137,8 +132,185 @@ async function makeJoke(
     // Не роняем шутку из-за проблемы с логом — она уже сгенерирована и полезна прямо сейчас.
     // Потеряется только защита от повтора на следующей гонке.
     console.error(`admin-notify: не удалось сохранить шутку: ${saveError.message}`);
+    warnings.push(`шутка для ${displayName} не сохранилась в prediction_jokes: ${saveError.message}`);
   }
   return joke;
+}
+
+// Пишет в пульс только проблемы: admin-notify дёргается на каждое событие, а сторожу нужны лишь
+// сбои (ok=false) и проглоченные ошибки — их он покажет разовым предупреждением.
+async function recordProblems(db: any, ok: boolean, errors: string[]): Promise<void> {
+  if (ok && errors.length === 0) return;
+  const { error } = await db.from('job_runs').insert({ job: 'admin-notify', ok, errors: errors.map((e) => e.slice(0, 500)) });
+  if (error) console.error(`admin-notify: не удалось записать пульс: ${error.message}`);
+}
+
+async function handle(req: Request, ctx: any, warnings: string[]): Promise<Response> {
+  const botToken = Deno.env.get('TELEGRAM_BOT_TOKEN');
+  if (!botToken) {
+    return Response.json({ error: 'TELEGRAM_BOT_TOKEN не настроен' }, { status: 500 });
+  }
+  if (!ADMIN_CHAT_ID) {
+    return Response.json({ error: 'TELEGRAM_ADMIN_CHAT_ID не настроен' }, { status: 500 });
+  }
+
+  let body: { event_type?: string; payload?: Record<string, unknown> };
+  try {
+    body = await req.json();
+  } catch {
+    return Response.json({ error: 'некорректный JSON' }, { status: 400 });
+  }
+
+  const { supabaseAdmin } = ctx;
+  const usersTable = supabaseAdmin.from('users') as any;
+  const racesTable = supabaseAdmin.from('races') as any;
+  let resolved: ResolvedEvent;
+
+  if (body.event_type === 'registration') {
+    const displayName = body.payload?.display_name;
+    resolved = {
+      event_type: 'registration',
+      display_name: typeof displayName === 'string' ? displayName : '(без имени)',
+    };
+  } else if (body.event_type === 'prediction') {
+    const { data: user, error: userError } = await usersTable
+      .select('display_name')
+      .eq('id', body.payload?.user_id)
+      .maybeSingle();
+    if (userError) {
+      console.error(`admin-notify: ошибка lookup users (id=${body.payload?.user_id}):`, userError.message);
+    }
+    const { data: race, error: raceError } = await racesTable
+      .select('name, season')
+      .eq('id', body.payload?.race_id)
+      .maybeSingle();
+    if (raceError) {
+      console.error(`admin-notify: ошибка lookup races (id=${body.payload?.race_id}):`, raceError.message);
+    }
+    const displayName = user?.display_name ?? '(неизвестный участник)';
+    const raceNameText = race?.name ?? '(неизвестная гонка)';
+
+    // Шутка — украшение, а не суть события. Любой сбой (нет ключа, Gemini лежит, таймаут,
+    // мусор в ответе) гасим здесь и уходим со старым сухим текстом: админ обязан узнать
+    // о прогнозе в любом случае.
+    let joke: string | null = null;
+    try {
+      joke = await makeJoke(
+        supabaseAdmin,
+        String(body.payload?.user_id),
+        Number(body.payload?.race_id),
+        displayName,
+        raceNameText,
+        race?.season,
+        warnings,
+      );
+    } catch (e) {
+      console.warn(`admin-notify: шутка не сгенерирована: ${(e as Error).message}`);
+      warnings.push(`шутка для ${displayName} не сгенерирована: ${(e as Error).message}`);
+    }
+
+    resolved = {
+      event_type: 'prediction',
+      display_name: displayName,
+      race_name: raceNameText,
+      joke: joke ?? undefined,
+    };
+  } else if (body.event_type === 'result') {
+    const { data: race, error: raceError } = await racesTable
+      .select('name')
+      .eq('id', body.payload?.race_id)
+      .maybeSingle();
+    if (raceError) {
+      console.error(`admin-notify: ошибка lookup races (id=${body.payload?.race_id}):`, raceError.message);
+    }
+    resolved = { event_type: 'result', race_name: race?.name ?? '(неизвестная гонка)' };
+  } else if (body.event_type === 'pool_change') {
+    const driversTable = supabaseAdmin.from('drivers') as any;
+    const poolTable = supabaseAdmin.from('race_driver_pool') as any;
+    const { data: race, error: raceError } = await racesTable
+      .select('name')
+      .eq('id', body.payload?.race_id)
+      .maybeSingle();
+    if (raceError) {
+      console.error(`admin-notify: ошибка lookup races (id=${body.payload?.race_id}):`, raceError.message);
+    }
+    const { data: driver, error: driverError } = await driversTable
+      .select('code, name')
+      .eq('id', body.payload?.driver_id)
+      .maybeSingle();
+    if (driverError) {
+      console.error(`admin-notify: ошибка lookup drivers (id=${body.payload?.driver_id}):`, driverError.message);
+    }
+    // Не доверяем action/reason из payload напрямую — сообщение может описывать только то, что
+    // РЕАЛЬНО сейчас в БД, иначе кто угодно с публичным anon-ключом мог бы разослать в общий чат
+    // произвольный выдуманный текст под видом настоящей замены пилота.
+    const { data: poolRow, error: poolError } = await poolTable
+      .select('out_reason, added_reason')
+      .eq('race_id', body.payload?.race_id)
+      .eq('driver_id', body.payload?.driver_id)
+      .maybeSingle();
+    if (poolError) {
+      console.error(`admin-notify: ошибка lookup race_driver_pool (race_id=${body.payload?.race_id}, driver_id=${body.payload?.driver_id}):`, poolError.message);
+    }
+    if (!poolRow) {
+      return Response.json({ error: 'pool_change: пилот не найден в пуле этой гонки' }, { status: 404 });
+    }
+    const action = poolRow.out_reason ? 'out' : 'added';
+    const reason = (action === 'out' ? poolRow.out_reason : poolRow.added_reason) ?? undefined;
+    resolved = {
+      event_type: 'pool_change',
+      race_name: race?.name ?? '(неизвестная гонка)',
+      driver_code: driver?.code ?? '?',
+      driver_name: driver?.name ?? '(неизвестный пилот)',
+      action,
+      reason,
+    };
+  } else {
+    return Response.json({ error: `неизвестный event_type: ${body.event_type}` }, { status: 400 });
+  }
+
+  const text = buildMessage(resolved);
+
+  // pool_change — редкое и важное для игроков сообщение (замена/травма пилота), в отличие от
+  // registration/prediction (породивших правило тихих часов) откладывать на утро не нужно —
+  // уходит в общий чат сразу и безусловно, независимо от тихих часов админ-чата ниже.
+  if (resolved.event_type === 'pool_change') {
+    const generalChatId = Deno.env.get('TELEGRAM_CHAT_ID');
+    if (!generalChatId) {
+      return Response.json({ error: 'TELEGRAM_CHAT_ID не настроен' }, { status: 500 });
+    }
+    const generalRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: generalChatId, text, parse_mode: 'HTML' }),
+    });
+    const generalData = await generalRes.json();
+    if (!generalData.ok) {
+      // Не прерываем запрос — реальное изменение пула уже произошло, и админ должен узнать
+      // о нём независимо от того, ушло ли сообщение в общий чат игрокам.
+      console.error(`admin-notify: Telegram API error (общий чат): ${JSON.stringify(generalData)}`);
+      warnings.push(`замена пилота не ушла в общий чат: ${JSON.stringify(generalData)}`);
+    }
+  }
+
+  if (isQuietHours(new Date())) {
+    const { error } = await (supabaseAdmin.from('admin_notification_queue') as any).insert({ text });
+    if (error) {
+      return Response.json({ error: `queue insert: ${error.message}` }, { status: 500 });
+    }
+    return Response.json({ queued: true });
+  }
+
+  const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text, parse_mode: 'HTML' }),
+  });
+  const data = await res.json();
+  if (!data.ok) {
+    return Response.json({ error: `Telegram API error: ${JSON.stringify(data)}` }, { status: 500 });
+  }
+  return Response.json({ sent: true });
 }
 
 export default {
@@ -149,167 +321,21 @@ export default {
   // Осознанный риск, принят на code review: худший случай — спам в личку админа
   // в Telegram (можно замьютить/заблокировать), утечки данных нет. Не оверсайт.
   fetch: withSupabase({ auth: 'publishable' }, async (req, ctx) => {
-    const botToken = Deno.env.get('TELEGRAM_BOT_TOKEN');
-    if (!botToken) {
-      return Response.json({ error: 'TELEGRAM_BOT_TOKEN не настроен' }, { status: 500 });
-    }
-    if (!ADMIN_CHAT_ID) {
-      return Response.json({ error: 'TELEGRAM_ADMIN_CHAT_ID не настроен' }, { status: 500 });
-    }
-
-    let body: { event_type?: string; payload?: Record<string, unknown> };
+    const warnings: string[] = [];
+    let res: Response;
     try {
-      body = await req.json();
-    } catch {
-      return Response.json({ error: 'некорректный JSON' }, { status: 400 });
+      res = await handle(req, ctx, warnings);
+    } catch (e) {
+      res = Response.json({ error: (e as Error).message }, { status: 500 });
     }
-
-    const { supabaseAdmin } = ctx;
-    const usersTable = supabaseAdmin.from('users') as any;
-    const racesTable = supabaseAdmin.from('races') as any;
-    let resolved: ResolvedEvent;
-
-    if (body.event_type === 'registration') {
-      const displayName = body.payload?.display_name;
-      resolved = {
-        event_type: 'registration',
-        display_name: typeof displayName === 'string' ? displayName : '(без имени)',
-      };
-    } else if (body.event_type === 'prediction') {
-      const { data: user, error: userError } = await usersTable
-        .select('display_name')
-        .eq('id', body.payload?.user_id)
-        .maybeSingle();
-      if (userError) {
-        console.error(`admin-notify: ошибка lookup users (id=${body.payload?.user_id}):`, userError.message);
-      }
-      const { data: race, error: raceError } = await racesTable
-        .select('name, season')
-        .eq('id', body.payload?.race_id)
-        .maybeSingle();
-      if (raceError) {
-        console.error(`admin-notify: ошибка lookup races (id=${body.payload?.race_id}):`, raceError.message);
-      }
-      const displayName = user?.display_name ?? '(неизвестный участник)';
-      const raceNameText = race?.name ?? '(неизвестная гонка)';
-
-      // Шутка — украшение, а не суть события. Любой сбой (нет ключа, Gemini лежит, таймаут,
-      // мусор в ответе) гасим здесь и уходим со старым сухим текстом: админ обязан узнать
-      // о прогнозе в любом случае.
-      let joke: string | null = null;
-      try {
-        joke = await makeJoke(
-          supabaseAdmin,
-          String(body.payload?.user_id),
-          Number(body.payload?.race_id),
-          displayName,
-          raceNameText,
-          race?.season,
-        );
-      } catch (e) {
-        console.warn(`admin-notify: шутка не сгенерирована: ${(e as Error).message}`);
-      }
-
-      resolved = {
-        event_type: 'prediction',
-        display_name: displayName,
-        race_name: raceNameText,
-        joke: joke ?? undefined,
-      };
-    } else if (body.event_type === 'result') {
-      const { data: race, error: raceError } = await racesTable
-        .select('name')
-        .eq('id', body.payload?.race_id)
-        .maybeSingle();
-      if (raceError) {
-        console.error(`admin-notify: ошибка lookup races (id=${body.payload?.race_id}):`, raceError.message);
-      }
-      resolved = { event_type: 'result', race_name: race?.name ?? '(неизвестная гонка)' };
-    } else if (body.event_type === 'pool_change') {
-      const driversTable = supabaseAdmin.from('drivers') as any;
-      const poolTable = supabaseAdmin.from('race_driver_pool') as any;
-      const { data: race, error: raceError } = await racesTable
-        .select('name')
-        .eq('id', body.payload?.race_id)
-        .maybeSingle();
-      if (raceError) {
-        console.error(`admin-notify: ошибка lookup races (id=${body.payload?.race_id}):`, raceError.message);
-      }
-      const { data: driver, error: driverError } = await driversTable
-        .select('code, name')
-        .eq('id', body.payload?.driver_id)
-        .maybeSingle();
-      if (driverError) {
-        console.error(`admin-notify: ошибка lookup drivers (id=${body.payload?.driver_id}):`, driverError.message);
-      }
-      // Не доверяем action/reason из payload напрямую — сообщение может описывать только то, что
-      // РЕАЛЬНО сейчас в БД, иначе кто угодно с публичным anon-ключом мог бы разослать в общий чат
-      // произвольный выдуманный текст под видом настоящей замены пилота.
-      const { data: poolRow, error: poolError } = await poolTable
-        .select('out_reason, added_reason')
-        .eq('race_id', body.payload?.race_id)
-        .eq('driver_id', body.payload?.driver_id)
-        .maybeSingle();
-      if (poolError) {
-        console.error(`admin-notify: ошибка lookup race_driver_pool (race_id=${body.payload?.race_id}, driver_id=${body.payload?.driver_id}):`, poolError.message);
-      }
-      if (!poolRow) {
-        return Response.json({ error: 'pool_change: пилот не найден в пуле этой гонки' }, { status: 404 });
-      }
-      const action = poolRow.out_reason ? 'out' : 'added';
-      const reason = (action === 'out' ? poolRow.out_reason : poolRow.added_reason) ?? undefined;
-      resolved = {
-        event_type: 'pool_change',
-        race_name: race?.name ?? '(неизвестная гонка)',
-        driver_code: driver?.code ?? '?',
-        driver_name: driver?.name ?? '(неизвестный пилот)',
-        action,
-        reason,
-      };
+    // 4xx (кривой JSON, неизвестный event_type, чужой пилот) — это запросы извне с anon-ключом,
+    // а не наш сбой: в пульс не пишем, иначе любой желающий мог бы засыпать админа тревогами.
+    if (res.status >= 500) {
+      const body = await res.clone().json().catch(() => ({}));
+      await recordProblems(ctx.supabaseAdmin, false, [String(body.error ?? `HTTP ${res.status}`), ...warnings]);
     } else {
-      return Response.json({ error: `неизвестный event_type: ${body.event_type}` }, { status: 400 });
+      await recordProblems(ctx.supabaseAdmin, true, warnings);
     }
-
-    const text = buildMessage(resolved);
-
-    // pool_change — редкое и важное для игроков сообщение (замена/травма пилота), в отличие от
-    // registration/prediction (породивших правило тихих часов) откладывать на утро не нужно —
-    // уходит в общий чат сразу и безусловно, независимо от тихих часов админ-чата ниже.
-    if (resolved.event_type === 'pool_change') {
-      const generalChatId = Deno.env.get('TELEGRAM_CHAT_ID');
-      if (!generalChatId) {
-        return Response.json({ error: 'TELEGRAM_CHAT_ID не настроен' }, { status: 500 });
-      }
-      const generalRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: generalChatId, text, parse_mode: 'HTML' }),
-      });
-      const generalData = await generalRes.json();
-      if (!generalData.ok) {
-        // Не прерываем запрос — реальное изменение пула уже произошло, и админ должен узнать
-        // о нём независимо от того, ушло ли сообщение в общий чат игрокам.
-        console.error(`admin-notify: Telegram API error (общий чат): ${JSON.stringify(generalData)}`);
-      }
-    }
-
-    if (isQuietHours(new Date())) {
-      const { error } = await (supabaseAdmin.from('admin_notification_queue') as any).insert({ text });
-      if (error) {
-        return Response.json({ error: `queue insert: ${error.message}` }, { status: 500 });
-      }
-      return Response.json({ queued: true });
-    }
-
-    const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text, parse_mode: 'HTML' }),
-    });
-    const data = await res.json();
-    if (!data.ok) {
-      return Response.json({ error: `Telegram API error: ${JSON.stringify(data)}` }, { status: 500 });
-    }
-    return Response.json({ sent: true });
+    return res;
   }),
 };

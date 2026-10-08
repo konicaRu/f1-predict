@@ -1,4 +1,4 @@
-const { q, close } = require('./lib');
+const { q, close, recordRun } = require('./lib');
 const { fetchJolpicaResults } = require('./jolpica');
 const { fetchOpenF1Results } = require('./openf1');
 
@@ -13,6 +13,7 @@ async function main() {
   );
   if (races.length === 0) {
     console.log('autoresults: просроченных гонок нет');
+    await recordRun('autoresults', true);
     await close();
     return;
   }
@@ -22,6 +23,9 @@ async function main() {
   let entered = 0;
   let pending = 0;
   let failed = 0;
+  // Сбой по отдельной гонке прогон не валит (остальные гонки заносятся), но раньше он оставался
+  // только в логе Actions. Теперь уходит в пульс — сторож сообщит админу.
+  const warnings = [];
 
   for (const r of races) {
     try {
@@ -41,16 +45,20 @@ async function main() {
       entered++;
     } catch (e) {
       console.error(`autoresults: ${r.name} — ошибка: ${e.message}`);
+      warnings.push(`${r.name}: ${e.message}`);
       failed++;
     }
   }
 
   console.log(`autoresults: итог — занесено ${entered}, источники пока пусты ${pending}, ошибок ${failed}`);
 
+  await recordRun('autoresults', true, warnings);
   await close();
 }
 
-main().catch((e) => {
+main().catch(async (e) => {
   console.error('ERR', e.message);
+  await recordRun('autoresults', false, [e.message]);
+  await close();
   process.exit(1);
 });
