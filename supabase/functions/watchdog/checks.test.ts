@@ -228,13 +228,23 @@ Deno.test('planNotifications: разовый инцидент без напом�
   assertEquals(planNotifications([warn], [], NOW).text, null);
 });
 
-Deno.test('planNotifications: восстановилось и «было в тихие часы»', () => {
+// Решение пользователя 2026-10-09: сообщения только о проблемах. «Восстановилось» и «был сбой в
+// тихие часы» — информационный шум (прилетали пачкой в 10:00 про вчерашнее и ещё раз в 12:00).
+Deno.test('planNotifications: восстановление молчит, но инциденты закрываются без повторов', () => {
   const recovered = incident({ id: 3, notified_at: '2026-10-08T08:00:00Z', resolved_at: '2026-10-08T09:40:00Z' });
   const passed = incident({ id: 4, key: 'keepalive_stale', details: 'Keepalive молчит', opened_at: '2026-10-08T00:00:00Z', resolved_at: '2026-10-08T03:00:00Z' });
   const p = planNotifications([], [recovered, passed], NOW);
-  assert(p.text!.includes('✅ <b>Восстановилось</b>'));
-  assert(p.text!.includes('Был сбой в тихие часы'));
+  assertEquals(p.text, null);
   assertEquals(p.resolutionNotifiedIds, [3, 4]);
+});
+
+Deno.test('planNotifications: новая проблема уходит, а рядом лежащее восстановление в текст не попадает', () => {
+  const recovered = incident({ id: 3, notified_at: '2026-10-08T08:00:00Z', resolved_at: '2026-10-08T09:40:00Z' });
+  const p = planNotifications([incident({ id: 5, details: 'Новая беда' })], [recovered], NOW);
+  assert(p.text!.includes('🔴 <b>Новое</b>'));
+  assert(p.text!.includes('Новая беда'));
+  assert(!p.text!.includes('Восстановилось'));
+  assertEquals(p.resolutionNotifiedIds, [3]);
 });
 
 Deno.test('planNotifications: экранирует HTML в тексте инцидента', () => {

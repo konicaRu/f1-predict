@@ -1,6 +1,6 @@
 // supabase/functions/watchdog/index.ts — сторож. Запускается pg_cron раз в 15 минут (миграция 0028).
 // Собирает снимок состояния, сверяет с журналом инцидентов и шлёт админу одно сводное сообщение:
-// новые проблемы, напоминания раз в 6 ч, «восстановилось». Логика решений — в checks.ts (тесты).
+// новые проблемы и напоминания раз в 6 ч (о восстановлении не сообщаем). Логика решений — в checks.ts (тесты).
 import { withSupabase } from 'npm:@supabase/server';
 import { evaluate, isOneShot, planNotifications, RUNS_WINDOW_HOURS } from './checks.ts';
 import type { Incident, JobRun, Snapshot, WatchedRace } from './checks.ts';
@@ -116,7 +116,7 @@ async function runWatchdog(db: any) {
   }
   for (const i of open) {
     if (failingByKey.has(i.key)) continue;
-    // Разовым «восстановилось» не шлём — сразу помечаем, чтобы не тащить их в каждый план.
+    // Разовые закрываются сразу помеченными; остальным пометку ставит planNotifications (тоже без сообщения).
     const patch = isOneShot(i.key) ? { resolved_at: nowIso, resolution_notified_at: nowIso } : { resolved_at: nowIso };
     must(await db.from('watchdog_incidents').update(patch).eq('id', i.id), 'incidents/resolve');
   }

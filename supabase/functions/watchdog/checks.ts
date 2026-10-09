@@ -245,23 +245,15 @@ export function planNotifications(open: Incident[], resolvedPending: Incident[],
   const remind = open.filter(
     (i) => i.notified_at && !isOneShot(i.key) && now.getTime() - Date.parse(i.notified_at) >= REMIND_HOURS * H,
   );
-  const recovered = resolvedPending.filter((i) => !isOneShot(i.key) && i.notified_at);
-  const passed = resolvedPending.filter((i) => !isOneShot(i.key) && !i.notified_at);
-
+  // «Восстановилось» и «был сбой в тихие часы» не шлём — решение пользователя 2026-10-09: сообщать
+  // только о проблемах. Закрытые инциденты всё равно помечаем обработанными (resolutionNotifiedIds ниже),
+  // иначе они копились бы в выборке каждые 15 минут.
   const sections: string[] = [];
   const bullets = (items: Incident[], suffix: (i: Incident) => string = () => '') =>
     items.map((i) => `• ${escapeHtml(i.details)}${suffix(i)}`).join('\n');
 
   if (fresh.length) sections.push(`🔴 <b>Новое</b>\n${bullets(fresh)}`);
   if (remind.length) sections.push(`⏰ <b>Всё ещё не починено</b>\n${bullets(remind, (i) => ` (с ${fmtMsk(i.opened_at)})`)}`);
-  if (recovered.length) {
-    sections.push(`✅ <b>Восстановилось</b>\n${bullets(recovered, (i) => ` (было с ${fmtMsk(i.opened_at)} по ${fmtMsk(i.resolved_at!)})`)}`);
-  }
-  if (passed.length) {
-    sections.push(
-      `ℹ️ <b>Был сбой в тихие часы, уже прошёл</b>\n${bullets(passed, (i) => ` (с ${fmtMsk(i.opened_at)} по ${fmtMsk(i.resolved_at!)})`)}`,
-    );
-  }
 
   let text: string | null = null;
   if (sections.length) {
@@ -274,7 +266,7 @@ export function planNotifications(open: Incident[], resolvedPending: Incident[],
   return {
     text,
     notifiedIds: [...fresh, ...remind].map((i) => i.id),
-    // Разовые сюда тоже попадают — помечаем без сообщения, чтобы не тащить их каждые 15 минут.
+    // Все закрытые помечаем без сообщения (и разовые, и восстановившиеся) — не тащить каждые 15 минут.
     resolutionNotifiedIds: resolvedPending.map((i) => i.id),
   };
 }

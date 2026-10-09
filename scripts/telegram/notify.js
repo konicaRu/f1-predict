@@ -453,7 +453,7 @@ const ALERT_REMIND_MS = 6 * 60 * 60 * 1000;
 
 // Обратное наблюдение. Сторож живёт в Supabase (pg_cron) и сообщает обо всём, кроме собственной
 // смерти — её видно только отсюда, из независимой инфраструктуры GitHub Actions. Повторы гасит тот же
-// журнал watchdog_incidents, а закроет инцидент и пришлёт «восстановилось» сам оживший сторож.
+// журнал watchdog_incidents, а закроет инцидент (молча — о восстановлении не сообщаем) сам оживший сторож.
 async function checkWatchdogAlive(now = new Date()) {
   const { rows } = await q("select max(ran_at) as last from job_runs where job = 'watchdog' and ok");
   const last = rows[0].last;
