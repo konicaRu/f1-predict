@@ -12,6 +12,13 @@ export default function RedeemInvite() {
   const nav = useNavigate();
   const { refreshMembership, signOut } = useAuth();
 
+  // Сюда попадают и те, кто уже в лиге, но Telegram впустил их под пустым аккаунтом (см. AuthContext):
+  // выходим из него и ведём на обычный вход по email и паролю.
+  async function toLogin() {
+    await signOut();
+    nav('/login');
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setErr('');
@@ -36,7 +43,8 @@ export default function RedeemInvite() {
       <input placeholder="инвайт-код" value={code} onChange={(e) => setCode(e.target.value)} required />
       {err && <p className="auth-err">{err}</p>}
       <button disabled={busy} type="submit">{busy ? '…' : 'Вступить'}</button>
-      <p><button type="button" className="link-btn" onClick={() => signOut()}>Выйти</button></p>
+      <p>Уже есть аккаунт в лиге?</p>
+      <button type="button" onClick={toLogin}>Войти по паролю</button>
     </form>
   );
 }

@@ -47,7 +47,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async function init() {
       const tg = (window as any).Telegram?.WebApp;
       const initData: string | undefined = tg?.initData;
+      // Уже вошёл как участник лиги (например, по email и паролю) — Telegram-вход не трогаем: он
+      // подменил бы сессию пустым аккаунтом tg<id>@..., и человек снова упёрся бы в «Вступление в лигу».
+      // Не смогли проверить (сеть/ошибка) -> считаем «не участник» и идём прежним путём.
+      let alreadyMember = false;
       if (initData) {
+        try {
+          const { data: existing } = await supabase.auth.getSession();
+          if (existing.session) {
+            const { data: row } = await supabase.from('users').select('id').eq('id', existing.session.user.id).maybeSingle();
+            alreadyMember = !!row;
+          }
+        } catch {
+          alreadyMember = false;
+        }
+      }
+      if (initData && !alreadyMember) {
         try {
           const { data, error } = await supabase.functions.invoke('telegram-auth', {
             body: { initData },
