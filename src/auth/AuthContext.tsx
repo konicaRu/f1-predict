@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { withRetry } from '../lib/db';
@@ -21,7 +21,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [membershipError, setMembershipError] = useState(false);
 
+  // Проверки членства могут идти одновременно (старт, смена сессии, ручное обновление) и приходить
+  // не по порядку. Применяем только результат самой последней — иначе запоздавший ответ про СТАРУЮ
+  // сессию (например пустой Telegram-аккаунт) затирает верный ответ про нового пользователя, и
+  // участник после входа по паролю снова видит «Вступление в лигу» (живой случай 2026-10-12).
+  const membershipSeq = useRef(0);
+
   async function loadMembership(s: Session | null) {
+    const seq = ++membershipSeq.current;
+    const isLatest = () => seq === membershipSeq.current;
     if (!s) {
       setIsMember(false);
       setIsAdmin(false);
@@ -33,13 +41,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         supabase.from('users').select('is_admin').eq('id', s.user.id).maybeSingle(),
       );
       if (error) throw error;
+      if (!isLatest()) return;
       setIsMember(!!data);
       setIsAdmin(!!data?.is_admin);
       setMembershipError(false);
     } catch {
       // Транзиентный сетевой сбой (после исчерпания ретраев) -> не значит "не участник",
       // просто не смогли проверить. ProtectedRoute покажет "Повторить" вместо /redeem.
-      setMembershipError(true);
+      if (isLatest()) setMembershipError(true);
     }
   }
 
@@ -94,7 +103,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isMember,
     isAdmin,
     membershipError,
-    refreshMembership: () => loadMembership(session),
+    // Свежая сессия из хранилища, а не `session` из замыкания: сразу после входа state ещё старый.
+    refreshMembership: async () => {
+      const { data } = await supabase.auth.getSession();
+      await loadMembership(data.session);
+    },
     signOut: async () => {
       await supabase.auth.signOut();
     },

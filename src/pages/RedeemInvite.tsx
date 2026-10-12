@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { redeemInvite } from '../lib/db';
 import { useAuth } from '../auth/AuthContext';
@@ -10,7 +10,13 @@ export default function RedeemInvite() {
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
   const nav = useNavigate();
-  const { refreshMembership, signOut } = useAuth();
+  const { refreshMembership, signOut, isMember } = useAuth();
+
+  // Проверка членства может закончиться уже ПОСЛЕ того, как экран показался (вход по паролю, медленная
+  // сеть) — участнику тут делать нечего, сразу в кабинет.
+  useEffect(() => {
+    if (isMember) nav('/', { replace: true });
+  }, [isMember, nav]);
 
   // Сюда попадают и те, кто уже в лиге, но Telegram впустил их под пустым аккаунтом (см. AuthContext):
   // выходим из него и ведём на обычный вход по email и паролю.
