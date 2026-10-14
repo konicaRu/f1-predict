@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
+import { AnalyticsTracker } from './auth/AnalyticsTracker';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import { AdminRoute } from './auth/AdminRoute';
 import { RootRedirect } from './auth/RootRedirect';
@@ -23,6 +24,7 @@ export default function App() {
   return (
     <BrowserRouter basename="/f1-predict">
       <AuthProvider>
+        <AnalyticsTracker />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

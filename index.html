@@ -8,6 +8,32 @@
          стороне без анонса (канонический URL в их доке содержит query-версию, напр. ?63) — захардко-
          женный SRI-хеш сломает Mini App при следующем обновлении скрипта, без понятной ошибки. -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Google Analytics 4 (поток данных этого сайта; идентификатор не секрет — виден в коде страницы).
+         gtag() определён всегда (вызовы из src/lib/analytics.ts безопасны), а внешний скрипт грузится
+         только на боевом хосте — локальная разработка и превью не засоряют статистику.
+         send_page_view: false — просмотры шлёт AnalyticsTracker на каждую смену маршрута (SPA).
+         Персонализация рекламы и сигналы Google отключены: нужна только статистика посещений.
+         Без Subresource Integrity намеренно — по той же причине, что и у скрипта Telegram выше:
+         Google обновляет gtag.js на своей стороне без анонса, зашитый хеш сломал бы аналитику. -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-MB31GCLRLB', {
+        send_page_view: false,
+        // Адрес без query и fragment: на /reset в fragment лежат токены восстановления пароля, а
+        // автособытия gtag (первый визит, сессия) берут полный location.href. См. src/lib/analytics.ts.
+        page_location: location.origin + location.pathname,
+        allow_google_signals: false,
+        allow_ad_personalization_signals: false,
+      });
+      if (location.hostname === 'konicaru.github.io') {
+        var ga = document.createElement('script');
+        ga.async = true;
+        ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-MB31GCLRLB';
+        document.head.appendChild(ga);
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

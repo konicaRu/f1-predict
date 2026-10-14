@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getRaceWithPool, getMyPrediction, savePrediction, nextOpenRace, getVotedUserIds, listUsers } from '../lib/db';
 import type { Driver, Race, LeagueUser } from '../lib/types';
 import { SaveError } from '../lib/types';
+import { trackEvent } from '../lib/analytics';
 import { isPast, formatCountdown } from '../lib/countdown';
 import { PredictionSlots } from '../components/PredictionSlots';
 import { DriverPool } from '../components/DriverPool';
@@ -111,6 +112,7 @@ export default function Predict() {
     setMsg('');
     try {
       await savePrediction(race.id, slots as string[]);
+      trackEvent('prediction_saved', { race_id: race.id });
       setMsg('Прогноз сохранён');
       // Обновление списка проголосовавших — best-effort: сам прогноз уже сохранён,
       // сбой здесь не должен показывать пользователю ложную ошибку сохранения.

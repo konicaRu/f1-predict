@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { redeemInvite } from '../lib/db';
 import { useAuth } from '../auth/AuthContext';
+import { trackEvent } from '../lib/analytics';
 
 export default function RedeemInvite() {
   const tgUser = (window as any).Telegram?.WebApp?.initDataUnsafe?.user;
@@ -21,6 +22,7 @@ export default function RedeemInvite() {
   // Сюда попадают и те, кто уже в лиге, но Telegram впустил их под пустым аккаунтом (см. AuthContext):
   // выходим из него и ведём на обычный вход по email и паролю.
   async function toLogin() {
+    trackEvent('redeem_to_login');
     await signOut();
     nav('/login');
   }
@@ -37,6 +39,7 @@ export default function RedeemInvite() {
       return;
     }
     setBusy(false);
+    trackEvent('sign_up', { method: 'telegram_invite' });
     await refreshMembership();
     nav('/');
   }

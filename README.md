@@ -441,6 +441,7 @@ node notify.js raceweek   # или deadline / results / remind
 | Данные F1 | [Jolpica API](https://api.jolpi.ca) (Ergast-совместимый), фолбэк — OpenF1 |
 | ИИ-игрок | Gemini API (структурированный JSON), собственный сезон + 3 прошлых сезона через Jolpica |
 | Автоматика | GitHub Actions (cron): keep-alive, напоминания, автозабор результатов, GridBot |
+| Аналитика | Google Analytics 4 (поток `G-MB31GCLRLB`, тег в `index.html`): просмотры страниц и события `login`/`sign_up`/`prediction_saved`, к каждому пользователю привязан только UUID аккаунта (имена, почты и прогнозы не передаются); адрес страницы уходит без `?`/`#`, потому что на `/reset` в нём токены восстановления пароля. На localhost тег не грузится |
 | Уведомления | Telegram Bot API → общий чат лиги |
 | Бэкап | Экспорт снэпшота в Google Sheets по запросу |
 

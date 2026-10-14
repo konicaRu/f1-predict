@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../auth/AuthContext';
 import PasswordInput from '../components/PasswordInput';
+import { trackEvent } from '../lib/analytics';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -30,6 +31,7 @@ export default function Signup() {
       setErr('Код неверный или регистрация не завершена: ' + e2.message);
       return;
     }
+    trackEvent('sign_up', { method: 'invite' });
     await refreshMembership();
     nav('/');
   }
