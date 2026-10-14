@@ -42,9 +42,6 @@ export type Plan = { text: string | null; notifiedIds: number[]; resolutionNotif
 const H = 60 * 60 * 1000;
 
 export const RUNS_WINDOW_HOURS = 48;
-// Слот results идёт каждые 2 ч, но GitHub сам опаздывает до ~2 ч под нагрузкой (живьём неделя
-// 2026-10-01..07: запуски в 08:31, 14:25, 17:22 вместо :05). 4 ч — уже не опоздание, а пропажа.
-export const GHA_SILENT_HOURS = 4;
 export const KEEPALIVE_STALE_HOURS = 26; // слоты 2 раза в сутки + запас на опоздание
 export const GRIDBOT_DEADLINE_HOURS = 6;
 export const RESULT_MISSING_HOURS = 12;
@@ -126,10 +123,6 @@ function clip(s: string, max = 300): string {
   return one.length > max ? `${one.slice(0, max)}…` : one;
 }
 
-function hoursAgo(iso: string, now: Date): string {
-  return ((now.getTime() - Date.parse(iso)) / H).toFixed(1);
-}
-
 export function evaluate(s: Snapshot): Failing[] {
   const out = new Map<string, Failing>();
   const add = (key: string, details: string) => {
@@ -138,20 +131,11 @@ export function evaluate(s: Snapshot): Failing[] {
   const now = s.now.getTime();
   const msk = mskParts(s.now);
 
-  // 1. GitHub Actions не запускается вообще — главный сценарий 2026-10-08.
+  // 1. Отдельного сигнала «GitHub Actions молчит N часов» нет — убран по решению пользователя
+  // 2026-10-14: пропуски планировщика GitHub частые, руками их не исправить, а автоматика идемпотентна
+  // и догоняет на следующем запуске. Тревожим только о последствиях (пункты 4-8) и о долгом
+  // молчании через keepalive > 26 ч.
   const gha = s.runs.filter((r) => isGhaJob(r.job));
-  if (s.everHadGhaRun) {
-    const last = gha.reduce<JobRun | null>((a, r) => (!a || Date.parse(r.ran_at) > Date.parse(a.ran_at) ? r : a), null);
-    if (!last) {
-      add('gha_silent', `GitHub Actions молчит больше ${RUNS_WINDOW_HOURS} ч — напоминания, автозабор результатов и разгрузка очереди не выполняются.`);
-    } else if (now - Date.parse(last.ran_at) > GHA_SILENT_HOURS * H) {
-      add(
-        'gha_silent',
-        `GitHub Actions молчит: последний прогон автоматики был ${fmtMsk(last.ran_at)} МСК (${hoursAgo(last.ran_at, s.now)} ч назад). ` +
-          `Напоминания, автозабор результатов и разгрузка очереди не выполняются.`,
-      );
-    }
-  }
 
   // 2. Последний прогон задачи GitHub Actions упал — инцидент до следующего успешного прогона.
   const latest = new Map<string, JobRun>();

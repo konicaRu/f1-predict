@@ -59,22 +59,20 @@ Deno.test('evaluate: здоровое состояние — проблем не
   assertEquals(evaluate(snap({ races: [race()] })), []);
 });
 
-Deno.test('evaluate: сценарий 2026-10-08 — последний прогон 05:50, сейчас 09:53 → GitHub молчит', () => {
-  const f = evaluate(snap({ runs: [run('notify:results', '2026-10-08T05:50:40Z')] }));
-  assertEquals(f.map((x) => x.key), ['gha_silent']);
-  assert(f[0].details.includes('08.10 08:50 МСК'));
+// Решение пользователя 2026-10-14: сигнал «GitHub Actions молчит» убран — пропуски планировщика
+// GitHub не исправить руками, а автоматика сама догоняет на следующем запуске. О реальных последствиях
+// сообщают проверки ниже (GridBot, напоминание, анонс, результат, очередь, keepalive > 26 ч).
+Deno.test('evaluate: молчание GitHub 6 ч само по себе тревогу не поднимает', () => {
+  assertEquals(keys(snap({ runs: [run('notify:results', '2026-10-08T03:50:00Z')] })), []);
 });
 
-Deno.test('evaluate: прогон 3 ч назад — это ещё опоздание GitHub, не тревога', () => {
-  assertEquals(keys(snap({ runs: [run('notify:results', '2026-10-08T06:53:00Z')] })), []);
+Deno.test('evaluate: в окне 48 ч ни одного прогона GitHub — тоже без отдельной тревоги', () => {
+  assertEquals(keys(snap({ runs: [] })), []);
 });
 
-Deno.test('evaluate: до первого пульса нового кода «GitHub молчит» не поднимаем', () => {
-  assertEquals(keys(snap({ runs: [], everHadGhaRun: false })), []);
-});
-
-Deno.test('evaluate: пульс был когда-то, но в окне 48 ч пусто → GitHub молчит', () => {
-  assertEquals(keys(snap({ runs: [] })), ['gha_silent']);
+Deno.test('evaluate: долгое молчание GitHub ловится через keepalive > 26 ч', () => {
+  const f = keys(snap({ runs: [], keepalivePingedAt: '2026-10-07T06:00:00Z' })); // 27.9 ч назад
+  assertEquals(f, ['keepalive_stale']);
 });
 
 Deno.test('evaluate: последний прогон задачи упал → job_failed', () => {
@@ -193,8 +191,8 @@ Deno.test('evaluate: напоминание о дедлайне не прове�
 function incident(over: Partial<Incident> = {}): Incident {
   return {
     id: 1,
-    key: 'gha_silent',
-    details: 'GitHub Actions молчит',
+    key: 'keepalive_stale',
+    details: 'Keepalive не пинговал БД',
     opened_at: '2026-10-08T09:50:00Z',
     notified_at: null,
     resolved_at: null,
@@ -211,7 +209,7 @@ Deno.test('planNotifications: в тихие часы ничего не шлём 
 Deno.test('planNotifications: новый инцидент — в разделе «Новое»', () => {
   const p = planNotifications([incident()], [], NOW);
   assert(p.text!.includes('🔴 <b>Новое</b>'));
-  assert(p.text!.includes('GitHub Actions молчит'));
+  assert(p.text!.includes('Keepalive не пинговал БД'));
   assertEquals(p.notifiedIds, [1]);
 });
 
