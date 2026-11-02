@@ -156,7 +156,8 @@ body { margin: 0; background: var(--bg); color: var(--txt); font-family: Inter, 
 
 .drift { margin-top: 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
 .drift-title { font-family: 'Titillium Web'; font-weight: 700; font-size: 15px; margin: 0 0 12px; }
-.drift-canvas-wrap { overflow-x: auto; }
+.drift-canvas-wrap { width: 100%; min-width: 0; }
+.drift-canvas-wrap canvas { display: block; max-width: 100%; }
 .drift-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
 .drift-card { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 10px; text-align: center; display: flex; flex-direction: column; gap: 2px; }
 .drift-card-v { font-family: 'Titillium Web'; font-weight: 700; font-size: 20px; }
