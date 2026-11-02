@@ -2,12 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Driver } from '../lib/types';
 import { scoreDriftSlots, type DriftSlot } from '../lib/scoring';
 
-const WIDTH = 560;
+const MAX_WIDTH = 560;
 const ROW_H = 32;
 const TOP = 36;
 const MISS_ROW_H = 24;
-const LEFT_X = 150;
-const RIGHT_X = 410;
 
 const ACCURACY_COLOR: Record<DriftSlot['accuracy'], string> = {
   exact: '#4ade80',
@@ -30,6 +28,8 @@ export default function DriftChart({
   prediction, actual, drivers, playerName, raceName, points, exactHits,
 }: DriftChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(MAX_WIDTH);
   const [explainOpen, setExplainOpen] = useState(false);
   const slots = useMemo(
     () => (prediction ? scoreDriftSlots(prediction, actual) : []),
@@ -37,10 +37,26 @@ export default function DriftChart({
   );
 
   useEffect(() => {
+    const wrap = wrapRef.current;
+    if (!wrap || !prediction) return;
+    const resize = () => setWidth(Math.min(MAX_WIDTH, wrap.clientWidth));
+    resize();
+    const observer = new ResizeObserver(resize);
+    observer.observe(wrap);
+    return () => observer.disconnect();
+  }, [prediction]);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !prediction) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    if (width <= 0) return;
+    // Keep text at its readable size; narrow only the space between the columns.
+    const WIDTH = width;
+    const sideSpace = Math.min(150, Math.max(96, WIDTH * 0.27));
+    const LEFT_X = sideSpace;
+    const RIGHT_X = WIDTH - sideSpace;
 
     // Промахи (actualPos === null) не могут занимать строки 1-10 — та же строка
     // может понадобиться другому слоту с реальной (пусть и нулевой по очкам) позицией.
@@ -126,7 +142,7 @@ export default function DriftChart({
         ctx.fillText('мимо топ-10', RIGHT_X + 14, yRight + 4);
       }
     });
-  }, [prediction, slots, drivers]);
+  }, [prediction, slots, drivers, width]);
 
   if (!prediction) {
     return <div className="drift-empty">{playerName} не сделал(а) прогноз на эту гонку.</div>;
@@ -145,7 +161,7 @@ export default function DriftChart({
       <h3 className="drift-title">
         Прогноз {playerName} vs факт · {raceName} — {points} очков
       </h3>
-      <div className="drift-canvas-wrap">
+      <div className="drift-canvas-wrap" ref={wrapRef}>
         <canvas ref={canvasRef} />
       </div>
       <div className="drift-summary">
