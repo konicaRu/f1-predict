@@ -2,6 +2,8 @@
 
 # 🏁 F1 Predict
 
+[Интерактивная карта проекта](https://konicaru.github.io/f1-predict/map/)
+
 **Закрытая лига прогнозов на гонки Формулы-1 — для своих**
 
 [![Deploy to GitHub Pages](https://github.com/konicaRu/f1-predict/actions/workflows/deploy.yml/badge.svg)](https://github.com/konicaRu/f1-predict/actions/workflows/deploy.yml)
