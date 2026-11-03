@@ -1,0 +1,62 @@
+{
+  "checkedAt": "2026-11-03T08:57:09.179Z",
+  "issues": [],
+  "warnings": [
+    "Node 'table:supabase/migrations/0013_revoke_public_execute.sql:migration' has no edges (orphan)",
+    "Node 'document:CLAUDE.md' has no edges (orphan)",
+    "Node 'document:docs/promo-video-script.md' has no edges (orphan)",
+    "Node 'document:docs/telegram-guide.txt' has no edges (orphan)"
+  ],
+  "stats": {
+    "totalNodes": 384,
+    "totalEdges": 1080,
+    "totalLayers": 10,
+    "tourSteps": 12,
+    "nodeTypes": {
+      "file": 86,
+      "function": 176,
+      "class": 1,
+      "pipeline": 3,
+      "table": 45,
+      "schema": 1,
+      "document": 58,
+      "config": 14
+    },
+    "edgeTypes": {
+      "contains": 197,
+      "exports": 124,
+      "imports": 114,
+      "calls": 206,
+      "tested_by": 8,
+      "deploys": 1,
+      "triggers": 6,
+      "migrates": 69,
+      "documents": 316,
+      "configures": 24,
+      "related": 14,
+      "depends_on": 1
+    }
+  },
+  "coverage": {
+    "schemaValid": true,
+    "files": 191,
+    "missingFiles": [],
+    "unexpectedFiles": [],
+    "missingSymbols": [],
+    "problems": []
+  },
+  "browser": {
+    "httpChecked": true,
+    "visualInspection": false,
+    "reason": "Computer Use browser host and native pipe unavailable"
+  },
+  "extractorNotes": [
+    "HTML, CSS и TXT прочитаны отдельно после пропуска парсером",
+    "Имена SQL-таблиц уточнены по CREATE из-за ограничения парсера"
+  ],
+  "tool": {
+    "name": "Understand Anything",
+    "version": "2.9.8",
+    "gitCommit": "4e6d3299017a7432da15957874992837a315c5b4"
+  }
+}

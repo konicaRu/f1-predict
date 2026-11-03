@@ -1,0 +1,5448 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "8d1f0e28fbf2f644bdb5a36ec043bd0993da265b",
+  "generatedAt": "2026-11-03T08:55:00.135Z",
+  "files": {
+    ".github/workflows/deploy.yml": {
+      "filePath": ".github/workflows/deploy.yml",
+      "contentHash": "0faac469067c0a612f322b43b3e07f181ffa2b1e6d0ef9cd8a3cc73cc8d2981c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 54,
+      "hasStructuralAnalysis": false
+    },
+    ".github/workflows/keepalive.yml": {
+      "filePath": ".github/workflows/keepalive.yml",
+      "contentHash": "77be3e4ef9ce1a6377fcd54bac0c2daa651b3fa9741d490c39544ac51439dea7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 49,
+      "hasStructuralAnalysis": false
+    },
+    ".github/workflows/telegram-notify.yml": {
+      "filePath": ".github/workflows/telegram-notify.yml",
+      "contentHash": "35044113ba4f4414abe677eadcb852cd6299d6872c7e8ca5ae2580860d3e4839",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 100,
+      "hasStructuralAnalysis": false
+    },
+    "ARCHITECTURE.md": {
+      "filePath": "ARCHITECTURE.md",
+      "contentHash": "3ca3fb784918771b1826a42341a5ba876d4566c4cbeb285c7c69c2a98c39cb71",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 595,
+      "hasStructuralAnalysis": false
+    },
+    "CLAUDE.md": {
+      "filePath": "CLAUDE.md",
+      "contentHash": "d887a8edcc4cb38e86a262007510254bf46efd6b2b412fe3a6011a12aaff2e67",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 117,
+      "hasStructuralAnalysis": false
+    },
+    "MEMORY.md": {
+      "filePath": "MEMORY.md",
+      "contentHash": "24dfda7149016c4194c7358a693b78a856f73a440f4c691cea9db0f55d19ea89",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1458,
+      "hasStructuralAnalysis": false
+    },
+    "README.md": {
+      "filePath": "README.md",
+      "contentHash": "2b6f410ce62b7d17d45fe7dc17ae440ef94f3c5914e699a40caadee70295a1df",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 520,
+      "hasStructuralAnalysis": false
+    },
+    "docs/constitution.md": {
+      "filePath": "docs/constitution.md",
+      "contentHash": "3e6671f149a46c73b261d88f7b8574a7b0691f36e6403e01502c49eee9b84f58",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 95,
+      "hasStructuralAnalysis": false
+    },
+    "docs/frontend.md": {
+      "filePath": "docs/frontend.md",
+      "contentHash": "d9d633d454bae6a7a4d348657d962d321cccd5cebf345f8d20e154144c2d8326",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 29,
+      "hasStructuralAnalysis": false
+    },
+    "docs/plan.md": {
+      "filePath": "docs/plan.md",
+      "contentHash": "04d8ab9af2aa0c3adde3e2a8e7c9974ce3550751cf939d3a5c941b9ae0dfb2f5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 709,
+      "hasStructuralAnalysis": false
+    },
+    "docs/promo-video-script.md": {
+      "filePath": "docs/promo-video-script.md",
+      "contentHash": "d8c1ed6fe3e26a67002e04af85d19a15405804a0adaba10f24fa524006baf62e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 116,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-06-29-phase0-supabase.md": {
+      "filePath": "docs/superpowers/plans/2026-06-29-phase0-supabase.md",
+      "contentHash": "2143d16ef7478efe6f09b04fc75cc8c5cf5523a038e02403eda5b1d2ebf8f6f8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 772,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-06-30-phase1-data.md": {
+      "filePath": "docs/superpowers/plans/2026-06-30-phase1-data.md",
+      "contentHash": "a9bbc7ce3672e2778034cb8092f0f33f8b68087b78ea122e34bcd4d6b3c4d7de",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 525,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-06-30-phase2a-scaffold-auth.md": {
+      "filePath": "docs/superpowers/plans/2026-06-30-phase2a-scaffold-auth.md",
+      "contentHash": "676b09cd28e64e3bca055d725b218de4262761d8dec77ce326f4f6d20b9e75a7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 739,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-07-05-phase2b-calendar-prediction.md": {
+      "filePath": "docs/superpowers/plans/2026-07-05-phase2b-calendar-prediction.md",
+      "contentHash": "6cddc37f71dbcb37859be8d6083202ce3a24d3d2f5d0d5f5e89b5efb208828d1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1049,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-07-14-phase2c-admin.md": {
+      "filePath": "docs/superpowers/plans/2026-07-14-phase2c-admin.md",
+      "contentHash": "1a99e52ae571c2d33f5d8b3ac977764cdbafc028dffe098d3e5c0279e1205a17",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 736,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-07-14-phase3-showcase.md": {
+      "filePath": "docs/superpowers/plans/2026-07-14-phase3-showcase.md",
+      "contentHash": "32b68da663e631f7a8afa84f440d23b4d90135af4e5b078b19a9c604033591a1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 644,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-07-15-password-reset.md": {
+      "filePath": "docs/superpowers/plans/2026-07-15-password-reset.md",
+      "contentHash": "dbfa720aa0bafe552f853c1953f003cb8c02678af3f2e874bd03434a65f15baf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 331,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-07-15-sheets-backup.md": {
+      "filePath": "docs/superpowers/plans/2026-07-15-sheets-backup.md",
+      "contentHash": "c7d87973f1c17d1da715ff661543760f5c53c8f9371480edf4ae21353eb1cdb5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 387,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-07-19-telegram-notify.md": {
+      "filePath": "docs/superpowers/plans/2026-07-19-telegram-notify.md",
+      "contentHash": "9206fb6bde34bb744cc8b0f022518c4da05caf996991d4bed2cbde64e2eda5ea",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 606,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-07-20-autoresults.md": {
+      "filePath": "docs/superpowers/plans/2026-07-20-autoresults.md",
+      "contentHash": "7c4ee040cfc1a9affa373e3d1a9805191dc026d94a1a39931a7cbfec038d0405",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 570,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-07-21-drift-chart.md": {
+      "filePath": "docs/superpowers/plans/2026-07-21-drift-chart.md",
+      "contentHash": "353089949fe3fdf74cd38b904749f27f701f2538965d78d073cc799dd410bcb9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 657,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-07-22-deadline-not-voted-list.md": {
+      "filePath": "docs/superpowers/plans/2026-07-22-deadline-not-voted-list.md",
+      "contentHash": "d32be5404b0da7f8c519ac06d0e4993d1b3484aba3930e04d28c85cb30e48b29",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 195,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-07-22-drift-chart-scoring-explanation.md": {
+      "filePath": "docs/superpowers/plans/2026-07-22-drift-chart-scoring-explanation.md",
+      "contentHash": "7d9d3f707fcc9c83b26374c76a25dcb5cb4c3679e999abd27db86432c637e72b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 112,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-07-22-predict-voted-list.md": {
+      "filePath": "docs/superpowers/plans/2026-07-22-predict-voted-list.md",
+      "contentHash": "4258a01d24fd807af92eb8534d6e9188a40c76d00c54289b305a5f0d6eea80d6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 417,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-07-22-rules-page.md": {
+      "filePath": "docs/superpowers/plans/2026-07-22-rules-page.md",
+      "contentHash": "d80dbab6e4599f042f097bedb5f9b7f15b0f438d5a2eb1af381c11102308ac75",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 206,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-07-22-telegram-results-message.md": {
+      "filePath": "docs/superpowers/plans/2026-07-22-telegram-results-message.md",
+      "contentHash": "455b863aba2f4153a8557422b73e3c7807497c6da43b7b761be66112f732e488",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 396,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-07-24-ai-player.md": {
+      "filePath": "docs/superpowers/plans/2026-07-24-ai-player.md",
+      "contentHash": "a7833f6f7c5e2ce992524227bbfc5549da18e95ab3c9792d44daf7f9396a337a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 881,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-07-27-guest-read-access.md": {
+      "filePath": "docs/superpowers/plans/2026-07-27-guest-read-access.md",
+      "contentHash": "e344ca105f974880defdbc518a7f1fd9025f1e5104bd0c849ac5622d95e5560e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 730,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-08-01-telegram-mini-app.md": {
+      "filePath": "docs/superpowers/plans/2026-08-01-telegram-mini-app.md",
+      "contentHash": "db782209c2c0e6c6f2847a8998921124b3e9cf77768b288ab7ebc91cbeeecd49",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 883,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-08-05-admin-notify.md": {
+      "filePath": "docs/superpowers/plans/2026-08-05-admin-notify.md",
+      "contentHash": "9a8e685e418c001051ebd4b47757d718c45b95d8e73264f7be8dddf53c676860",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 679,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-09-03-driver-pool-check.md": {
+      "filePath": "docs/superpowers/plans/2026-09-03-driver-pool-check.md",
+      "contentHash": "041a994c8394026c4d3825084058fafa9b53e21f9e0b25fb0faf56821608c2bd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1130,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-06-29-phase0-supabase-design.md": {
+      "filePath": "docs/superpowers/specs/2026-06-29-phase0-supabase-design.md",
+      "contentHash": "051f6ab29ff8ef260572e817731f227c6fd3b4c9a1eae8ada9e954682d1c6a44",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 213,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-06-30-phase1-data-design.md": {
+      "filePath": "docs/superpowers/specs/2026-06-30-phase1-data-design.md",
+      "contentHash": "77d060cbf17e8ae34440e3ff038d76786eb35fb4701d746c9d1c727fa7999424",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 104,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-06-30-phase2a-scaffold-auth-design.md": {
+      "filePath": "docs/superpowers/specs/2026-06-30-phase2a-scaffold-auth-design.md",
+      "contentHash": "cef492bcbc4122f68083c0ef9477255487fb75dee8c228dea5508a63b92ac92f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 139,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-07-05-phase2b-calendar-prediction-design.md": {
+      "filePath": "docs/superpowers/specs/2026-07-05-phase2b-calendar-prediction-design.md",
+      "contentHash": "f27182b465a4b8e1964eb5eab195f4691e9e054c4a42d0d0b184eb4c8fdf1fc9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 147,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-07-14-phase2c-admin-design.md": {
+      "filePath": "docs/superpowers/specs/2026-07-14-phase2c-admin-design.md",
+      "contentHash": "eb60fa1893896fb83873677939c6743bf9506298215bebdb15ee74c7066bf3d1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 125,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-07-14-phase3-showcase-design.md": {
+      "filePath": "docs/superpowers/specs/2026-07-14-phase3-showcase-design.md",
+      "contentHash": "05580701a2940dcff29f9d750bcebc3bf913a08b7e3429e90a2ee91f169e69fc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 110,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-07-15-password-reset-design.md": {
+      "filePath": "docs/superpowers/specs/2026-07-15-password-reset-design.md",
+      "contentHash": "7c4d677201d08c69bf76e5826268b52d681d5f787b533a6dd122188ec6f80fa3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 99,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-07-15-sheets-backup-design.md": {
+      "filePath": "docs/superpowers/specs/2026-07-15-sheets-backup-design.md",
+      "contentHash": "39e15444f99cb0e5a4e7315d65c79cd8163834d499f526b83e3eb52c340566c7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 105,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-07-19-telegram-notify-design.md": {
+      "filePath": "docs/superpowers/specs/2026-07-19-telegram-notify-design.md",
+      "contentHash": "beb9aaff11c6704f2fba0305f2564ed6cb389c5075d71a222e51449d311dc200",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 159,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-07-20-autoresults-design.md": {
+      "filePath": "docs/superpowers/specs/2026-07-20-autoresults-design.md",
+      "contentHash": "0e1c041dbcbe8fa3f4440fc419ea7db0bef939c6ce0aed2fd3a808b33d963f2e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 180,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-07-21-drift-chart-design.md": {
+      "filePath": "docs/superpowers/specs/2026-07-21-drift-chart-design.md",
+      "contentHash": "4b9bb71197ab7e566536df3d4ed1a307af39a0817cc061768e34881013ba84f9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 133,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-07-22-deadline-not-voted-list.md": {
+      "filePath": "docs/superpowers/specs/2026-07-22-deadline-not-voted-list.md",
+      "contentHash": "84f84010d430e0d9058ba4692cbf976261d05ae444b0a78b66f70f0f2bc8e9b9",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 76,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-07-22-drift-chart-scoring-explanation.md": {
+      "filePath": "docs/superpowers/specs/2026-07-22-drift-chart-scoring-explanation.md",
+      "contentHash": "921821c86000f68e5f4095e29aff8b40f3ab811753db2e90f099b6b3e8d6233b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 89,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-07-22-predict-voted-list.md": {
+      "filePath": "docs/superpowers/specs/2026-07-22-predict-voted-list.md",
+      "contentHash": "5b4fb65d661a1541c9129d23e628e1cfe70cf482c0961d5b6918e60248b1ca62",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 90,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-07-22-rules-page.md": {
+      "filePath": "docs/superpowers/specs/2026-07-22-rules-page.md",
+      "contentHash": "554be6a4223f0b0e8a23394e7fcac7ce42a7a0fa4cfc34346f43c6d9c9530361",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 95,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-07-22-telegram-results-message-design.md": {
+      "filePath": "docs/superpowers/specs/2026-07-22-telegram-results-message-design.md",
+      "contentHash": "1847eb7d64147fa69f4eb7ad2f4d1155a56099c1962ffeb839d8f1e054b1066a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 115,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-07-24-ai-player-design.md": {
+      "filePath": "docs/superpowers/specs/2026-07-24-ai-player-design.md",
+      "contentHash": "ec233e1fd23c033ef6656df50d98fda3f1dde07065c1e15af17c5cb0bd9c032b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 127,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-07-27-guest-read-access-design.md": {
+      "filePath": "docs/superpowers/specs/2026-07-27-guest-read-access-design.md",
+      "contentHash": "fd3fb4c930e977a9e9dd0c6356318071cd6e611fea87efa797a0ee494c7290cb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 92,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-08-01-telegram-mini-app-design.md": {
+      "filePath": "docs/superpowers/specs/2026-08-01-telegram-mini-app-design.md",
+      "contentHash": "c12e729f086997457df1f82fc3290bf5aa984cdac6687803458e1507ba6f81a7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 162,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-08-05-admin-notify-design.md": {
+      "filePath": "docs/superpowers/specs/2026-08-05-admin-notify-design.md",
+      "contentHash": "6f8d8445cf69a3e2244765b6e5bad3c20ce0c081209d96d3b0341c16ba41e74e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 141,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-09-03-driver-pool-check-design.md": {
+      "filePath": "docs/superpowers/specs/2026-09-03-driver-pool-check-design.md",
+      "contentHash": "35e74380b2f3ea876a624a4f0576ed150d0675f5e35de460a3ef105d4a4f5ee4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 149,
+      "hasStructuralAnalysis": false
+    },
+    "docs/telegram-guide.txt": {
+      "filePath": "docs/telegram-guide.txt",
+      "contentHash": "eb3268aa3b8bafad51fc70b9c8cf0f0648bf68714d37d213490eff232be40af0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 58,
+      "hasStructuralAnalysis": false
+    },
+    "index.html": {
+      "filePath": "index.html",
+      "contentHash": "f754ee0603f51e7e04997c69a13a59d7f3bc9148f86608ec4c94aef3e5998ab4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 43,
+      "hasStructuralAnalysis": false
+    },
+    "package.json": {
+      "filePath": "package.json",
+      "contentHash": "8f67b99eb73e735754734e2f7e00daeec1e7896a0136aeefc83c1563cf92ca9a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 25,
+      "hasStructuralAnalysis": false
+    },
+    "product-roadmap/ROADMAP.md": {
+      "filePath": "product-roadmap/ROADMAP.md",
+      "contentHash": "810db73e18c42351bb22a9a4c306c906cf5882048507e98f18ae552fc05239ab",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 259,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/ai-player/README.md": {
+      "filePath": "scripts/ai-player/README.md",
+      "contentHash": "595c122c7eba550858705ef690a2f46b4c4c768e3346d71fd2afa1f20f3036d0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 29,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/ai-player/lib.js": {
+      "filePath": "scripts/ai-player/lib.js",
+      "contentHash": "d06670fdb6c23866892ec93cf3909028fb43cb8303dea2c22e6559b0ba4b16e8",
+      "functions": [
+        {
+          "name": "readEnv",
+          "params": [
+            "key"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "sleep",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "transient",
+          "params": [],
+          "exported": false,
+          "lineCount": 2
+        },
+        {
+          "name": "fetchWithTimeout",
+          "params": [
+            "url",
+            "options",
+            "timeoutMs"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "ensure",
+          "params": [],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "q",
+          "params": [
+            "text",
+            "params"
+          ],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "close",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "fetchJolpica",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "askGemini",
+          "params": [
+            "prompt"
+          ],
+          "exported": false,
+          "lineCount": 35
+        },
+        {
+          "name": "escapeHtml",
+          "params": [
+            "s"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "sendTelegram",
+          "params": [
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 16
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 120,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/ai-player/package.json": {
+      "filePath": "scripts/ai-player/package.json",
+      "contentHash": "535a80b0acfea1bc0bd5d95de2ec5326f0d30b5ca4415b91afc9f5a9262f768f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/ai-player/predict.js": {
+      "filePath": "scripts/ai-player/predict.js",
+      "contentHash": "c99676b5e0fa01d267675f22efc6b6ad418662c1d1e145ea941e53b46927d457",
+      "functions": [
+        {
+          "name": "openRaceThisWeek",
+          "params": [],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "poolDrivers",
+          "params": [
+            "raceId"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "seasonResults",
+          "params": [
+            "season"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "pastSeasonStandings",
+          "params": [
+            "driverIds"
+          ],
+          "exported": false,
+          "lineCount": 22
+        },
+        {
+          "name": "buildPrompt",
+          "params": [
+            "race",
+            "pool",
+            "driverCodeOf",
+            "ownResults",
+            "standingsMap"
+          ],
+          "exported": false,
+          "lineCount": 28
+        },
+        {
+          "name": "isValidTop10",
+          "params": [
+            "top10",
+            "pool"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "fallbackTop10",
+          "params": [
+            "pool"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "gridBotUserId",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "alreadyPredicted",
+          "params": [
+            "userId",
+            "raceId"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "savePrediction",
+          "params": [
+            "userId",
+            "raceId",
+            "codeToDriverId",
+            "top10Codes"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": false,
+          "lineCount": 64
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 210,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/ai-player/predict.test.js": {
+      "filePath": "scripts/ai-player/predict.test.js",
+      "contentHash": "42ab3feff045592b1107f06a49cfde07054e7b5cea6b37588137aadec0620228",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 52,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/autoresults/fetch.js": {
+      "filePath": "scripts/autoresults/fetch.js",
+      "contentHash": "2a1be1330219265b201d50efed5f430071164d1c624aed67f228f362c2583ed9",
+      "functions": [
+        {
+          "name": "driverCodeToIdMap",
+          "params": [],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "recheck",
+          "params": [
+            "warnings"
+          ],
+          "exported": false,
+          "lineCount": 22
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": false,
+          "lineCount": 52
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 102,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/autoresults/jolpica.js": {
+      "filePath": "scripts/autoresults/jolpica.js",
+      "contentHash": "4ec2ba4c2661359c9313f5d451185b3cd1fd4d9323e158250f29faa23fe94315",
+      "functions": [
+        {
+          "name": "fetchJolpicaResults",
+          "params": [
+            "round"
+          ],
+          "exported": false,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 17,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/autoresults/lib.js": {
+      "filePath": "scripts/autoresults/lib.js",
+      "contentHash": "8e865ee960b4bedf87ac1d34b409bb244bcb1a6bae814262fa7794dadfa1297e",
+      "functions": [
+        {
+          "name": "readEnv",
+          "params": [
+            "key"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "ensure",
+          "params": [],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "q",
+          "params": [
+            "text",
+            "params"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "recordRun",
+          "params": [
+            "job",
+            "ok"
+          ],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "close",
+          "params": [],
+          "exported": false,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 57,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/autoresults/openf1.js": {
+      "filePath": "scripts/autoresults/openf1.js",
+      "contentHash": "93192d3a3a44feba301aed972d2c081f482a9832528f5a6589be295cc917d758",
+      "functions": [
+        {
+          "name": "findSessionKey",
+          "params": [
+            "raceDatetimeUtc"
+          ],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "fetchOpenF1Results",
+          "params": [
+            "raceDatetimeUtc",
+            "driverCodeToId"
+          ],
+          "exported": false,
+          "lineCount": 29
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 54,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/autoresults/package.json": {
+      "filePath": "scripts/autoresults/package.json",
+      "contentHash": "96c5ba2a62cc7315f6e9c5185ec5314b1e71b390e9afb3492e62459c7bc27d9f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/db/README.md": {
+      "filePath": "scripts/db/README.md",
+      "contentHash": "04b43f60e144e2bc91bebaaa7d8efa625aa45fdafe132d8c18f5844f2faa3e6b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 29,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/db/RESTORE.md": {
+      "filePath": "scripts/db/RESTORE.md",
+      "contentHash": "83bf003a944d5d5c54b62a8edac49cdd84262d4d7907c8620a76da5ba01af018",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 58,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/db/backup.js": {
+      "filePath": "scripts/db/backup.js",
+      "contentHash": "e32e438b6f701c665a37fbcf8834ac5e637cc5291cc4425e3908142c45dcd0e9",
+      "functions": [
+        {
+          "name": "dbUrl",
+          "params": [],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "query",
+          "params": [
+            "text",
+            "params"
+          ],
+          "exported": false,
+          "lineCount": 22
+        },
+        {
+          "name": "primaryKey",
+          "params": [
+            "table"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "backupTable",
+          "params": [
+            "table",
+            "dir"
+          ],
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": false,
+          "lineCount": 31
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 164,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/db/gridbot.test.js": {
+      "filePath": "scripts/db/gridbot.test.js",
+      "contentHash": "7dfb93b18a77e6f51d4b6105c112c02e375641bbbbc631eeee8aaedd38026422",
+      "functions": [
+        {
+          "name": "sleep",
+          "params": [
+            "ms"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "pickRows",
+          "params": [
+            "res"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "killOrphans",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "once",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 97,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/db/guest_access.test.js": {
+      "filePath": "scripts/db/guest_access.test.js",
+      "contentHash": "cfb6e71452fb96fe705d3b351b6e7369d7c35277efc4a5ea786819ef8ae0ada5",
+      "functions": [
+        {
+          "name": "tryThrow",
+          "params": [
+            "name",
+            "stmt"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "sleep",
+          "params": [
+            "ms"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "pickRows",
+          "params": [
+            "res"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "killOrphans",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "once",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 156,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/db/membership.test.js": {
+      "filePath": "scripts/db/membership.test.js",
+      "contentHash": "a565167ff5e27e0c2c7b7d1681cbae45e1ad0d65c1fd684552fcf2b593fbc9e0",
+      "functions": [
+        {
+          "name": "pick",
+          "params": [
+            "r"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "killOrphans",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "sleep",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "once",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 36,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/db/open_race.test.js": {
+      "filePath": "scripts/db/open_race.test.js",
+      "contentHash": "d2c2e5831cb210c5f678a7650a0fb6b4f60a8e0924c19e265f6331dd80001316",
+      "functions": [
+        {
+          "name": "pick",
+          "params": [
+            "r"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "killOrphans",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "sleep",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "once",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 72,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/db/package.json": {
+      "filePath": "scripts/db/package.json",
+      "contentHash": "8cc5596c03241d02b98ebe0a82f0edafcfdca3a0783d9a5f1d7c825b49af3362",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 23,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/db/predicted_user_ids.test.js": {
+      "filePath": "scripts/db/predicted_user_ids.test.js",
+      "contentHash": "1aab64e8b23162fd97b11651580439eb056c988ab4fbbca9d413737a8321d9e7",
+      "functions": [
+        {
+          "name": "sleep",
+          "params": [
+            "ms"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "pickRows",
+          "params": [
+            "res"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "killOrphans",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "once",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 70,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/db/restore.js": {
+      "filePath": "scripts/db/restore.js",
+      "contentHash": "e7bce4bdeab8b7ec3911a30571d28604a90a41a56e6c4cccd71216047a98059d",
+      "functions": [
+        {
+          "name": "dbUrl",
+          "params": [],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "query",
+          "params": [
+            "text",
+            "params"
+          ],
+          "exported": false,
+          "lineCount": 22
+        },
+        {
+          "name": "lit",
+          "params": [
+            "s"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "chunks",
+          "params": [
+            "rows"
+          ],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "compare",
+          "params": [
+            "batch",
+            "t"
+          ],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "cleanup",
+          "params": [
+            "batch"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": false,
+          "lineCount": 93
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 190,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/db/rls.test.js": {
+      "filePath": "scripts/db/rls.test.js",
+      "contentHash": "f5b70c0bf6a032afb44e6860ec2a6955f09949101df6881166c5a84870191601",
+      "functions": [
+        {
+          "name": "tryThrow",
+          "params": [
+            "name",
+            "stmt"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "sleep",
+          "params": [
+            "ms"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "pickRows",
+          "params": [
+            "res"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "killOrphans",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "once",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 82,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/db/runner.js": {
+      "filePath": "scripts/db/runner.js",
+      "contentHash": "81c3decab6302eb94c9066d6e665d054d2a380ef4e06da3420d00b83aaff8ed4",
+      "functions": [
+        {
+          "name": "connStr",
+          "params": [],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "splitStatements",
+          "params": [
+            "sql"
+          ],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "sleep",
+          "params": [
+            "ms"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "isTransient",
+          "params": [
+            "e"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "ensure",
+          "params": [],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "exec",
+          "params": [
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "runStatements",
+          "params": [
+            "stmts",
+            "label"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": false,
+          "lineCount": 16
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 99,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/db/scoring.test.js": {
+      "filePath": "scripts/db/scoring.test.js",
+      "contentHash": "d2b50d18255765bbfb8f25371394816427b4c50e3ee63c920c2ccf2c940e8d01",
+      "functions": [
+        {
+          "name": "j",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "sleep",
+          "params": [
+            "ms"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "run",
+          "params": [],
+          "exported": false,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 36,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/db/security_grants.test.js": {
+      "filePath": "scripts/db/security_grants.test.js",
+      "contentHash": "6fb3fa3051b6ed6d2a5d8114b2887f8b1e2a9df66d498b7af2e343dae4097a94",
+      "functions": [
+        {
+          "name": "sleep",
+          "params": [
+            "ms"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "pickRows",
+          "params": [
+            "res"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "killOrphans",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "once",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 118,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/db/set_race_result.test.js": {
+      "filePath": "scripts/db/set_race_result.test.js",
+      "contentHash": "fabc197dba6142a12c6218a5fc68dfd9874ca1ecead8e51568a87820beadfcae",
+      "functions": [
+        {
+          "name": "pick",
+          "params": [
+            "r"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "killOrphans",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "sleep",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "once",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 102,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/db/view.test.js": {
+      "filePath": "scripts/db/view.test.js",
+      "contentHash": "35e3c2b1747c361446bf8d6f43397f98eafcfbb94fe8f23a164042ddfdf38adc",
+      "functions": [
+        {
+          "name": "sleep",
+          "params": [
+            "ms"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "pickRows",
+          "params": [
+            "res"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "once",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "run",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 37,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/dev/bootstrap-open-belgium.js": {
+      "filePath": "scripts/dev/bootstrap-open-belgium.js",
+      "contentHash": "0c1f6aec16266c79c966800910d6636b73312fa0c9581eae16196f2ab72e2b87",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/dev/package.json": {
+      "filePath": "scripts/dev/package.json",
+      "contentHash": "fe08c01f586e95dc56886db2fa809c4ec148c8c61f0340face702d7043cb85ea",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/export/README.md": {
+      "filePath": "scripts/export/README.md",
+      "contentHash": "fbe053f9ce452cea8d0a5607a83eddab1a96c6fa5babe03814e4867d990ebd4e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 53,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/export/export.js": {
+      "filePath": "scripts/export/export.js",
+      "contentHash": "6c1bea2529100a231b86ef317f359080dd5454bd41ce202d1b475875c09ac8f0",
+      "functions": [
+        {
+          "name": "ensureTabs",
+          "params": [
+            "sheets",
+            "spreadsheetId"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "toMsk",
+          "params": [
+            "iso"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "writeTab",
+          "params": [
+            "sheets",
+            "spreadsheetId",
+            "tab",
+            "rows"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "driverCodeMap",
+          "params": [],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "posHeader",
+          "params": [],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "codeFor",
+          "params": [
+            "id",
+            "codeOf"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "exportPredictions",
+          "params": [
+            "sheets",
+            "spreadsheetId",
+            "codeOf"
+          ],
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "exportResults",
+          "params": [
+            "sheets",
+            "spreadsheetId",
+            "codeOf"
+          ],
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "exportScores",
+          "params": [
+            "sheets",
+            "spreadsheetId"
+          ],
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": false,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 116,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/export/lib.js": {
+      "filePath": "scripts/export/lib.js",
+      "contentHash": "f76241e05f655af032e36107e1b27201153bde177569ae3dc69520ee589b0e2e",
+      "functions": [
+        {
+          "name": "readEnv",
+          "params": [
+            "key"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "ensure",
+          "params": [],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "q",
+          "params": [
+            "text",
+            "params"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "close",
+          "params": [],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "resolveFromRoot",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "sheetsClient",
+          "params": [],
+          "exported": false,
+          "lineCount": 8
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 56,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/export/package.json": {
+      "filePath": "scripts/export/package.json",
+      "contentHash": "ccdc44be4320f9cdc57a1e4c2873899c0ece7c90fc1077a54b8a381c0b69af65",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/import/README.md": {
+      "filePath": "scripts/import/README.md",
+      "contentHash": "852a1e0131ada6931963dc70fc0b2c8f087d0f5ecef949e73dd2a31dc50ffe7f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 17,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/import/deadlines.js": {
+      "filePath": "scripts/import/deadlines.js",
+      "contentHash": "839916ab1e6ba48683a4926e331b4c2cb4fd75addc00f609550470acb354209a",
+      "functions": [
+        {
+          "name": "deadlineUtc",
+          "params": [
+            "raceDate"
+          ],
+          "exported": false,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/import/deadlines.test.js": {
+      "filePath": "scripts/import/deadlines.test.js",
+      "contentHash": "8c513393ebb53bb7528d0b92835b6f86c777bdc702c1847d21c6d29302c52ce8",
+      "functions": [
+        {
+          "name": "check",
+          "params": [
+            "raceDate",
+            "expected"
+          ],
+          "exported": false,
+          "lineCount": 6
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/import/import.js": {
+      "filePath": "scripts/import/import.js",
+      "contentHash": "7a46f6b807c1df987296a7d4ee98e7abf5d3ca35b84efa3a464877442fae527a",
+      "functions": [
+        {
+          "name": "driverTeams",
+          "params": [],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "importDrivers",
+          "params": [],
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "importCalendar",
+          "params": [],
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "importResults",
+          "params": [],
+          "exported": false,
+          "lineCount": 25
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": false,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 98,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/import/lib.js": {
+      "filePath": "scripts/import/lib.js",
+      "contentHash": "5dd9c4b614016921f576ee76d6d8ae2842209e0d7f7d815876b0a8de201594c9",
+      "functions": [
+        {
+          "name": "connStr",
+          "params": [],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "sleep",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "transient",
+          "params": [],
+          "exported": false,
+          "lineCount": 2
+        },
+        {
+          "name": "fetchJolpica",
+          "params": [
+            "p"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "ensure",
+          "params": [],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "q",
+          "params": [
+            "text",
+            "params"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "close",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 45,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/import/package.json": {
+      "filePath": "scripts/import/package.json",
+      "contentHash": "42ae9ef3e24fdfd6b10df457300f0846cf9a108060a1a34083dbfd4cbcdef834",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 15,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/import/teams.js": {
+      "filePath": "scripts/import/teams.js",
+      "contentHash": "e562413bdf3694935401871fd73133dc8ef8882ff8d80c831b53765bd7e69e73",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 7,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/import/verify.js": {
+      "filePath": "scripts/import/verify.js",
+      "contentHash": "b6b81d95e3445244facfbc92a4a56148155ff239f6e9c1fd8994fddcef355097",
+      "functions": [
+        {
+          "name": "check",
+          "params": [
+            "name",
+            "ok",
+            "info"
+          ],
+          "exported": false,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 31,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/telegram/README.md": {
+      "filePath": "scripts/telegram/README.md",
+      "contentHash": "739ab0d2e89fa93d2b3e9fcbc50ebf9bbbe78808d33d61d3bd7f8e36a6f6efbd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 57,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/telegram/lib.js": {
+      "filePath": "scripts/telegram/lib.js",
+      "contentHash": "0f67297dbb0c078ad864b7cffb82cc50a610f3b20bc47147bd7399f639872dce",
+      "functions": [
+        {
+          "name": "readEnv",
+          "params": [
+            "key"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "sleep",
+          "params": [
+            "ms"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "transient",
+          "params": [
+            "e"
+          ],
+          "exported": false,
+          "lineCount": 2
+        },
+        {
+          "name": "ensure",
+          "params": [],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "q",
+          "params": [
+            "text",
+            "params"
+          ],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "close",
+          "params": [],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "recordRun",
+          "params": [
+            "job",
+            "ok"
+          ],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "sendTelegram",
+          "params": [
+            "text",
+            "chatIdOverride"
+          ],
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "sendTelegramPhoto",
+          "params": [
+            "photoUrl",
+            "caption",
+            "replyMarkup"
+          ],
+          "exported": false,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 133,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/telegram/notify.js": {
+      "filePath": "scripts/telegram/notify.js",
+      "contentHash": "7b9d3946d8ebdbb823da5bcf52521f39203d83a24797e902ebf1e5858ca6b6df",
+      "functions": [
+        {
+          "name": "siteLink",
+          "params": [
+            "path"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "predictButton",
+          "params": [
+            "raceId"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "escapeHtml",
+          "params": [
+            "s"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "toMskTime",
+          "params": [
+            "iso"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "mskWeekday",
+          "params": [
+            "iso"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "isDeadlineDayMsk",
+          "params": [
+            "deadlineUtc"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "notVotedNames",
+          "params": [
+            "users",
+            "votedIds"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "ensureCurrentWeekOpen",
+          "params": [],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "thisWeekOpenRaces",
+          "params": [],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "diffPoolAdditions",
+          "params": [
+            "currentPoolIds",
+            "activeDriverIds",
+            "openf1Codes",
+            "codeToId"
+          ],
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "fetchOpenF1SessionCodes",
+          "params": [
+            "raceDatetimeUtc"
+          ],
+          "exported": false,
+          "lineCount": 22
+        },
+        {
+          "name": "checkDriverPool",
+          "params": [],
+          "exported": false,
+          "lineCount": 64
+        },
+        {
+          "name": "raceweek",
+          "params": [],
+          "exported": false,
+          "lineCount": 16
+        },
+        {
+          "name": "deadline",
+          "params": [],
+          "exported": false,
+          "lineCount": 24
+        },
+        {
+          "name": "driverCodeMap",
+          "params": [],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "codeFor",
+          "params": [
+            "id",
+            "codeOf"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "podiumText",
+          "params": [
+            "positions",
+            "codeOf"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "roundWinnerLine",
+          "params": [
+            "scoreRows"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "rankStandings",
+          "params": [
+            "rows"
+          ],
+          "exported": false,
+          "lineCount": 18
+        },
+        {
+          "name": "resultDiff",
+          "params": [
+            "before",
+            "after",
+            "codeOf"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "results",
+          "params": [],
+          "exported": false,
+          "lineCount": 85
+        },
+        {
+          "name": "remind",
+          "params": [],
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "adminflush",
+          "params": [],
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "isAlertQuietHours",
+          "params": [],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "toMskDateTime",
+          "params": [
+            "iso"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "checkWatchdogAlive",
+          "params": [],
+          "exported": false,
+          "lineCount": 23
+        },
+        {
+          "name": "main",
+          "params": [],
+          "exported": false,
+          "lineCount": 64
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 554,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/telegram/notify.test.js": {
+      "filePath": "scripts/telegram/notify.test.js",
+      "contentHash": "50e1f4abd7f9fb576bb720a0abf83ac7b0fa14df3a6402bbca8d2760a1be78b7",
+      "functions": [
+        {
+          "name": "check",
+          "params": [
+            "name",
+            "actual",
+            "expected"
+          ],
+          "exported": false,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 166,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/telegram/package.json": {
+      "filePath": "scripts/telegram/package.json",
+      "contentHash": "6c683f768b460e3aea22e0e14171b79971c2348a2d18d2eab36c509b4e64f83e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 14,
+      "hasStructuralAnalysis": false
+    },
+    "src/App.tsx": {
+      "filePath": "src/App.tsx",
+      "contentHash": "4c531237b54a97b4da0475e055f6a24c7754c67fe17ae3846f472c500d96c9f9",
+      "functions": [
+        {
+          "name": "App",
+          "params": [],
+          "exported": true,
+          "lineCount": 38
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "BrowserRouter",
+            "Routes",
+            "Route",
+            "Navigate"
+          ]
+        },
+        {
+          "source": "./auth/AuthContext",
+          "specifiers": [
+            "AuthProvider"
+          ]
+        },
+        {
+          "source": "./auth/AnalyticsTracker",
+          "specifiers": [
+            "AnalyticsTracker"
+          ]
+        },
+        {
+          "source": "./auth/ProtectedRoute",
+          "specifiers": [
+            "ProtectedRoute"
+          ]
+        },
+        {
+          "source": "./auth/AdminRoute",
+          "specifiers": [
+            "AdminRoute"
+          ]
+        },
+        {
+          "source": "./auth/RootRedirect",
+          "specifiers": [
+            "RootRedirect"
+          ]
+        },
+        {
+          "source": "./components/Shell",
+          "specifiers": [
+            "Shell"
+          ]
+        },
+        {
+          "source": "./components/GuestShell",
+          "specifiers": [
+            "GuestShell"
+          ]
+        },
+        {
+          "source": "./pages/Login",
+          "specifiers": [
+            "Login"
+          ]
+        },
+        {
+          "source": "./pages/Signup",
+          "specifiers": [
+            "Signup"
+          ]
+        },
+        {
+          "source": "./pages/RedeemInvite",
+          "specifiers": [
+            "RedeemInvite"
+          ]
+        },
+        {
+          "source": "./pages/ResetPassword",
+          "specifiers": [
+            "ResetPassword"
+          ]
+        },
+        {
+          "source": "./pages/Calendar",
+          "specifiers": [
+            "Calendar"
+          ]
+        },
+        {
+          "source": "./pages/GuestCalendar",
+          "specifiers": [
+            "GuestCalendar"
+          ]
+        },
+        {
+          "source": "./pages/Predict",
+          "specifiers": [
+            "Predict"
+          ]
+        },
+        {
+          "source": "./pages/Admin",
+          "specifiers": [
+            "Admin"
+          ]
+        },
+        {
+          "source": "./pages/AdminResult",
+          "specifiers": [
+            "AdminResult"
+          ]
+        },
+        {
+          "source": "./pages/AdminPool",
+          "specifiers": [
+            "AdminPool"
+          ]
+        },
+        {
+          "source": "./pages/Standings",
+          "specifiers": [
+            "Standings"
+          ]
+        },
+        {
+          "source": "./pages/Results",
+          "specifiers": [
+            "Results"
+          ]
+        },
+        {
+          "source": "./pages/Rules",
+          "specifiers": [
+            "Rules"
+          ]
+        }
+      ],
+      "exports": [
+        "App"
+      ],
+      "totalLines": 61,
+      "hasStructuralAnalysis": true
+    },
+    "src/auth/AdminRoute.tsx": {
+      "filePath": "src/auth/AdminRoute.tsx",
+      "contentHash": "443c772fbdd4dddd1c477549fcc26c0b56d4e50b6d4e16b191e946e44d4e9ef5",
+      "functions": [
+        {
+          "name": "AdminRoute",
+          "params": [
+            "{ children }"
+          ],
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "ReactNode"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Navigate"
+          ]
+        },
+        {
+          "source": "./AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminRoute"
+      ],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "src/auth/AnalyticsTracker.tsx": {
+      "filePath": "src/auth/AnalyticsTracker.tsx",
+      "contentHash": "ce107c19b2df2d29c0d0b1b83d00dfbd86a0d3baa869d4a42519befe4974e756",
+      "functions": [
+        {
+          "name": "AnalyticsTracker",
+          "params": [],
+          "exported": true,
+          "lineCount": 17
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useLocation"
+          ]
+        },
+        {
+          "source": "./AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "../lib/analytics",
+          "specifiers": [
+            "setAnalyticsUser",
+            "trackPageView"
+          ]
+        }
+      ],
+      "exports": [
+        "AnalyticsTracker"
+      ],
+      "totalLines": 26,
+      "hasStructuralAnalysis": true
+    },
+    "src/auth/AuthContext.tsx": {
+      "filePath": "src/auth/AuthContext.tsx",
+      "contentHash": "190cd11d2bbfb81d28b66e1253654109920cc5e82b343439fdb8921c771950db",
+      "functions": [
+        {
+          "name": "AuthProvider",
+          "params": [
+            "{ children }"
+          ],
+          "exported": true,
+          "lineCount": 100
+        },
+        {
+          "name": "useAuth",
+          "params": [],
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "createContext",
+            "useContext",
+            "useEffect",
+            "useRef",
+            "useState",
+            "ReactNode"
+          ]
+        },
+        {
+          "source": "@supabase/supabase-js",
+          "specifiers": [
+            "Session"
+          ]
+        },
+        {
+          "source": "../lib/supabase",
+          "specifiers": [
+            "supabase"
+          ]
+        },
+        {
+          "source": "../lib/db",
+          "specifiers": [
+            "withRetry"
+          ]
+        }
+      ],
+      "exports": [
+        "AuthProvider",
+        "useAuth"
+      ],
+      "totalLines": 123,
+      "hasStructuralAnalysis": true
+    },
+    "src/auth/ProtectedRoute.tsx": {
+      "filePath": "src/auth/ProtectedRoute.tsx",
+      "contentHash": "f22ef76d8f27a48faa7a30fe9db4c355ec8762cc1e0ea3e5e481e45ef3179e32",
+      "functions": [
+        {
+          "name": "ProtectedRoute",
+          "params": [
+            "{ children }"
+          ],
+          "exported": true,
+          "lineCount": 14
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "ReactNode"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Navigate"
+          ]
+        },
+        {
+          "source": "./AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        }
+      ],
+      "exports": [
+        "ProtectedRoute"
+      ],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "src/auth/RootRedirect.tsx": {
+      "filePath": "src/auth/RootRedirect.tsx",
+      "contentHash": "d24b256cfad325ac81a4ef2c20f029eb0e0e8f00b921ad4f69a2665b7abed63d",
+      "functions": [
+        {
+          "name": "RootRedirect",
+          "params": [],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Navigate"
+          ]
+        },
+        {
+          "source": "./AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "../lib/telegram",
+          "specifiers": [
+            "getTelegramDeepLinkRaceId"
+          ]
+        }
+      ],
+      "exports": [
+        "RootRedirect"
+      ],
+      "totalLines": 14,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/DriftChart.tsx": {
+      "filePath": "src/components/DriftChart.tsx",
+      "contentHash": "e0691fd5fc34864044d1e314821b1015304a27cf178805d5b81eddae2fdce3a4",
+      "functions": [
+        {
+          "name": "DriftChart",
+          "params": [
+            "{\r\n  prediction, actual, drivers, playerName, raceName, points, exactHits,\r\n}"
+          ],
+          "exported": true,
+          "lineCount": 170
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useMemo",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "../lib/types",
+          "specifiers": [
+            "Driver"
+          ]
+        },
+        {
+          "source": "../lib/scoring",
+          "specifiers": [
+            "scoreDriftSlots",
+            "DriftSlot"
+          ]
+        }
+      ],
+      "exports": [
+        "DriftChart"
+      ],
+      "totalLines": 197,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/DriverChip.tsx": {
+      "filePath": "src/components/DriverChip.tsx",
+      "contentHash": "b6ecca9a9c3259a1000aa03ba8e202d0a247913f8e6da8a1247f7eb21d565621",
+      "functions": [
+        {
+          "name": "DriverChip",
+          "params": [
+            "{ driver, onClick, selected, dimmed, compact }"
+          ],
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../lib/types",
+          "specifiers": [
+            "Driver"
+          ]
+        }
+      ],
+      "exports": [
+        "DriverChip"
+      ],
+      "totalLines": 26,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/DriverPool.tsx": {
+      "filePath": "src/components/DriverPool.tsx",
+      "contentHash": "29e873bcff9c46578bfdba1603114403f750559579b8119981b2aa4dbb4a8b37",
+      "functions": [
+        {
+          "name": "DriverPool",
+          "params": [
+            "{ pool, assigned, onPick }"
+          ],
+          "exported": true,
+          "lineCount": 22
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../lib/types",
+          "specifiers": [
+            "Driver"
+          ]
+        },
+        {
+          "source": "./DriverChip",
+          "specifiers": [
+            "DriverChip"
+          ]
+        }
+      ],
+      "exports": [
+        "DriverPool"
+      ],
+      "totalLines": 26,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/Flag.tsx": {
+      "filePath": "src/components/Flag.tsx",
+      "contentHash": "0507dcb88f05e1c765827600f414958d095425e64b592a2f84f57bf3503171cd",
+      "functions": [
+        {
+          "name": "Flag",
+          "params": [
+            "{ code }"
+          ],
+          "exported": true,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "ComponentType"
+          ]
+        },
+        {
+          "source": "country-flag-icons/react/3x2",
+          "specifiers": [
+            "BH",
+            "SA",
+            "AU",
+            "CN",
+            "JP",
+            "US",
+            "IT",
+            "MC",
+            "CA",
+            "ES",
+            "AT",
+            "GB",
+            "HU",
+            "BE",
+            "NL",
+            "AZ",
+            "SG",
+            "MX",
+            "BR",
+            "QA",
+            "AE"
+          ]
+        }
+      ],
+      "exports": [
+        "Flag"
+      ],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/GuestShell.tsx": {
+      "filePath": "src/components/GuestShell.tsx",
+      "contentHash": "f70abd72c5d4f9ee6b68d88d964513d27f21088cf02c8649d4344adc299e5384",
+      "functions": [
+        {
+          "name": "GuestShell",
+          "params": [],
+          "exported": true,
+          "lineCount": 24
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "NavLink",
+            "Link",
+            "Outlet"
+          ]
+        }
+      ],
+      "exports": [
+        "GuestShell"
+      ],
+      "totalLines": 34,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/PasswordInput.tsx": {
+      "filePath": "src/components/PasswordInput.tsx",
+      "contentHash": "a5525e0fef1bcfdd63dbe60351ec1e54e67c7998e3f2b74654e6aeb1ce8e22aa",
+      "functions": [
+        {
+          "name": "PasswordInput",
+          "params": [
+            "{ value, onChange, placeholder, required, minLength }"
+          ],
+          "exported": true,
+          "lineCount": 34
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "PasswordInput"
+      ],
+      "totalLines": 45,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/PredictionSlots.tsx": {
+      "filePath": "src/components/PredictionSlots.tsx",
+      "contentHash": "65d2ec80d453b7ba279a8c1adb364ac4aa1b1aaa5c703b0c433101275d0ff691",
+      "functions": [
+        {
+          "name": "PredictionSlots",
+          "params": [
+            "{ slots, driversById, selectedIndex, onSlotClick, readOnly }"
+          ],
+          "exported": true,
+          "lineCount": 28
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../lib/types",
+          "specifiers": [
+            "Driver"
+          ]
+        },
+        {
+          "source": "./DriverChip",
+          "specifiers": [
+            "DriverChip"
+          ]
+        }
+      ],
+      "exports": [
+        "PredictionSlots"
+      ],
+      "totalLines": 32,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/RaceCard.tsx": {
+      "filePath": "src/components/RaceCard.tsx",
+      "contentHash": "1685646a76fac8804a1ba0e581bb8049a90daf15d4fec7aa271e74eca4cdd95c",
+      "functions": [
+        {
+          "name": "classifyRace",
+          "params": [
+            "race",
+            "now"
+          ],
+          "returnType": "RaceView",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "RaceCard",
+          "params": [
+            "{ race, hasPrediction, highlight, onClick }"
+          ],
+          "exported": true,
+          "lineCount": 30
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../lib/types",
+          "specifiers": [
+            "Race"
+          ]
+        },
+        {
+          "source": "../lib/countdown",
+          "specifiers": [
+            "formatCountdown",
+            "formatMoscow",
+            "isPast"
+          ]
+        },
+        {
+          "source": "../lib/flags",
+          "specifiers": [
+            "raceCountry"
+          ]
+        },
+        {
+          "source": "./Flag",
+          "specifiers": [
+            "Flag"
+          ]
+        }
+      ],
+      "exports": [
+        "classifyRace",
+        "RaceCard"
+      ],
+      "totalLines": 49,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/Shell.tsx": {
+      "filePath": "src/components/Shell.tsx",
+      "contentHash": "068f9d10fa2f7d36fda454866d534ac2e1abb30ea911d1a9cbce6d1037dcb955",
+      "functions": [
+        {
+          "name": "Shell",
+          "params": [],
+          "exported": true,
+          "lineCount": 30
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "NavLink",
+            "Outlet"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        }
+      ],
+      "exports": [
+        "Shell"
+      ],
+      "totalLines": 42,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/analytics.ts": {
+      "filePath": "src/lib/analytics.ts",
+      "contentHash": "4a3bdfde735edab673d830d46d55c7634beaef32c0d6fabaf3da4983988a74cf",
+      "functions": [
+        {
+          "name": "gtag",
+          "params": [],
+          "returnType": "Gtag | null",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "cleanLocation",
+          "params": [],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "trackPageView",
+          "params": [
+            "path"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "trackEvent",
+          "params": [
+            "name",
+            "params"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "setAnalyticsUser",
+          "params": [
+            "userId"
+          ],
+          "returnType": "void",
+          "exported": true,
+          "lineCount": 13
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "trackPageView",
+        "trackEvent",
+        "setAnalyticsUser"
+      ],
+      "totalLines": 61,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/countdown.ts": {
+      "filePath": "src/lib/countdown.ts",
+      "contentHash": "35af947b7600d45edcebbea6fe5fc32548bfebba81cf98a253e90d710b108e02",
+      "functions": [
+        {
+          "name": "msUntil",
+          "params": [
+            "deadlineUtc",
+            "now"
+          ],
+          "returnType": "number",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "isPast",
+          "params": [
+            "deadlineUtc",
+            "now"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "formatCountdown",
+          "params": [
+            "deadlineUtc",
+            "now"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 11
+        },
+        {
+          "name": "formatMoscow",
+          "params": [
+            "iso"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "msUntil",
+        "isPast",
+        "formatCountdown",
+        "formatMoscow"
+      ],
+      "totalLines": 29,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/db.ts": {
+      "filePath": "src/lib/db.ts",
+      "contentHash": "678f255099e701fa4869bb5ed032b38f885cfe95aa5f37a306e08b5764966e5a",
+      "functions": [
+        {
+          "name": "isTransient",
+          "params": [
+            "e"
+          ],
+          "returnType": "boolean",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "withTimeout",
+          "params": [
+            "p",
+            "ms"
+          ],
+          "returnType": "Promise<T>",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "withRetry",
+          "params": [
+            "fn",
+            "tries",
+            "timeoutMs"
+          ],
+          "returnType": "Promise<T>",
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "listRaces",
+          "params": [],
+          "returnType": "Promise<Race[]>",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "currentUserId",
+          "params": [],
+          "returnType": "Promise<string>",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "getMyPredictionRaceIds",
+          "params": [],
+          "returnType": "Promise<Set<number>>",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "getRaceWithPool",
+          "params": [
+            "raceId"
+          ],
+          "returnType": "Promise<{ race: Race; pool: Driver[] }>",
+          "exported": true,
+          "lineCount": 24
+        },
+        {
+          "name": "getMyPrediction",
+          "params": [
+            "raceId"
+          ],
+          "returnType": "Promise<string[] | null>",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "getPrediction",
+          "params": [
+            "raceId",
+            "userId"
+          ],
+          "returnType": "Promise<string[] | null>",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "getVotedUserIds",
+          "params": [
+            "raceId"
+          ],
+          "returnType": "Promise<string[]>",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "nextOpenRace",
+          "params": [],
+          "returnType": "Promise<Race | null>",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "redeemInvite",
+          "params": [
+            "code",
+            "displayName"
+          ],
+          "returnType": "Promise<void>",
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "savePrediction",
+          "params": [
+            "raceId",
+            "driverIds"
+          ],
+          "returnType": "Promise<void>",
+          "exported": true,
+          "lineCount": 15
+        },
+        {
+          "name": "mapSaveError",
+          "params": [
+            "error"
+          ],
+          "returnType": "SaveError",
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "openRace",
+          "params": [
+            "raceId"
+          ],
+          "returnType": "Promise<number>",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "getResult",
+          "params": [
+            "raceId"
+          ],
+          "returnType": "Promise<string[] | null>",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "setRaceResult",
+          "params": [
+            "raceId",
+            "driverIds",
+            "reason"
+          ],
+          "returnType": "Promise<void>",
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "mapResultError",
+          "params": [
+            "error"
+          ],
+          "returnType": "SaveError",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "getScores",
+          "params": [],
+          "returnType": "Promise<Score[]>",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "listUsers",
+          "params": [],
+          "returnType": "Promise<LeagueUser[]>",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "listDrivers",
+          "params": [],
+          "returnType": "Promise<Driver[]>",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "notifyPoolChange",
+          "params": [
+            "payload"
+          ],
+          "returnType": "Promise<void>",
+          "exported": false,
+          "lineCount": 15
+        },
+        {
+          "name": "addDriverToPool",
+          "params": [
+            "raceId",
+            "driverId",
+            "reason"
+          ],
+          "returnType": "Promise<void>",
+          "exported": true,
+          "lineCount": 9
+        },
+        {
+          "name": "setDriverOutReason",
+          "params": [
+            "raceId",
+            "driverId",
+            "reason"
+          ],
+          "returnType": "Promise<void>",
+          "exported": true,
+          "lineCount": 13
+        },
+        {
+          "name": "getGuestAccessEnabled",
+          "params": [],
+          "returnType": "Promise<boolean>",
+          "exported": true,
+          "lineCount": 7
+        },
+        {
+          "name": "setGuestAccessEnabled",
+          "params": [
+            "enabled"
+          ],
+          "returnType": "Promise<void>",
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./supabase",
+          "specifiers": [
+            "supabase"
+          ]
+        },
+        {
+          "source": "./types",
+          "specifiers": [
+            "Race",
+            "Driver",
+            "Score",
+            "LeagueUser"
+          ]
+        },
+        {
+          "source": "./types",
+          "specifiers": [
+            "SaveError"
+          ]
+        }
+      ],
+      "exports": [
+        "withRetry",
+        "listRaces",
+        "getMyPredictionRaceIds",
+        "getRaceWithPool",
+        "getMyPrediction",
+        "getPrediction",
+        "getVotedUserIds",
+        "nextOpenRace",
+        "redeemInvite",
+        "savePrediction",
+        "openRace",
+        "getResult",
+        "setRaceResult",
+        "getScores",
+        "listUsers",
+        "listDrivers",
+        "addDriverToPool",
+        "setDriverOutReason",
+        "getGuestAccessEnabled",
+        "setGuestAccessEnabled"
+      ],
+      "totalLines": 304,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/flags.ts": {
+      "filePath": "src/lib/flags.ts",
+      "contentHash": "db5f80ace0bfc4f56a9d22f890c85d39bf3976929fe2a67a148d14df5a533bef",
+      "functions": [
+        {
+          "name": "raceCountry",
+          "params": [
+            "raceName"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 6
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "raceCountry"
+      ],
+      "totalLines": 37,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/scoring.test.ts": {
+      "filePath": "src/lib/scoring.test.ts",
+      "contentHash": "6170795af10edab3f1d43f419b7fdd1d2c1d094dda99134411685a8612070de0",
+      "functions": [
+        {
+          "name": "check",
+          "params": [
+            "label",
+            "actual",
+            "expected"
+          ],
+          "exported": false,
+          "lineCount": 6
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./scoring.ts",
+          "specifiers": [
+            "scoreSlot",
+            "scoreDriftSlots",
+            "WEIGHTS"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 32,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/scoring.ts": {
+      "filePath": "src/lib/scoring.ts",
+      "contentHash": "f40096f59c02588624959ad00b7aaf8d5c7aab528fba84a9658109cd59286613",
+      "functions": [
+        {
+          "name": "scoreSlot",
+          "params": [
+            "y",
+            "x"
+          ],
+          "returnType": "{ points: number; exact: boolean }",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "scoreDriftSlots",
+          "params": [
+            "prediction",
+            "actual"
+          ],
+          "returnType": "DriftSlot[]",
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "WEIGHTS",
+        "scoreSlot",
+        "scoreDriftSlots"
+      ],
+      "totalLines": 36,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/standings.ts": {
+      "filePath": "src/lib/standings.ts",
+      "contentHash": "a968fd8a7e745c04250a3f54f0442a27d15a98be451ea86e1ca260ebf8ab65c6",
+      "functions": [
+        {
+          "name": "aggregateStandings",
+          "params": [
+            "scores",
+            "users",
+            "scoredRaceIds"
+          ],
+          "returnType": "StandingRow[]",
+          "exported": true,
+          "lineCount": 42
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./types",
+          "specifiers": [
+            "Score",
+            "LeagueUser"
+          ]
+        }
+      ],
+      "exports": [
+        "aggregateStandings"
+      ],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/supabase.ts": {
+      "filePath": "src/lib/supabase.ts",
+      "contentHash": "126e118262ec461296b434983513eca7b3a7dae89c98e3889c2ebbd29026fb17",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@supabase/supabase-js",
+          "specifiers": [
+            "createClient"
+          ]
+        }
+      ],
+      "exports": [
+        "supabase"
+      ],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/telegram.ts": {
+      "filePath": "src/lib/telegram.ts",
+      "contentHash": "9bd52761740972d59929e6f812c3a02f433d164fb8da9953671007724fd3194a",
+      "functions": [
+        {
+          "name": "getTelegramDeepLinkRaceId",
+          "params": [],
+          "returnType": "number | null",
+          "exported": true,
+          "lineCount": 6
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "getTelegramDeepLinkRaceId"
+      ],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/types.ts": {
+      "filePath": "src/lib/types.ts",
+      "contentHash": "ab21ba5f4eb1c2dcf20214980fd43f6bbce41dde2c087957ee287f4742751b5a",
+      "functions": [],
+      "classes": [
+        {
+          "name": "SaveError",
+          "methods": [
+            "constructor"
+          ],
+          "properties": [
+            "code"
+          ],
+          "exported": true,
+          "lineCount": 8
+        }
+      ],
+      "imports": [],
+      "exports": [
+        "SaveError"
+      ],
+      "totalLines": 47,
+      "hasStructuralAnalysis": true
+    },
+    "src/main.tsx": {
+      "filePath": "src/main.tsx",
+      "contentHash": "2e7692cfce1552c6b166be45d0426049950fc0874ee63819c850e7398c2c6fe5",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "React"
+          ]
+        },
+        {
+          "source": "react-dom/client",
+          "specifiers": [
+            "ReactDOM"
+          ]
+        },
+        {
+          "source": "./App",
+          "specifiers": [
+            "App"
+          ]
+        },
+        {
+          "source": "./styles/app.css",
+          "specifiers": []
+        }
+      ],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Admin.tsx": {
+      "filePath": "src/pages/Admin.tsx",
+      "contentHash": "dc6a48eadfea60a28c783465e2e31ca691ed104d72389aae2475f23e3bacabbe",
+      "functions": [
+        {
+          "name": "Admin",
+          "params": [],
+          "exported": true,
+          "lineCount": 118
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useCallback",
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "../lib/db",
+          "specifiers": [
+            "listRaces",
+            "openRace",
+            "getGuestAccessEnabled",
+            "setGuestAccessEnabled"
+          ]
+        },
+        {
+          "source": "../lib/types",
+          "specifiers": [
+            "Race"
+          ]
+        },
+        {
+          "source": "../lib/countdown",
+          "specifiers": [
+            "isPast"
+          ]
+        },
+        {
+          "source": "../lib/flags",
+          "specifiers": [
+            "raceCountry"
+          ]
+        },
+        {
+          "source": "../components/Flag",
+          "specifiers": [
+            "Flag"
+          ]
+        }
+      ],
+      "exports": [
+        "Admin"
+      ],
+      "totalLines": 127,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/AdminPool.tsx": {
+      "filePath": "src/pages/AdminPool.tsx",
+      "contentHash": "e92479447008d6d2d330ed3c1942e9c04968b4d671d428162ecea925f11e6bf5",
+      "functions": [
+        {
+          "name": "AdminPool",
+          "params": [],
+          "exported": true,
+          "lineCount": 170
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useParams",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "../lib/db",
+          "specifiers": [
+            "getRaceWithPool",
+            "listDrivers",
+            "addDriverToPool",
+            "setDriverOutReason"
+          ]
+        },
+        {
+          "source": "../lib/types",
+          "specifiers": [
+            "Driver",
+            "Race"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminPool"
+      ],
+      "totalLines": 176,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/AdminResult.tsx": {
+      "filePath": "src/pages/AdminResult.tsx",
+      "contentHash": "2a150c2a7131352647fb446878d5c95311c8d57f2b45bde70025f6dca8eed204",
+      "functions": [
+        {
+          "name": "AdminResult",
+          "params": [],
+          "exported": true,
+          "lineCount": 132
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useParams",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "../lib/db",
+          "specifiers": [
+            "getRaceWithPool",
+            "getResult",
+            "setRaceResult"
+          ]
+        },
+        {
+          "source": "../lib/types",
+          "specifiers": [
+            "Driver",
+            "Race"
+          ]
+        },
+        {
+          "source": "../lib/types",
+          "specifiers": [
+            "SaveError"
+          ]
+        },
+        {
+          "source": "../components/PredictionSlots",
+          "specifiers": [
+            "PredictionSlots"
+          ]
+        },
+        {
+          "source": "../components/DriverPool",
+          "specifiers": [
+            "DriverPool"
+          ]
+        }
+      ],
+      "exports": [
+        "AdminResult"
+      ],
+      "totalLines": 141,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Calendar.tsx": {
+      "filePath": "src/pages/Calendar.tsx",
+      "contentHash": "1397fc80fb5d40291221a577159fe3d24efc1c9d80d76b503380ece86797827e",
+      "functions": [
+        {
+          "name": "Calendar",
+          "params": [],
+          "exported": true,
+          "lineCount": 65
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useCallback",
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "../lib/db",
+          "specifiers": [
+            "listRaces",
+            "getMyPredictionRaceIds"
+          ]
+        },
+        {
+          "source": "../lib/types",
+          "specifiers": [
+            "Race"
+          ]
+        },
+        {
+          "source": "../components/RaceCard",
+          "specifiers": [
+            "RaceCard",
+            "classifyRace",
+            "RaceView"
+          ]
+        }
+      ],
+      "exports": [
+        "Calendar"
+      ],
+      "totalLines": 72,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/GuestCalendar.tsx": {
+      "filePath": "src/pages/GuestCalendar.tsx",
+      "contentHash": "66ec9a1208765ef5022e3e876f00e768c171eda7715a32f75cf196d7cacd1b47",
+      "functions": [
+        {
+          "name": "GuestCalendar",
+          "params": [],
+          "exported": true,
+          "lineCount": 53
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useCallback",
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "../lib/db",
+          "specifiers": [
+            "listRaces"
+          ]
+        },
+        {
+          "source": "../lib/types",
+          "specifiers": [
+            "Race"
+          ]
+        },
+        {
+          "source": "../components/RaceCard",
+          "specifiers": [
+            "RaceCard",
+            "classifyRace",
+            "RaceView"
+          ]
+        }
+      ],
+      "exports": [
+        "GuestCalendar"
+      ],
+      "totalLines": 59,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Login.tsx": {
+      "filePath": "src/pages/Login.tsx",
+      "contentHash": "34a57abb5cfd0c3148fbc65bd99fef587221a349754ec48069559f80350a07a2",
+      "functions": [
+        {
+          "name": "Login",
+          "params": [],
+          "exported": true,
+          "lineCount": 76
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "../lib/supabase",
+          "specifiers": [
+            "supabase"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "../components/PasswordInput",
+          "specifiers": [
+            "PasswordInput"
+          ]
+        },
+        {
+          "source": "../lib/analytics",
+          "specifiers": [
+            "trackEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "Login"
+      ],
+      "totalLines": 84,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Predict.tsx": {
+      "filePath": "src/pages/Predict.tsx",
+      "contentHash": "73bfd91a8f4f06b6f25f02cd1dfd979d7aad6cdad3ede11977828efc0c5b33bd",
+      "functions": [
+        {
+          "name": "Predict",
+          "params": [],
+          "exported": true,
+          "lineCount": 170
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useParams",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "../lib/db",
+          "specifiers": [
+            "getRaceWithPool",
+            "getMyPrediction",
+            "savePrediction",
+            "nextOpenRace",
+            "getVotedUserIds",
+            "listUsers"
+          ]
+        },
+        {
+          "source": "../lib/types",
+          "specifiers": [
+            "Driver",
+            "Race",
+            "LeagueUser"
+          ]
+        },
+        {
+          "source": "../lib/types",
+          "specifiers": [
+            "SaveError"
+          ]
+        },
+        {
+          "source": "../lib/analytics",
+          "specifiers": [
+            "trackEvent"
+          ]
+        },
+        {
+          "source": "../lib/countdown",
+          "specifiers": [
+            "isPast",
+            "formatCountdown"
+          ]
+        },
+        {
+          "source": "../components/PredictionSlots",
+          "specifiers": [
+            "PredictionSlots"
+          ]
+        },
+        {
+          "source": "../components/DriverPool",
+          "specifiers": [
+            "DriverPool"
+          ]
+        }
+      ],
+      "exports": [
+        "Predict"
+      ],
+      "totalLines": 181,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/RedeemInvite.tsx": {
+      "filePath": "src/pages/RedeemInvite.tsx",
+      "contentHash": "419d057b60ccf21d49f2c56d34e56e08ec6486cf9222e387fd4baf201f55d463",
+      "functions": [
+        {
+          "name": "RedeemInvite",
+          "params": [],
+          "exported": true,
+          "lineCount": 53
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "../lib/db",
+          "specifiers": [
+            "redeemInvite"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "../lib/analytics",
+          "specifiers": [
+            "trackEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "RedeemInvite"
+      ],
+      "totalLines": 60,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/ResetPassword.tsx": {
+      "filePath": "src/pages/ResetPassword.tsx",
+      "contentHash": "9b95a4337d6635b8918ee485054803d8536d6a0ef7d4dd2a29edb365b8524601",
+      "functions": [
+        {
+          "name": "ResetPassword",
+          "params": [],
+          "exported": true,
+          "lineCount": 52
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "../lib/supabase",
+          "specifiers": [
+            "supabase"
+          ]
+        },
+        {
+          "source": "../components/PasswordInput",
+          "specifiers": [
+            "PasswordInput"
+          ]
+        }
+      ],
+      "exports": [
+        "ResetPassword"
+      ],
+      "totalLines": 58,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Results.tsx": {
+      "filePath": "src/pages/Results.tsx",
+      "contentHash": "8f2ee46bf68e059cb458cf72a8d44ef192e11c9e38c7cc767d83e460ea88e496",
+      "functions": [
+        {
+          "name": "Results",
+          "params": [],
+          "exported": true,
+          "lineCount": 170
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useCallback",
+            "useEffect",
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "../lib/db",
+          "specifiers": [
+            "listRaces",
+            "getResult",
+            "getScores",
+            "listUsers",
+            "listDrivers",
+            "getPrediction"
+          ]
+        },
+        {
+          "source": "../lib/types",
+          "specifiers": [
+            "Race",
+            "Driver",
+            "Score",
+            "LeagueUser"
+          ]
+        },
+        {
+          "source": "../lib/supabase",
+          "specifiers": [
+            "supabase"
+          ]
+        },
+        {
+          "source": "../components/DriftChart",
+          "specifiers": [
+            "DriftChart"
+          ]
+        }
+      ],
+      "exports": [
+        "Results"
+      ],
+      "totalLines": 177,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Rules.tsx": {
+      "filePath": "src/pages/Rules.tsx",
+      "contentHash": "8ae440196b6d21bfb17ef1c5ad6ccb8e3b3463957f245827fc0a05e5b6a56d04",
+      "functions": [
+        {
+          "name": "Rules",
+          "params": [],
+          "exported": true,
+          "lineCount": 66
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "../lib/scoring",
+          "specifiers": [
+            "WEIGHTS"
+          ]
+        }
+      ],
+      "exports": [
+        "Rules"
+      ],
+      "totalLines": 93,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Signup.tsx": {
+      "filePath": "src/pages/Signup.tsx",
+      "contentHash": "244c7267496ed7a4dc5dc830b1e27b7cb3427615d9c6330bd7e027f07fb39306",
+      "functions": [
+        {
+          "name": "Signup",
+          "params": [],
+          "exported": true,
+          "lineCount": 44
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "react-router-dom",
+          "specifiers": [
+            "Link",
+            "useNavigate"
+          ]
+        },
+        {
+          "source": "../lib/supabase",
+          "specifiers": [
+            "supabase"
+          ]
+        },
+        {
+          "source": "../auth/AuthContext",
+          "specifiers": [
+            "useAuth"
+          ]
+        },
+        {
+          "source": "../components/PasswordInput",
+          "specifiers": [
+            "PasswordInput"
+          ]
+        },
+        {
+          "source": "../lib/analytics",
+          "specifiers": [
+            "trackEvent"
+          ]
+        }
+      ],
+      "exports": [
+        "Signup"
+      ],
+      "totalLines": 52,
+      "hasStructuralAnalysis": true
+    },
+    "src/pages/Standings.tsx": {
+      "filePath": "src/pages/Standings.tsx",
+      "contentHash": "199882b05a01afc82168c54a34a003a38c1d25f5df47eabb0ff4fad7db193985",
+      "functions": [
+        {
+          "name": "Standings",
+          "params": [],
+          "exported": true,
+          "lineCount": 74
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useCallback",
+            "useEffect",
+            "useState"
+          ]
+        },
+        {
+          "source": "../lib/db",
+          "specifiers": [
+            "listRaces",
+            "getScores",
+            "listUsers"
+          ]
+        },
+        {
+          "source": "../lib/standings",
+          "specifiers": [
+            "aggregateStandings",
+            "StandingRow"
+          ]
+        },
+        {
+          "source": "../lib/supabase",
+          "specifiers": [
+            "supabase"
+          ]
+        }
+      ],
+      "exports": [
+        "Standings"
+      ],
+      "totalLines": 80,
+      "hasStructuralAnalysis": true
+    },
+    "src/styles/app.css": {
+      "filePath": "src/styles/app.css",
+      "contentHash": "fb8a55a18232d4630e41f8605b21e3f0b4c60672da611ffd289182f0db9609b2",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 191,
+      "hasStructuralAnalysis": false
+    },
+    "src/vite-env.d.ts": {
+      "filePath": "src/vite-env.d.ts",
+      "contentHash": "899fe62abdcc6b72805446834d6dca652b4f25ece2c34231e89c479e933bc2f7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/config.toml": {
+      "filePath": "supabase/config.toml",
+      "contentHash": "eb2b83ec6834deae875c744a126d20e6d7fc2b77cd777a89768cf96d74f281a4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 424,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/functions/admin-notify/deno.json": {
+      "filePath": "supabase/functions/admin-notify/deno.json",
+      "contentHash": "95fe50d2f67d7467bb5b2d1bcc28e3ae494f042144f861630f5befd9a9a9d779",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/functions/admin-notify/format.test.ts": {
+      "filePath": "supabase/functions/admin-notify/format.test.ts",
+      "contentHash": "25c4e54f860c10cca81fbbbfbf4431ed40a38692c7a3a96106f65008772f65c3",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "https://deno.land/std@0.224.0/assert/mod.ts",
+          "specifiers": [
+            "assertEquals"
+          ]
+        },
+        {
+          "source": "./format.ts",
+          "specifiers": [
+            "buildMessage",
+            "isQuietHours"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 167,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/admin-notify/format.ts": {
+      "filePath": "supabase/functions/admin-notify/format.ts",
+      "contentHash": "5970a20094e6cad3e22d9013b0db1069e8a20a96b62d45525ae6bbb5fd8f1ac4",
+      "functions": [
+        {
+          "name": "escapeHtml",
+          "params": [
+            "s"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "buildMessage",
+          "params": [
+            "event"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 22
+        },
+        {
+          "name": "isQuietHours",
+          "params": [
+            "date"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "buildMessage",
+        "isQuietHours"
+      ],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/admin-notify/index.ts": {
+      "filePath": "supabase/functions/admin-notify/index.ts",
+      "contentHash": "c0e137df46d4fc1c43a3008c041680026db6f0e80d7f30bfbb163b32c528b519",
+      "functions": [
+        {
+          "name": "makeJoke",
+          "params": [
+            "supabaseAdmin",
+            "userId",
+            "raceId",
+            "displayName",
+            "raceName",
+            "season",
+            "warnings"
+          ],
+          "returnType": "Promise<string | null>",
+          "exported": false,
+          "lineCount": 120
+        },
+        {
+          "name": "recordProblems",
+          "params": [
+            "db",
+            "ok",
+            "errors"
+          ],
+          "returnType": "Promise<void>",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "handle",
+          "params": [
+            "req",
+            "ctx",
+            "warnings"
+          ],
+          "returnType": "Promise<Response>",
+          "exported": false,
+          "lineCount": 167
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "npm:@supabase/server",
+          "specifiers": [
+            "withSupabase"
+          ]
+        },
+        {
+          "source": "./format.ts",
+          "specifiers": [
+            "buildMessage",
+            "isQuietHours"
+          ]
+        },
+        {
+          "source": "./format.ts",
+          "specifiers": [
+            "ResolvedEvent"
+          ]
+        },
+        {
+          "source": "./joke.ts",
+          "specifiers": [
+            "buildJokePrompt",
+            "generateJoke",
+            "isDuplicate"
+          ]
+        },
+        {
+          "source": "./joke.ts",
+          "specifiers": [
+            "RaceHistory"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 342,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/admin-notify/joke.test.ts": {
+      "filePath": "supabase/functions/admin-notify/joke.test.ts",
+      "contentHash": "48449efc837b725954df8ffbf4fa26a76fd7695d4a46388dca713f12a12aba0e",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "https://deno.land/std@0.224.0/assert/mod.ts",
+          "specifiers": [
+            "assert",
+            "assertEquals",
+            "assertStringIncludes"
+          ]
+        },
+        {
+          "source": "./joke.ts",
+          "specifiers": [
+            "buildJokePrompt",
+            "buildRookiePrompt",
+            "buildVeteranPrompt",
+            "isDuplicate",
+            "similarity"
+          ]
+        },
+        {
+          "source": "./joke.ts",
+          "specifiers": [
+            "JokeStats",
+            "RaceHistory"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 135,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/admin-notify/joke.ts": {
+      "filePath": "supabase/functions/admin-notify/joke.ts",
+      "contentHash": "dc05ea6e5a06d596c121ae8db5f6329650e1a27716546779e19a9cae4b8f9761",
+      "functions": [
+        {
+          "name": "avoidBlock",
+          "params": [
+            "pastJokes"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "legendBlock",
+          "params": [
+            "history",
+            "drivers"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "buildVeteranPrompt",
+          "params": [
+            "displayName",
+            "raceName",
+            "history",
+            "stats",
+            "drivers",
+            "pastJokes"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 32
+        },
+        {
+          "name": "buildRookiePrompt",
+          "params": [
+            "displayName",
+            "raceName"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 10
+        },
+        {
+          "name": "buildJokePrompt",
+          "params": [
+            "displayName",
+            "raceName",
+            "history",
+            "stats",
+            "drivers",
+            "pastJokes"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "normalize",
+          "params": [
+            "s"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "similarity",
+          "params": [
+            "a",
+            "b"
+          ],
+          "returnType": "number",
+          "exported": true,
+          "lineCount": 8
+        },
+        {
+          "name": "isDuplicate",
+          "params": [
+            "candidate",
+            "pastJokes",
+            "threshold"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "isTransientStatus",
+          "params": [
+            "status"
+          ],
+          "returnType": "boolean",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "sleep",
+          "params": [
+            "ms"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "askOnce",
+          "params": [
+            "prompt",
+            "apiKey",
+            "timeoutMs"
+          ],
+          "returnType": "Promise<string>",
+          "exported": false,
+          "lineCount": 39
+        },
+        {
+          "name": "generateJoke",
+          "params": [
+            "prompt",
+            "apiKey",
+            "timeoutMs",
+            "attempts"
+          ],
+          "returnType": "Promise<string>",
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "buildVeteranPrompt",
+        "buildRookiePrompt",
+        "buildJokePrompt",
+        "similarity",
+        "isDuplicate",
+        "generateJoke"
+      ],
+      "totalLines": 211,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/telegram-auth/deno.json": {
+      "filePath": "supabase/functions/telegram-auth/deno.json",
+      "contentHash": "95fe50d2f67d7467bb5b2d1bcc28e3ae494f042144f861630f5befd9a9a9d779",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/functions/telegram-auth/index.ts": {
+      "filePath": "supabase/functions/telegram-auth/index.ts",
+      "contentHash": "aea1c3bff308d1333316ef5ae6b5a06885590f68aab1f4e1cb868edd3dc63072",
+      "functions": [
+        {
+          "name": "syntheticEmail",
+          "params": [
+            "telegramId"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "npm:@supabase/server",
+          "specifiers": [
+            "withSupabase"
+          ]
+        },
+        {
+          "source": "./verify.ts",
+          "specifiers": [
+            "verifyInitData"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 134,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/telegram-auth/verify.test.ts": {
+      "filePath": "supabase/functions/telegram-auth/verify.test.ts",
+      "contentHash": "267e809ec1b2b050d536e113fe91a728bb4d4a590aaf6643d397815b67057530",
+      "functions": [
+        {
+          "name": "buildInitData",
+          "params": [
+            "fields",
+            "botToken"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "https://deno.land/std@0.224.0/assert/mod.ts",
+          "specifiers": [
+            "assertEquals"
+          ]
+        },
+        {
+          "source": "node:crypto",
+          "specifiers": [
+            "createHmac"
+          ]
+        },
+        {
+          "source": "./verify.ts",
+          "specifiers": [
+            "verifyInitData"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 63,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/telegram-auth/verify.ts": {
+      "filePath": "supabase/functions/telegram-auth/verify.ts",
+      "contentHash": "2d7eba5b137179487d12aa1e75646d3fce159f097bc3a5c548c2f0e9301ed6da",
+      "functions": [
+        {
+          "name": "verifyInitData",
+          "params": [
+            "initData",
+            "botToken",
+            "maxAgeSeconds"
+          ],
+          "returnType": "Promise<VerifyResult>",
+          "exported": true,
+          "lineCount": 65
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "verifyInitData"
+      ],
+      "totalLines": 78,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/watchdog/checks.test.ts": {
+      "filePath": "supabase/functions/watchdog/checks.test.ts",
+      "contentHash": "28ddc3f4e9a7ff14e32fd69c97b2bf08f2faf321aa3fb335bfb091af209bdcba",
+      "functions": [
+        {
+          "name": "run",
+          "params": [
+            "job",
+            "ranAt",
+            "ok",
+            "errors",
+            "id"
+          ],
+          "returnType": "JobRun",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "snap",
+          "params": [
+            "over"
+          ],
+          "returnType": "Snapshot",
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "race",
+          "params": [
+            "over"
+          ],
+          "returnType": "WatchedRace",
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "keys",
+          "params": [
+            "s"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "incident",
+          "params": [
+            "over"
+          ],
+          "returnType": "Incident",
+          "exported": false,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "https://deno.land/std@0.224.0/assert/mod.ts",
+          "specifiers": [
+            "assert",
+            "assertEquals"
+          ]
+        },
+        {
+          "source": "./checks.ts",
+          "specifiers": [
+            "evaluate",
+            "isAlertQuietHours",
+            "mskWeekKey",
+            "planNotifications"
+          ]
+        },
+        {
+          "source": "./checks.ts",
+          "specifiers": [
+            "Incident",
+            "JobRun",
+            "Snapshot",
+            "WatchedRace"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 261,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/watchdog/checks.ts": {
+      "filePath": "supabase/functions/watchdog/checks.ts",
+      "contentHash": "8b60ade3a4601aac871e8b63877782ec9eef1b1a23479b663204f073faa2824e",
+      "functions": [
+        {
+          "name": "isGhaJob",
+          "params": [
+            "job"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "isOneShot",
+          "params": [
+            "key"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "mskParts",
+          "params": [
+            "date"
+          ],
+          "returnType": "MskParts",
+          "exported": true,
+          "lineCount": 21
+        },
+        {
+          "name": "pad",
+          "params": [
+            "n"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "mskYmd",
+          "params": [
+            "date"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "mskWeekKey",
+          "params": [
+            "date"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "fmtMsk",
+          "params": [
+            "iso"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "isAlertQuietHours",
+          "params": [
+            "date"
+          ],
+          "returnType": "boolean",
+          "exported": true,
+          "lineCount": 4
+        },
+        {
+          "name": "hashText",
+          "params": [
+            "s"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 5
+        },
+        {
+          "name": "clip",
+          "params": [
+            "s",
+            "max"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "hoursAgo",
+          "params": [
+            "iso",
+            "now"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "evaluate",
+          "params": [
+            "s"
+          ],
+          "returnType": "Failing[]",
+          "exported": true,
+          "lineCount": 101
+        },
+        {
+          "name": "escapeHtml",
+          "params": [
+            "s"
+          ],
+          "returnType": "string",
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "planNotifications",
+          "params": [
+            "open",
+            "resolvedPending",
+            "now"
+          ],
+          "returnType": "Plan",
+          "exported": true,
+          "lineCount": 32
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "RUNS_WINDOW_HOURS",
+        "GHA_SILENT_HOURS",
+        "KEEPALIVE_STALE_HOURS",
+        "GRIDBOT_DEADLINE_HOURS",
+        "RESULT_MISSING_HOURS",
+        "REMIND_HOURS",
+        "isGhaJob",
+        "isOneShot",
+        "mskParts",
+        "mskYmd",
+        "mskWeekKey",
+        "fmtMsk",
+        "isAlertQuietHours",
+        "hashText",
+        "evaluate",
+        "planNotifications"
+      ],
+      "totalLines": 273,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/functions/watchdog/deno.json": {
+      "filePath": "supabase/functions/watchdog/deno.json",
+      "contentHash": "95fe50d2f67d7467bb5b2d1bcc28e3ae494f042144f861630f5befd9a9a9d779",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/functions/watchdog/index.ts": {
+      "filePath": "supabase/functions/watchdog/index.ts",
+      "contentHash": "a47c59a201ffdbcb6c80fd7321154aceda4d8533ebd8e8c47e24d3cf4d0f21fc",
+      "functions": [
+        {
+          "name": "must",
+          "params": [
+            "res",
+            "what"
+          ],
+          "returnType": "T",
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "gatherSnapshot",
+          "params": [
+            "db",
+            "now"
+          ],
+          "returnType": "Promise<Snapshot>",
+          "exported": false,
+          "lineCount": 59
+        },
+        {
+          "name": "sendTelegram",
+          "params": [
+            "text"
+          ],
+          "returnType": "Promise<void>",
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "runWatchdog",
+          "params": [
+            "db"
+          ],
+          "exported": false,
+          "lineCount": 53
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "npm:@supabase/server",
+          "specifiers": [
+            "withSupabase"
+          ]
+        },
+        {
+          "source": "./checks.ts",
+          "specifiers": [
+            "evaluate",
+            "isOneShot",
+            "planNotifications",
+            "RUNS_WINDOW_HOURS"
+          ]
+        },
+        {
+          "source": "./checks.ts",
+          "specifiers": [
+            "Incident",
+            "JobRun",
+            "Snapshot",
+            "WatchedRace"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 172,
+      "hasStructuralAnalysis": true
+    },
+    "supabase/migrations/0001_schema.sql": {
+      "filePath": "supabase/migrations/0001_schema.sql",
+      "contentHash": "1553db9b6480c1da118f260be2d6e89d00e0cafe5b0ef3d525bef1290e7924c3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 74,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0002_scoring.sql": {
+      "filePath": "supabase/migrations/0002_scoring.sql",
+      "contentHash": "cdda586aedcb5a72b2151a49e1087bd215a4edef851a3b23184e9e7fd78915fa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 40,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0003_rls.sql": {
+      "filePath": "supabase/migrations/0003_rls.sql",
+      "contentHash": "9ca25165436d22bb22d14acd082d1a2738b7ba5fd77f94385415db6a8798070b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 77,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0004_validation.sql": {
+      "filePath": "supabase/migrations/0004_validation.sql",
+      "contentHash": "d3c77238db7074c262fc20156559096b5406b25cacd09af1ac33b37c6c6bda02",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 37,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0005_is_sprint.sql": {
+      "filePath": "supabase/migrations/0005_is_sprint.sql",
+      "contentHash": "f951a90755312d1d1e1ac3df73e8f7ba3b6f38c80595066eb62afd4577f10444",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0006_invite_membership.sql": {
+      "filePath": "supabase/migrations/0006_invite_membership.sql",
+      "contentHash": "1b0c411ee70d5568abe3dd733a6f7c4fba3936a68f297f82c5504510db79e9fc",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 33,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0007_open_race.sql": {
+      "filePath": "supabase/migrations/0007_open_race.sql",
+      "contentHash": "a6e0f9f99436ce153cbeeb16b50f3dff2686d9b3f658acb46f76543aaed7c655",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 39,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0008_keepalive.sql": {
+      "filePath": "supabase/migrations/0008_keepalive.sql",
+      "contentHash": "8bb89e2b6e2126696b2476f3ee6937820571f91a8a40b3313f631cef55061f54",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 26,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0009_admin_results.sql": {
+      "filePath": "supabase/migrations/0009_admin_results.sql",
+      "contentHash": "8020a0dc4652ad3894cbe100fc1d0d3e06b5d24c846e26a3384c2264366bb422",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 51,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0010_driver_standing.sql": {
+      "filePath": "supabase/migrations/0010_driver_standing.sql",
+      "contentHash": "7b546cff3d93c17bce53557a096c48e821688ba6bd11489599a23bdfc4e0c1ec",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0011_telegram_announced.sql": {
+      "filePath": "supabase/migrations/0011_telegram_announced.sql",
+      "contentHash": "7f3e28c51893e3b73c6c5fa22966b95d255a838e509073ee93040ef4f20589bb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0012_predicted_user_ids.sql": {
+      "filePath": "supabase/migrations/0012_predicted_user_ids.sql",
+      "contentHash": "ab17f688fa83466efa12a8620cc4177871fb23b6bd31b9a11ae6077821df821b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0013_revoke_public_execute.sql": {
+      "filePath": "supabase/migrations/0013_revoke_public_execute.sql",
+      "contentHash": "55e0a987d7fd563966d077e6ec03477458e64c2fe5b6ac1df4010cb95ec2e846",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 36,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0014_gridbot_user.sql": {
+      "filePath": "supabase/migrations/0014_gridbot_user.sql",
+      "contentHash": "c623e592bd9e9911f2076b3ed0ac6e5ca2b7e3c63e36b2594ebd7496f48ad88d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0015_users_display_name_unique.sql": {
+      "filePath": "supabase/migrations/0015_users_display_name_unique.sql",
+      "contentHash": "c4bf516b2e3b2ae48d094aaefe75b7d5d661b79f6731178df856de50daa63177",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0016_guest_access.sql": {
+      "filePath": "supabase/migrations/0016_guest_access.sql",
+      "contentHash": "48e72ae7dde4055ac54c95800fb477ae764a4b43935692945c57e8e479690ff8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 59,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0017_guest_access_fix.sql": {
+      "filePath": "supabase/migrations/0017_guest_access_fix.sql",
+      "contentHash": "906ac495d6980b0cae9e8e27dde5a326c0c51ef13fdd5cfb9b3b7ffb0e9d3034",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 9,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0018_guest_access_fix2.sql": {
+      "filePath": "supabase/migrations/0018_guest_access_fix2.sql",
+      "contentHash": "4b38a4649e108eea09894a70506b6e346a2c74295bbdfb10361aa86537e47da4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 6,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0019_guest_access_fix3.sql": {
+      "filePath": "supabase/migrations/0019_guest_access_fix3.sql",
+      "contentHash": "1536dc99aed208fd237e93a70a853168f098e15cd75e864e2360f3105c26bfad",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0020_guest_access_fix4.sql": {
+      "filePath": "supabase/migrations/0020_guest_access_fix4.sql",
+      "contentHash": "4a48691e71f77b9d28a3f2cb513f473333bbf0ebecd90961ca393e26d6d9f6a6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 20,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0021_telegram_links.sql": {
+      "filePath": "supabase/migrations/0021_telegram_links.sql",
+      "contentHash": "c2a9c38001976d493757f9ca70a3e308e6b78c6bf2eda5c5e12ee129ab08f282",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0022_telegram_links_revoke_default_grants.sql": {
+      "filePath": "supabase/migrations/0022_telegram_links_revoke_default_grants.sql",
+      "contentHash": "bb65cd32f91617859397d0822b4d978766e84143b285af2d0892f9932196a519",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0023_admin_notify.sql": {
+      "filePath": "supabase/migrations/0023_admin_notify.sql",
+      "contentHash": "d171ca27d9322b248ee912d8d625dc0606dc40af42a999f8af7a1a8559d92294",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 71,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0024_raceweek_announced.sql": {
+      "filePath": "supabase/migrations/0024_raceweek_announced.sql",
+      "contentHash": "0938fcaf081893ab1ac44336a5237c48a6abd124a9fa66daa4a235ac531dd0be",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 6,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0025_pool_out_reason.sql": {
+      "filePath": "supabase/migrations/0025_pool_out_reason.sql",
+      "contentHash": "56a75e200da34dcf362a22866808100a090ede2deaffa75accdbfce4107d5c4f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0026_pool_added_reason.sql": {
+      "filePath": "supabase/migrations/0026_pool_added_reason.sql",
+      "contentHash": "15ab806a2fde3d35cf201c7b08d6e5caa32295ac3c71e2657f7b06fb37806bd4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0027_prediction_jokes.sql": {
+      "filePath": "supabase/migrations/0027_prediction_jokes.sql",
+      "contentHash": "50456b490e64d7fb7775176081e32722158a5efabd8ef8051c2a451fb7497104",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 26,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0028_watchdog.sql": {
+      "filePath": "supabase/migrations/0028_watchdog.sql",
+      "contentHash": "b4a941526e080f914ff2ad68696d480b9f365041c28a142a6a2b2bfb1f974eb8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 74,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0029_prediction_out_reason.sql": {
+      "filePath": "supabase/migrations/0029_prediction_out_reason.sql",
+      "contentHash": "e292d3f5e05b844165c44d334f734a1b0c3454dcf9748346fadd7684f0dbf276",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 49,
+      "hasStructuralAnalysis": false
+    },
+    "supabase/migrations/0030_admin_notify_timeout.sql": {
+      "filePath": "supabase/migrations/0030_admin_notify_timeout.sql",
+      "contentHash": "c4e262c1419982927a1a2aaf791622b04b17bd786ed448ab7bfc147cb4c530b6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 51,
+      "hasStructuralAnalysis": false
+    },
+    "tsconfig.json": {
+      "filePath": "tsconfig.json",
+      "contentHash": "b67ba1a58e7a34bbd840e4b842b34aa29fbd8a53832b2507df54ccdf94428c10",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 22,
+      "hasStructuralAnalysis": false
+    },
+    "tsconfig.node.json": {
+      "filePath": "tsconfig.node.json",
+      "contentHash": "6ec602b8aa146888c76f0b41ca3515f91f95919f6e6417a4670decaba8fcb982",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 11,
+      "hasStructuralAnalysis": false
+    },
+    "vite.config.ts": {
+      "filePath": "vite.config.ts",
+      "contentHash": "739d1e8e7934c8b3d2a532ca3f898a92b370e1eb2ee20f17645c9f634cc30441",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "vite",
+          "specifiers": [
+            "defineConfig"
+          ]
+        },
+        {
+          "source": "@vitejs/plugin-react",
+          "specifiers": [
+            "react"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    }
+  }
+}

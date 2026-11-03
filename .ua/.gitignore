@@ -1,0 +1,5 @@
+tooling/
+tmp/
+intermediate/
+*.log
+.trash-*/
