@@ -104,6 +104,8 @@ async function rehearse(bundle, directory) {
       if (!existingRoles.includes(role)) await command(['exec', '--env', 'PGPASSWORD', container, 'psql', '-U', 'supabase_admin', '-d', 'postgres', '-AtXq', '-v', 'ON_ERROR_STOP=1', '-c', `CREATE ROLE ${quote(role)} NOLOGIN`], 'create-test-role', directory, { env: targetEnv });
     }
     await command(['exec', '--env', 'PGPASSWORD', container, 'createdb', '-U', 'supabase_admin', '-T', 'template0', 'f1_recovery'], 'create-test-database', directory, { env: targetEnv });
+    // Только что созданная изолированная БД: dump содержит собственное CREATE SCHEMA public.
+    await command(['exec', '--env', 'PGPASSWORD', container, 'psql', '-U', 'supabase_admin', '-d', 'f1_recovery', '-v', 'ON_ERROR_STOP=1', '-c', 'DROP SCHEMA public'], 'prepare-empty-schema', directory, { env: targetEnv });
     await command(['cp', dumpFile, `${container}:/tmp/restore.dump`], 'copy-dump', directory);
     await command(['exec', '--env', 'PGPASSWORD', container, 'pg_restore', '-U', 'supabase_admin', '--dbname=f1_recovery', '--exit-on-error', '--single-transaction', '/tmp/restore.dump'], 'restore', directory, { env: targetEnv });
     const counts = {};
