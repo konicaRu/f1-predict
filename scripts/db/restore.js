@@ -18,6 +18,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { Client } = require('pg');
+const { parseRestoreRows } = require('./restore-json');
 
 const ROOT = path.join(__dirname, '..', '..');
 const CHUNK_BYTES = 6000; // с запасом до порога ~8 КБ
@@ -113,7 +114,7 @@ async function main() {
 
   try {
     for (const t of sorted) {
-      const rows = JSON.parse(fs.readFileSync(path.join(dir, `${t}.json`), 'utf8'));
+      const rows = parseRestoreRows(fs.readFileSync(path.join(dir, `${t}.json`), 'utf8'));
       const parts = chunks(rows);
       for (let i = 0; i < parts.length; i++) {
         await query(

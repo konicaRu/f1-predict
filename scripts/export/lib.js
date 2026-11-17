@@ -5,6 +5,7 @@ const { google } = require('googleapis');
 
 // Читает переменную напрямую из корневого .env (без пакета dotenv — по образцу scripts/import/lib.js).
 function readEnv(key) {
+  if (process.env[key]) return process.env[key];
   const env = fs.readFileSync(path.join(__dirname, '..', '..', '.env'), 'utf8');
   const m = env.match(new RegExp(`^${key}=(.+)$`, 'm'));
   if (!m) throw new Error(`${key} не найден в .env`);
@@ -49,7 +50,7 @@ function sheetsClient() {
     keyFile,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
   });
-  return google.sheets({ version: 'v4', auth });
+  return google.sheets({ version: 'v4', auth, timeout: 30000 });
 }
 
 module.exports = { readEnv, q, close, sheetsClient };

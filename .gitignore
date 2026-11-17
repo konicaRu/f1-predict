@@ -19,6 +19,7 @@ scripts/export/service-account*.json
 telegram-token*
 
 # Логи / временное
+.tmp/
 *.log
 .DS_Store
 .commitmsg.tmp

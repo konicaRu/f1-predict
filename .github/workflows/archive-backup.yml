@@ -1,0 +1,43 @@
+name: Archive backup to Google Sheets
+
+on:
+  schedule:
+    - cron: '15 7 * * *' # ежедневно 10:15 МСК; GitHub может задержать старт
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: archive-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: scripts/export/package-lock.json
+      - run: npm ci
+        working-directory: scripts/export
+      - name: Write service account key to private runner temp
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: |
+          test -n "$SERVICE_ACCOUNT_JSON"
+          umask 077
+          printf '%s' "$SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/archive-google-key.json"
+      - name: Create and verify dated snapshot
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          GOOGLE_SERVICE_ACCOUNT_KEY_PATH: ${{ runner.temp }}/archive-google-key.json
+        run: node scripts/export/snapshot.js
+      - name: Remove temporary credential
+        if: always()
+        run: rm -f "$RUNNER_TEMP/archive-google-key.json"

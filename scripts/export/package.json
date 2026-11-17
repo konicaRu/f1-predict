@@ -3,7 +3,9 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "export": "node export.js"
+    "export": "node export.js",
+    "backup": "node snapshot.js",
+    "test": "node --test snapshot.test.js"
   },
   "dependencies": {
     "googleapis": "^173.0.0",
