@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "gitCommitHash": "b0dd7d98623749af3dabdf9731b98a8e1c1c9b9b",
-  "generatedAt": "2026-11-17T14:39:01.415Z",
+  "gitCommitHash": "9a182567992e45759f7d5270d21a4bf8f06c11a2",
+  "generatedAt": "2026-11-17T19:57:32.573Z",
   "files": {
     ".github/workflows/deploy.yml": {
       "filePath": ".github/workflows/deploy.yml",
@@ -25,12 +25,12 @@
     },
     ".github/workflows/telegram-notify.yml": {
       "filePath": ".github/workflows/telegram-notify.yml",
-      "contentHash": "793cf8acec601b9cce9bd7a20d0b15f5e877cc11161f7e0651c78e354a74e9de",
+      "contentHash": "5aec0f426edd31f07b6aa48cc35720de744c0841ffad10537714133f5af9a796",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 109,
+      "totalLines": 111,
       "hasStructuralAnalysis": false
     },
     "ARCHITECTURE.md": {
@@ -55,12 +55,12 @@
     },
     "MEMORY.md": {
       "filePath": "MEMORY.md",
-      "contentHash": "65555e2d54a2880e770e723adfcfa1865e1432a3b29f1f979ad9ef73cbe7983b",
+      "contentHash": "07cf7c0d6b2e1e8162fc95c34b97d3c8e0d24400e9bd05f15fa903957c799df4",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 1596,
+      "totalLines": 1624,
       "hasStructuralAnalysis": false
     },
     "README.md": {
@@ -1924,17 +1924,17 @@
     },
     "scripts/telegram/README.md": {
       "filePath": "scripts/telegram/README.md",
-      "contentHash": "739ab0d2e89fa93d2b3e9fcbc50ebf9bbbe78808d33d61d3bd7f8e36a6f6efbd",
+      "contentHash": "41b097add9862a319edd13910c309e80f72e2de956f9ff148a339b1ba7c482aa",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 57,
+      "totalLines": 96,
       "hasStructuralAnalysis": false
     },
     "scripts/telegram/lib.js": {
       "filePath": "scripts/telegram/lib.js",
-      "contentHash": "0f67297dbb0c078ad864b7cffb82cc50a610f3b20bc47147bd7399f639872dce",
+      "contentHash": "6feef1048ad4066b2ee5e59bc9cbfa086c5b60bb0054226a579e2bc554510b48",
       "functions": [
         {
           "name": "readEnv",
@@ -2008,17 +2008,27 @@
           ],
           "exported": false,
           "lineCount": 23
+        },
+        {
+          "name": "sendTelegramDossier",
+          "params": [
+            "message",
+            "replyMarkup",
+            "onFallback"
+          ],
+          "exported": false,
+          "lineCount": 5
         }
       ],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 133,
+      "totalLines": 139,
       "hasStructuralAnalysis": true
     },
     "scripts/telegram/notify.js": {
       "filePath": "scripts/telegram/notify.js",
-      "contentHash": "7b9d3946d8ebdbb823da5bcf52521f39203d83a24797e902ebf1e5858ca6b6df",
+      "contentHash": "ecb87f5f0a71c82b555a6583bcf18f4f383aa2920da8e2d1ec58c7bdc95dd393",
       "functions": [
         {
           "name": "siteLink",
@@ -2115,16 +2125,35 @@
           "lineCount": 64
         },
         {
+          "name": "prepareDossier",
+          "params": [
+            "race",
+            "getDossier",
+            "options",
+            "warnings"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
           "name": "raceweek",
           "params": [],
           "exported": false,
-          "lineCount": 16
+          "lineCount": 14
+        },
+        {
+          "name": "missingNames",
+          "params": [
+            "raceId"
+          ],
+          "exported": false,
+          "lineCount": 5
         },
         {
           "name": "deadline",
           "params": [],
           "exported": false,
-          "lineCount": 24
+          "lineCount": 14
         },
         {
           "name": "driverCodeMap",
@@ -2224,7 +2253,7 @@
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 554,
+      "totalLines": 560,
       "hasStructuralAnalysis": true
     },
     "scripts/telegram/notify.test.js": {
@@ -2250,12 +2279,12 @@
     },
     "scripts/telegram/package.json": {
       "filePath": "scripts/telegram/package.json",
-      "contentHash": "6c683f768b460e3aea22e0e14171b79971c2348a2d18d2eab36c509b4e64f83e",
+      "contentHash": "5abd7943c6f41de63adfa4a1a88e1ef6fcabe99e9d99c51a02ea0d70c5001d6c",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 14,
+      "totalLines": 15,
       "hasStructuralAnalysis": false
     },
     "src/App.tsx": {
@@ -5546,7 +5575,7 @@
     },
     "docs/superpowers/plans/2026-11-17-race-dossier-telegram-driver-form.md": {
       "filePath": "docs/superpowers/plans/2026-11-17-race-dossier-telegram-driver-form.md",
-      "contentHash": "846207bc4ef0c5828fb31c62fc2415c0d16e1d0aad85fb63ae37db2114b4f7b0",
+      "contentHash": "a70a22a66470096c96e001a87e59ff6ea24181c0045f7e3b35f76e445c46d1b4",
       "functions": [],
       "classes": [],
       "imports": [],
@@ -5884,6 +5913,384 @@
       "imports": [],
       "exports": [],
       "totalLines": 105,
+      "hasStructuralAnalysis": true
+    },
+    "docs/mockups/las-vegas-track-LICENSE.md": {
+      "filePath": "docs/mockups/las-vegas-track-LICENSE.md",
+      "contentHash": "f093960027c8ebcc3220000b8316ec29cc6f9149b7625ebad02524bf44ebf2f3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 20,
+      "hasStructuralAnalysis": false
+    },
+    "docs/mockups/las-vegas-track.geojson": {
+      "filePath": "docs/mockups/las-vegas-track.geojson",
+      "contentHash": "4bdd508ceeba34850836c1b725a75c4a2a2d1aadf9f3f0e69a52354a47e1e016",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": false
+    },
+    "docs/mockups/render-compact-dossier.cjs": {
+      "filePath": "docs/mockups/render-compact-dossier.cjs",
+      "contentHash": "385058c49a52554bd29f3c657c57d567627dea4db20310427239bea2537f4338",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": true
+    },
+    "docs/mockups/render-dark-dossier.cjs": {
+      "filePath": "docs/mockups/render-dark-dossier.cjs",
+      "contentHash": "656832a53c6c9e83c7d31972408777587af83c1fca6d819e5d10a47c15529c0f",
+      "functions": [
+        {
+          "name": "esc",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "number",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "fullName",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 27,
+      "hasStructuralAnalysis": true
+    },
+    "docs/mockups/telegram-dossier-compact-text.html": {
+      "filePath": "docs/mockups/telegram-dossier-compact-text.html",
+      "contentHash": "7b6b2e94cf2e3d53f5a6a7b22aa733e68ce465e28b81d5e74c198e70dff4119f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": false
+    },
+    "docs/mockups/telegram-dossier-compact.html": {
+      "filePath": "docs/mockups/telegram-dossier-compact.html",
+      "contentHash": "ec6c89faec0fd42c4ea9eefeb9871e2b01962b6be93c17b62a8d76f2008ae6ba",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": false
+    },
+    "docs/mockups/telegram-dossier-dark.html": {
+      "filePath": "docs/mockups/telegram-dossier-dark.html",
+      "contentHash": "1df225974fbec8110ed80669feb4bda0d2397d991ecbc4381aa7d13659310afa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": false
+    },
+    "docs/mockups/telegram-dossier-live.html": {
+      "filePath": "docs/mockups/telegram-dossier-live.html",
+      "contentHash": "f5d4e033bb73cdaaaf6f0923314a5d68fee66090a81262ee3cd06eb274023142",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1,
+      "hasStructuralAnalysis": false
+    },
+    "docs/mockups/telegram-dossier-live.json": {
+      "filePath": "docs/mockups/telegram-dossier-live.json",
+      "contentHash": "1d8ce47950b0be2601c840f7bcc526d89e7927011f4cfa78ce27abffc2f2686d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 94,
+      "hasStructuralAnalysis": false
+    },
+    "docs/mockups/telegram-las-vegas-dossier.html": {
+      "filePath": "docs/mockups/telegram-las-vegas-dossier.html",
+      "contentHash": "38cd90e165949cb4b6a0734229742c0d91a412be30b19ecda7a96f062aee5b3e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 23,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-11-17-automatic-race-dossier.md": {
+      "filePath": "docs/superpowers/plans/2026-11-17-automatic-race-dossier.md",
+      "contentHash": "71b659eebfbcf2b2f352196bd0073ec195d693667d567751179412c883000916",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 54,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/telegram/data/GEOMETRY-LICENSE.md": {
+      "filePath": "scripts/telegram/data/GEOMETRY-LICENSE.md",
+      "contentHash": "f093960027c8ebcc3220000b8316ec29cc6f9149b7625ebad02524bf44ebf2f3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 20,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/telegram/data/circuits.json": {
+      "filePath": "scripts/telegram/data/circuits.json",
+      "contentHash": "d990a7089940184270148553f7f03a06a1a3e55ebdde3b8d52b10ee682ee7b4a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 16,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/telegram/data/vegas.geojson": {
+      "filePath": "scripts/telegram/data/vegas.geojson",
+      "contentHash": "4bdd508ceeba34850836c1b725a75c4a2a2d1aadf9f3f0e69a52354a47e1e016",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/telegram/dossier-banner.js": {
+      "filePath": "scripts/telegram/dossier-banner.js",
+      "contentHash": "ac0f78f703174d27f91c9a7900cf17808e9820052711c71386e9e79ac9e2c363",
+      "functions": [
+        {
+          "name": "buildBannerSvg",
+          "params": [
+            "title",
+            "coordinates"
+          ],
+          "exported": false,
+          "lineCount": 17
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/telegram/dossier-message.js": {
+      "filePath": "scripts/telegram/dossier-message.js",
+      "contentHash": "ce4a333245a8ededb919f165559851a3387c9ead0a26bac874e33aaaeada77b8",
+      "functions": [
+        {
+          "name": "escape",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "dateTime",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "n",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "weatherLines",
+          "params": [
+            "d"
+          ],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "buildDossierMessage",
+          "params": [
+            "race",
+            "d"
+          ],
+          "exported": false,
+          "lineCount": 44
+        },
+        {
+          "name": "deliverDossier",
+          "params": [
+            "message"
+          ],
+          "exported": false,
+          "lineCount": 22
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 92,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/telegram/dossier-message.test.js": {
+      "filePath": "scripts/telegram/dossier-message.test.js",
+      "contentHash": "dc5b6baa86c16fc0058357d05ca6e70e6d6bd93dc8c42fa4ca6f592edca6ed43",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 64,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/telegram/dossier-notify.test.js": {
+      "filePath": "scripts/telegram/dossier-notify.test.js",
+      "contentHash": "27f575c0893aac825fe3183db29f3a2b62dadb31bd1e9435d0aded5ef3c9eb3e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 39,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/telegram/dossier.js": {
+      "filePath": "scripts/telegram/dossier.js",
+      "contentHash": "428d2fb4d0c1beee31361edb326c118dec25c25747b7f74172f9fa8a0ecf0f3b",
+      "functions": [
+        {
+          "name": "nameOf",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "raceTime",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "validNumber",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "summarizeWeather",
+          "params": [
+            "data",
+            "startIso"
+          ],
+          "exported": false,
+          "lineCount": 23
+        },
+        {
+          "name": "selectWinners",
+          "params": [
+            "rows",
+            "circuitId",
+            "before"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "previousYearTimes",
+          "params": [
+            "results",
+            "qualifying",
+            "year",
+            "circuitId"
+          ],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "loadDossier",
+          "params": [
+            "race"
+          ],
+          "exported": false,
+          "lineCount": 75
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 130,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/telegram/dossier.test.js": {
+      "filePath": "scripts/telegram/dossier.test.js",
+      "contentHash": "7182f673f85aaf7bcf68a9afed678bad9511fa10f801e7982fad437691551c72",
+      "functions": [
+        {
+          "name": "result",
+          "params": [
+            "year"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "response",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "table",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 73,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/telegram/preview-dossier.js": {
+      "filePath": "scripts/telegram/preview-dossier.js",
+      "contentHash": "369856382681f1524bb8e597ca8e0d7b3f9a1f48d9aa6ad726462e606fa43f40",
+      "functions": [
+        {
+          "name": "main",
+          "params": [],
+          "exported": false,
+          "lineCount": 25
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 34,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/telegram/render-dossier-banner.js": {
+      "filePath": "scripts/telegram/render-dossier-banner.js",
+      "contentHash": "afe826c42629cf0b7078f10e22c4fe81fd21cbdc5580844a497b866213075fea",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 10,
       "hasStructuralAnalysis": true
     }
   }
