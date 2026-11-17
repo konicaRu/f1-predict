@@ -6832,19 +6832,6 @@
       "complexity": "simple"
     },
     {
-      "id": "config:scripts/telegram/package.json",
-      "type": "config",
-      "name": "package.json",
-      "filePath": "scripts/telegram/package.json",
-      "summary": "Задаёт CommonJS-пакет уведомлений, зависимость PostgreSQL и команды тестирования и запуска режимов.",
-      "tags": [
-        "configuration",
-        "race-dossier",
-        "automation"
-      ],
-      "complexity": "simple"
-    },
-    {
       "id": "file:scripts/telegram/render-dossier-banner.js",
       "type": "file",
       "name": "render-dossier-banner.js",
@@ -6854,6 +6841,105 @@
         "telegram",
         "race-dossier",
         "automation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/telegram/dossier-card.test.js",
+      "type": "file",
+      "name": "dossier-card.test.js",
+      "filePath": "scripts/telegram/dossier-card.test.js",
+      "summary": "Проверяет выбор направления ветра в первый час гонки: север при 0/360°, отсутствие направления при штиле, пропусках и некорректных значениях.",
+      "tags": [
+        "test",
+        "race-dossier",
+        "mobile"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/telegram/dossier-card.js",
+      "type": "file",
+      "name": "dossier-card.js",
+      "filePath": "scripts/telegram/dossier-card.js",
+      "summary": "Строит HTML для графической карточки досье шириной 1080 px с крупными шрифтами, схемой трассы, историей и погодой. Раздельно показывает направление ветра на старте, максимум скорости и фактическую температуру полотна.",
+      "tags": [
+        "telegram",
+        "race-dossier",
+        "mobile"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/telegram/dossier-card.js:windLabel",
+      "type": "function",
+      "name": "windLabel",
+      "filePath": "scripts/telegram/dossier-card.js",
+      "lineRange": [
+        9,
+        12
+      ],
+      "summary": "Проверяет направление в градусах и преобразует его в восемь румбов со стрелкой движения воздуха; недоступные значения подписывает явно.",
+      "tags": [
+        "telegram",
+        "rendering",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/dossier-card.js:buildDossierCard",
+      "type": "function",
+      "name": "buildDossierCard",
+      "filePath": "scripts/telegram/dossier-card.js",
+      "lineRange": [
+        14,
+        39
+      ],
+      "summary": "Формирует HTML карточки из данных гонки и досье, встраивает перспективную схему через SVG-баннер и экранирует динамический текст.",
+      "tags": [
+        "telegram",
+        "rendering",
+        "race-dossier"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:docs/mockups/telegram-dossier-mobile.html",
+      "type": "file",
+      "name": "telegram-dossier-mobile.html",
+      "filePath": "docs/mockups/telegram-dossier-mobile.html",
+      "summary": "Сохраняет мобильный макет досье Лас-Вегаса с крупными подписями, прошлогодними временами, победителями и погодой первых двух часов. Указывает северо-восточный ветер на старте и отсутствие свежего замера полотна.",
+      "tags": [
+        "telegram",
+        "race-dossier",
+        "mobile"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:docs/superpowers/plans/2026-11-17-mobile-dossier-card.md",
+      "type": "document",
+      "name": "2026-11-17-mobile-dossier-card.md",
+      "filePath": "docs/superpowers/plans/2026-11-17-mobile-dossier-card.md",
+      "summary": "Описывает реализацию и проверку графической карточки с крупным текстом, правила направления ветра и разовую отправку в Telegram с рабочей кнопкой. Фиксирует результат визуальной проверки и доставки без изменения расписания.",
+      "tags": [
+        "documentation",
+        "race-dossier",
+        "mobile"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:scripts/telegram/package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "scripts/telegram/package.json",
+      "summary": "Задаёт CommonJS-пакет уведомлений, зависимость PostgreSQL и команды режимов. Включает проверки направления ветра dossier-card.test.js в общий тестовый запуск.",
+      "tags": [
+        "configuration",
+        "race-dossier",
+        "mobile"
       ],
       "complexity": "simple"
     }
@@ -13846,13 +13932,6 @@
       "weight": 0.6
     },
     {
-      "source": "pipeline:.github/workflows/telegram-notify.yml",
-      "target": "config:scripts/telegram/package.json",
-      "type": "depends_on",
-      "direction": "forward",
-      "weight": 0.6
-    },
-    {
       "source": "document:MEMORY.md",
       "target": "file:scripts/telegram/notify.js",
       "type": "documents",
@@ -13972,13 +14051,6 @@
       "weight": 0.5
     },
     {
-      "source": "config:scripts/telegram/package.json",
-      "target": "file:scripts/telegram/notify.js",
-      "type": "configures",
-      "direction": "forward",
-      "weight": 0.6
-    },
-    {
       "source": "file:scripts/telegram/render-dossier-banner.js",
       "target": "file:scripts/telegram/data/vegas.geojson",
       "type": "reads_from",
@@ -13992,6 +14064,83 @@
       "direction": "forward",
       "weight": 0.5,
       "description": "Path-based pairing (deterministic)"
+    },
+    {
+      "source": "file:scripts/telegram/dossier.js",
+      "target": "file:scripts/telegram/dossier-card.test.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/telegram/dossier-card.js",
+      "target": "function:scripts/telegram/dossier-card.js:windLabel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/dossier-card.js",
+      "target": "function:scripts/telegram/dossier-card.js:windLabel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/telegram/dossier-card.js",
+      "target": "function:scripts/telegram/dossier-card.js:buildDossierCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/dossier-card.js",
+      "target": "function:scripts/telegram/dossier-card.js:buildDossierCard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/dossier-card.js:buildDossierCard",
+      "target": "function:scripts/telegram/dossier-banner.js:buildBannerSvg",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/dossier-card.js:buildDossierCard",
+      "target": "function:scripts/telegram/dossier-card.js:windLabel",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:docs/mockups/telegram-dossier-mobile.html",
+      "target": "file:scripts/telegram/dossier-card.js",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/superpowers/plans/2026-11-17-mobile-dossier-card.md",
+      "target": "file:scripts/telegram/dossier-card.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/superpowers/plans/2026-11-17-mobile-dossier-card.md",
+      "target": "file:scripts/telegram/dossier-card.test.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:scripts/telegram/package.json",
+      "target": "file:scripts/telegram/dossier-card.test.js",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
     },
     {
       "source": "file:scripts/ai-player/predict.js",
@@ -14156,6 +14305,22 @@
     {
       "source": "file:scripts/import/verify.js",
       "target": "file:scripts/import/lib.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/dossier-card.js",
+      "target": "file:scripts/telegram/dossier-banner.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/dossier-card.test.js",
+      "target": "file:scripts/telegram/dossier.js",
       "type": "imports",
       "direction": "forward",
       "weight": 0.7,
@@ -15105,8 +15270,8 @@
       "GitHub Actions"
     ],
     "description": "Закрытая лига прогнозов на гонки Формулы-1: участники составляют топ-10, система считает очки и сезонный зачёт. Примечание: в проекте более 100 файлов; для ускорения анализа можно ограничить его отдельным каталогом.",
-    "analyzedAt": "2026-11-17T19:57:32.285Z",
-    "gitCommitHash": "9a182567992e45759f7d5270d21a4bf8f06c11a2"
+    "analyzedAt": "2026-11-17T20:21:11.933Z",
+    "gitCommitHash": "6ea243c73a8719c65ea98cf09429eb1083d399f2"
   },
   "layers": [
     {
@@ -15261,7 +15426,9 @@
         "config:scripts/telegram/data/circuits.json",
         "file:scripts/telegram/data/vegas.geojson",
         "file:scripts/telegram/dossier-banner.js",
-        "file:scripts/telegram/render-dossier-banner.js"
+        "file:scripts/telegram/render-dossier-banner.js",
+        "file:scripts/telegram/dossier-card.test.js",
+        "file:scripts/telegram/dossier-card.js"
       ]
     },
     {
@@ -15399,7 +15566,9 @@
         "file:docs/mockups/las-vegas-track.geojson",
         "file:docs/mockups/render-compact-dossier.cjs",
         "file:docs/mockups/render-dark-dossier.cjs",
-        "document:scripts/telegram/data/GEOMETRY-LICENSE.md"
+        "document:scripts/telegram/data/GEOMETRY-LICENSE.md",
+        "file:docs/mockups/telegram-dossier-mobile.html",
+        "document:docs/superpowers/plans/2026-11-17-mobile-dossier-card.md"
       ]
     },
     {

@@ -24,9 +24,11 @@ function summarizeWeather(data, startIso) {
   const air = values('temperature_2m', x => x >= -80 && x <= 65);
   const rain = values('precipitation_probability', x => x >= 0 && x <= 100);
   const wind = values('wind_speed_10m', x => x >= 0);
+  const firstDirection = hourly.wind_direction_10m?.[indices[0]];
+  const windDirection = wind?.[0] > 0 && validNumber(firstDirection) && firstDirection >= 0 && firstDirection <= 360 ? firstDirection % 360 : null;
   if (!air && !rain && !wind) return null;
   return { air: air ? [Math.min(...air), Math.max(...air)] : null, rainMax: rain ? Math.max(...rain) : null,
-    windMax: wind ? Math.max(...wind) : null, hours: indices.length, start: new Date(start).toISOString(), end: new Date(start + 2 * HOUR).toISOString() };
+    windMax: wind ? Math.max(...wind) : null, windDirection, hours: indices.length, start: new Date(start).toISOString(), end: new Date(start + 2 * HOUR).toISOString() };
 }
 
 function selectWinners(rows, circuitId, before) {
@@ -97,7 +99,7 @@ async function loadDossier(race, { fetchImpl = fetch, now = new Date(), includeH
     includeHistory ? safe('Гонка прошлого года', () => racesAt(`${season - 1}/circuits/${id}/results`), []) : [],
     includeHistory ? safe('Квалификация прошлого года', () => racesAt(`${season - 1}/circuits/${id}/qualifying/1`), []) : [],
     hasCoordinates && until > 0 && until < 15 * 24 * HOUR ? safe('Погода', async () => {
-      const params = new URLSearchParams({ latitude, longitude, hourly: 'temperature_2m,precipitation_probability,wind_speed_10m', timezone: 'UTC', wind_speed_unit: 'ms', forecast_days: '16' });
+      const params = new URLSearchParams({ latitude, longitude, hourly: 'temperature_2m,precipitation_probability,wind_speed_10m,wind_direction_10m', timezone: 'UTC', wind_speed_unit: 'ms', forecast_days: '16' });
       const value = summarizeWeather(await json(`https://api.open-meteo.com/v1/forecast?${params}`), race.race_datetime_utc);
       if (!value) throw new Error('Нет полного покрытия часов гонки');
       return { ...value, fetchedAt: now.toISOString() };

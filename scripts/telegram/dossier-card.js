@@ -1,0 +1,41 @@
+const fs = require('fs');
+const path = require('path');
+const { buildBannerSvg } = require('./dossier-banner');
+const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const num = value => value == null ? '—' : new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 }).format(value);
+const names = { 'Max Verstappen': 'МАКС ФЕРСТАППЕН', 'Lando Norris': 'ЛАНДО НОРРИС', 'George Russell': 'ДЖОРДЖ РАССЕЛЛ' };
+const person = value => esc(names[value] || value?.toUpperCase() || 'НЕТ ДАННЫХ');
+
+function windLabel(degrees) {
+  if (typeof degrees !== 'number' || !Number.isFinite(degrees) || degrees < 0 || degrees > 360) return 'Нет данных';
+  return ['С ↓', 'СВ ↙', 'В ←', 'ЮВ ↖', 'Ю ↑', 'ЮЗ ↗', 'З →', 'СЗ ↘'][Math.round((degrees % 360) / 45) % 8];
+}
+
+function buildDossierCard(race, d) {
+  const f = d.facts, p = d.previous, w = d.weather;
+  let map = '';
+  if (f?.geometry && path.basename(f.geometry) === f.geometry) {
+    const geometry = path.join(__dirname, 'data', f.geometry);
+    if (fs.existsSync(geometry)) {
+      const coordinates = JSON.parse(fs.readFileSync(geometry, 'utf8')).features[0].geometry.coordinates;
+      const banner = buildBannerSvg('', coordinates);
+      const paths = banner.match(/<path d="M[\s\S]*?<circle[^>]*\/>/);
+      if (paths) map = `<svg viewBox="600 75 620 450" aria-label="Схема трассы в перспективе">${paths[0]}</svg>`;
+    }
+  }
+  const lapRow = (title, value, note, cls = '') => `<div class="lap ${cls}"><div class="lap-title">${title}</div><div class="lap-value">${esc(value?.time || '—')}</div><div class="lap-person">${person(value?.driver)}<small>${esc(note)}</small></div></div>`;
+  const start = new Date(race.race_datetime_utc).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }).replace(' в ', ' · ');
+  const updated = new Date(w?.fetchedAt || d.fetchedAt).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  const air = w?.air ? w.air[0] === w.air[1] ? num(w.air[0]) : `${num(w.air[0])}–${num(w.air[1])}` : '—';
+  const recordSame = f?.record && p?.fastest?.time === f.record.time && p.fastest.driver === f.record.driver;
+  return `<!doctype html><html lang="ru"><meta charset="utf-8"><title>Досье трассы</title><style>
+*{box-sizing:border-box}html,body{margin:0;width:1080px;color:#fff;background:#15151c;font-family:Bahnschrift,'Arial Narrow',Arial,sans-serif}body{background-image:repeating-linear-gradient(135deg,transparent 0 150px,#ffffff05 150px 210px,transparent 210px 230px,#ffffff04 230px 285px,transparent 285px 480px)}.brand{padding:24px 36px;border-bottom:1px solid #ffffff33;display:flex;justify-content:space-between;font-size:32px;font-weight:700}.brand b{color:#ff3024}.round{margin:22px 36px;color:#ff4b40;font-size:32px;font-weight:700;border-right:400px solid #f21a10;line-height:16px}.hero{padding:8px 36px 26px;min-height:220px;position:relative}.eyebrow{font-size:32px;color:#dedee8}.hero h1{font-size:88px;line-height:1;margin:18px 0 10px;letter-spacing:-2px;max-width:700px}.hero p{font-size:30px;color:#dddde5;margin:0}.map{position:absolute;right:20px;top:-5px;width:330px;height:205px}.map svg{width:100%;height:100%}.stats{display:grid;grid-template-columns:1fr 1fr 1.13fr;padding:22px 36px;background:#272731b0;border-block:1px solid #ffffff33;gap:22px}.stats>div+div{border-left:1px solid #ffffff44;padding-left:24px}.label{font-size:36px;font-weight:700;color:#f0f0f6}.stats strong{font-size:57px;display:block;margin:8px 0}.stats small{font-size:36px;display:block;color:#e4e4ee}.content{padding:24px 36px}.record{padding:20px 25px;background:#24242ed9;border:1px solid #737380;border-left:8px solid #ff291b}.record .label{font-size:34px}.record .time{font-size:94px;font-weight:800;line-height:1.12}.record .person{font-size:49px;font-weight:700;margin-top:4px}.section{font-size:36px;font-weight:700;margin:24px 0 15px;border-left:8px solid #ff291b;padding-left:18px}.lap{display:grid;grid-template-columns:235px 270px 1fr;gap:14px;align-items:center;border:1px solid #737380;border-left:8px solid #a275ff;padding:15px 18px;margin-top:12px;background:#24242ed9}.lap.pole{border-left-color:#ff9a36}.lap-title{font-size:31px;font-weight:700}.lap-value{font-size:53px;font-weight:800}.lap-person{font-size:42px;font-weight:700}.lap-person small{display:block;font-size:34px;line-height:1.18;font-weight:400;color:#eeeef5;margin-top:6px}.hint{font-size:28px;color:#d0d0df;margin:12px 0 0}.winner{display:grid;grid-template-columns:112px 1fr;gap:22px;padding:11px 0;border-bottom:1px solid #ffffff33;font-size:39px}.winner span{color:#dedee8}.weather{display:grid;grid-template-columns:1.18fr .8fr 1fr;gap:22px;background:#24242ed9;border:1px solid #737380;padding:20px}.weather>div+div{border-left:1px solid #ffffff44;padding-left:22px}.weather .label{font-size:31px}.weather b{display:block;font-size:46px;line-height:1.15;margin:10px 0}.weather small{font-size:27px;color:#e1e1ec}.wind{margin-top:14px;border-top:1px solid #ffffff33;padding-top:12px;font-size:33px}.wind b{font-size:38px}.track-temp{font-size:28px;color:#d8d8e4;margin:14px 0}.sources{font-size:25px;line-height:1.3;color:#c4c4d4;margin-top:20px;border-top:1px solid #ffffff33;padding-top:12px}.notice{border-top:6px solid #ef2318;padding:20px 36px;font-size:40px;font-weight:700;background:#101016;text-align:center}.unavailable{font-size:34px;padding:20px;color:#e0e0ec}
+</style><body><header class="brand"><div><b>❯❯</b> F1 PREDICT</div><span>ЛИГА ПРОРОКОВ</span></header><div class="round">РАУНД ${esc(race.round)} · ${esc(race.season)}</div><div class="hero"><div class="eyebrow">ДОСЬЕ ТРАССЫ</div><h1>${esc(f?.title || d.circuit?.name || race.name)}</h1><p>${d.circuit?.id === 'vegas' ? 'Ночная гонка на Стрипе' : esc(race.name)}</p><div class="map">${map}</div></div>
+${f ? `<div class="stats"><div><div class="label">КРУГОВ В ГОНКЕ</div><strong>${esc(f.laps)}</strong><small>${esc(f.corners)} поворотов</small></div><div><div class="label">ДЛИНА ТРАССЫ</div><strong>${esc(String(f.lengthKm).replace('.', ','))}</strong><small>километров</small></div><div><div class="label">ПЕРЕПАД ВЫСОТ</div><strong>${f.elevationChangeM == null ? '—' : esc(f.elevationChangeM) + ' м'}</strong><small>${f.elevationChangeM == null ? 'Нет данных' : 'по трассе'}</small></div></div>` : '<div class="unavailable">Характеристики трассы пока недоступны</div>'}
+<main class="content">${f?.record ? `<div class="record"><div class="label">РЕКОРД КРУГА В ГОНКЕ · ${esc(f.record.year)}</div><div class="time">${esc(f.record.time)}</div><div class="person">${person(f.record.driver)}</div></div>` : ''}
+${p ? `<div class="section">ПРОШЛЫЙ ГОД · ${esc(p.year)}</div>${lapRow('ЛУЧШИЙ<br>КРУГ ГОНКИ', p.fastest, recordSame ? 'Совпадает с рекордом трассы' : '')}${lapRow('ПОУЛ-<br>ПОЗИЦИЯ', p.pole, '', 'pole')}<p class="hint">Условия сессий различаются — времена не сравниваем напрямую.</p>` : ''}
+<div class="section">ПОСЛЕДНИЕ ПОБЕДИТЕЛИ</div>${d.winners?.length ? d.winners.slice(0, 3).map(row => `<div class="winner"><span>${esc(row.year)}</span><b>${person(row.driver)}</b></div>`).join('') : '<div class="unavailable">История пока недоступна</div>'}
+<div class="section">ПОГОДА · ПЕРВЫЕ 2 ЧАСА ГОНКИ</div><div class="weather"><div><div class="label">ВОЗДУХ</div><b>${air} °C</b></div><div><div class="label">ОСАДКИ ДО</div><b>${num(w?.rainMax)} %</b><small>максимум по часам</small></div><div><div class="label">ВЕТЕР ДО</div><b>${num(w?.windMax)} м/с</b></div></div><div class="wind">Ветер на старте: <b>${windLabel(w?.windDirection)}</b><br><span class="hint">Буквы — откуда дует, стрелка — куда.</span></div><div class="track-temp">Полотно: ${d.trackTemperature ? `${num(d.trackTemperature.value)} °C · замер ${esc(d.trackTemperature.session)}` : 'свежих замеров пока нет'}</div><div class="sources">F1 · JOLPICA · OPEN-METEO<br>Обновлено ${esc(updated)} МСК · рекорд по ${esc(f?.verifiedThrough || '—')} год</div></main><footer class="notice">СТАРТ: ${esc(start).toUpperCase()} МСК</footer></body></html>`;
+}
+
+module.exports = { buildDossierCard, windLabel };

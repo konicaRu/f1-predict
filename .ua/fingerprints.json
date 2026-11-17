@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "gitCommitHash": "9a182567992e45759f7d5270d21a4bf8f06c11a2",
-  "generatedAt": "2026-11-17T19:57:32.573Z",
+  "gitCommitHash": "6ea243c73a8719c65ea98cf09429eb1083d399f2",
+  "generatedAt": "2026-11-17T20:21:12.004Z",
   "files": {
     ".github/workflows/deploy.yml": {
       "filePath": ".github/workflows/deploy.yml",
@@ -2279,7 +2279,7 @@
     },
     "scripts/telegram/package.json": {
       "filePath": "scripts/telegram/package.json",
-      "contentHash": "5abd7943c6f41de63adfa4a1a88e1ef6fcabe99e9d99c51a02ea0d70c5001d6c",
+      "contentHash": "8c38336a89f4c4014257e961899324b5379c66e454932ec844e7f95edfb58a7a",
       "functions": [],
       "classes": [],
       "imports": [],
@@ -6170,7 +6170,7 @@
     },
     "scripts/telegram/dossier.js": {
       "filePath": "scripts/telegram/dossier.js",
-      "contentHash": "428d2fb4d0c1beee31361edb326c118dec25c25747b7f74172f9fa8a0ecf0f3b",
+      "contentHash": "40f5e71007ac5674aca4f5b013d450f3151abb1d54cfbe6daba73591dc42e6d6",
       "functions": [
         {
           "name": "nameOf",
@@ -6197,7 +6197,7 @@
             "startIso"
           ],
           "exported": false,
-          "lineCount": 23
+          "lineCount": 25
         },
         {
           "name": "selectWinners",
@@ -6232,7 +6232,7 @@
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 130,
+      "totalLines": 132,
       "hasStructuralAnalysis": true
     },
     "scripts/telegram/dossier.test.js": {
@@ -6291,6 +6291,82 @@
       "imports": [],
       "exports": [],
       "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "docs/mockups/telegram-dossier-mobile.html": {
+      "filePath": "docs/mockups/telegram-dossier-mobile.html",
+      "contentHash": "d08a8ee5380759ac9f6d06a93c53193eec4961e782506110b47c0b7ff910f833",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-11-17-mobile-dossier-card.md": {
+      "filePath": "docs/superpowers/plans/2026-11-17-mobile-dossier-card.md",
+      "contentHash": "c92caf3bfd540d9b2b64afafffabc774cbdb8e7e976e9dd5a1efb38a8c09adae",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 18,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/telegram/dossier-card.js": {
+      "filePath": "scripts/telegram/dossier-card.js",
+      "contentHash": "e51fc43794570d19dac035091dd7570d1f95209777cd7d2708c536ff08c1db95",
+      "functions": [
+        {
+          "name": "esc",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "num",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "person",
+          "params": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "windLabel",
+          "params": [
+            "degrees"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "buildDossierCard",
+          "params": [
+            "race",
+            "d"
+          ],
+          "exported": false,
+          "lineCount": 26
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 42,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/telegram/dossier-card.test.js": {
+      "filePath": "scripts/telegram/dossier-card.test.js",
+      "contentHash": "3c8977ebb39cf331de7e6b16fdf3bd32fbf929d53b75448ee733de5378e297c8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 20,
       "hasStructuralAnalysis": true
     }
   }
