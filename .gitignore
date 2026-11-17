@@ -20,6 +20,8 @@ telegram-token*
 
 # Логи / временное
 .tmp/
+.codegraph/
+.rollback/
 *.log
 .DS_Store
 .commitmsg.tmp
