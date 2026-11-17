@@ -222,5 +222,5 @@ async function main(args) {
   console.log(`https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit`);
 }
 
-module.exports = { encodeSnapshot, decodeSnapshot, publishSnapshot, readLocalBackup, privateBackupPath };
+module.exports = { encodeSnapshot, decodeSnapshot, publishSnapshot, readLocalBackup, privateBackupPath, captureArchive };
 if (require.main === module) main(process.argv.slice(2)).catch((error) => { console.error(error.message); process.exitCode = 1; });

@@ -26,6 +26,8 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
+    outputs:
+      modes: ${{ steps.mode.outputs.modes }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -97,3 +99,10 @@ jobs:
           curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             --data-urlencode "chat_id=${TELEGRAM_ADMIN_CHAT_ID}" \
             --data-urlencode "text=🚨 Сторож F1 Predict: прогон telegram-notify (${MODES:-?}) в GitHub Actions упал. Лог: ${RUN_URL}"
+
+  archive:
+    needs: notify
+    # В том же прогоне после получения/объявления результатов, даже если Telegram упал.
+    if: ${{ always() && (contains(needs.notify.outputs.modes, 'autoresults') || contains(needs.notify.outputs.modes, 'results')) }}
+    uses: ./.github/workflows/github-archive.yml
+    secrets: inherit

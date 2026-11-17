@@ -1,0 +1,55 @@
+name: Private GitHub result archive
+
+on:
+  workflow_call:
+    secrets:
+      SUPABASE_DB_URL:
+        required: true
+      ARCHIVE_DEPLOY_KEY:
+        required: true
+  workflow_dispatch:
+  schedule:
+    - cron: '25 7 * * *' # 10:25 МСК: повтор после сбоев / ручных исправлений
+
+permissions:
+  contents: read
+
+concurrency:
+  group: private-github-result-archive
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: scripts/export/package-lock.json
+      - run: npm ci
+        working-directory: scripts/export
+      - name: Checkout private archive repository
+        uses: actions/checkout@v4
+        with:
+          repository: konicaRu/f1-predict-archive
+          ssh-key: ${{ secrets.ARCHIVE_DEPLOY_KEY }}
+          path: archive-store
+      - name: Capture game archive and verify files
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: node scripts/export/github-archive.js archive-store
+      - name: Commit changed results to private archive
+        working-directory: archive-store
+        run: |
+          git config user.name "F1 Predict Archive"
+          git config user.email "archive@users.noreply.github.com"
+          git add -- archive
+          if git diff --cached --quiet; then
+            echo "Results unchanged; nothing to commit"
+          else
+            git commit -m "archive: save results snapshot $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git push origin HEAD:main
+          fi

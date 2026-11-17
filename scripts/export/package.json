@@ -5,7 +5,7 @@
   "scripts": {
     "export": "node export.js",
     "backup": "node snapshot.js",
-    "test": "node --test snapshot.test.js"
+    "test": "node --test snapshot.test.js github-archive.test.js"
   },
   "dependencies": {
     "googleapis": "^173.0.0",
