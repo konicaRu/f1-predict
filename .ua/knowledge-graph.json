@@ -6115,19 +6115,6 @@
       "complexity": "moderate"
     },
     {
-      "id": "document:MEMORY.md",
-      "type": "document",
-      "name": "MEMORY.md",
-      "filePath": "MEMORY.md",
-      "summary": "Хранит состояние проекта, решения, эксплуатационные инциденты и журнал реализации. Последние записи описывают публикацию работы, автоматическое досье и резервирование.",
-      "tags": [
-        "documentation",
-        "race-dossier",
-        "automation"
-      ],
-      "complexity": "complex"
-    },
-    {
       "id": "document:docs/mockups/las-vegas-track-LICENSE.md",
       "type": "document",
       "name": "las-vegas-track-LICENSE.md",
@@ -7029,6 +7016,19 @@
         "scheduling"
       ],
       "complexity": "moderate"
+    },
+    {
+      "id": "document:MEMORY.md",
+      "type": "document",
+      "name": "MEMORY.md",
+      "filePath": "MEMORY.md",
+      "summary": "?????? ?????? ??????? ? ?????????? ???????? ?????????: ???????? ?? ??/?? ? Europe/Moscow, ??????? Rich Message ? ????????? ???, ??????????? ????? ? ??????????. ????????? ??? ? ????????? ??????????? Ubuntu-?????? GitHub Actions ? ??????????? Telegram; ??????? ?????? ????????? ??? ???????.",
+      "tags": [
+        "documentation",
+        "handoff",
+        "race-dossier"
+      ],
+      "complexity": "complex"
     }
   ],
   "edges": [
@@ -13438,13 +13438,6 @@
       "weight": 0.5
     },
     {
-      "source": "document:MEMORY.md",
-      "target": "file:scripts/telegram/dossier.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
       "source": "document:docs/mockups/las-vegas-track-LICENSE.md",
       "target": "file:docs/mockups/las-vegas-track.geojson",
       "type": "documents",
@@ -15450,6 +15443,27 @@
       "direction": "forward",
       "weight": 0.7,
       "recoveredFromImportMap": true
+    },
+    {
+      "source": "document:MEMORY.md",
+      "target": "file:scripts/telegram/notify.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:MEMORY.md",
+      "target": "file:scripts/telegram/dossier-message.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:MEMORY.md",
+      "target": "pipeline:.github/workflows/telegram-notify.yml",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
     }
   ],
   "version": "1.0.0",
@@ -15475,8 +15489,8 @@
       "GitHub Actions"
     ],
     "description": "Закрытая лига прогнозов на гонки Формулы-1: участники составляют топ-10, система считает очки и сезонный зачёт. Примечание: в проекте более 100 файлов; для ускорения анализа можно ограничить его отдельным каталогом.",
-    "analyzedAt": "2026-11-17T20:32:10.274Z",
-    "gitCommitHash": "1f991a891599ef6a1f48d253d47f4434a21b1ae8"
+    "analyzedAt": "2026-11-17T20:34:38.710Z",
+    "gitCommitHash": "d3f6796bff3d4ffa04eec4602bb8e993cc0705ef"
   },
   "layers": [
     {
