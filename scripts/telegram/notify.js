@@ -222,16 +222,21 @@ async function prepareDossier(race, getDossier, options, warnings) {
   }
 }
 
+function dossierFormat(now) {
+  const weekday = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Moscow', weekday: 'short' }).format(now);
+  return weekday === 'Mon' || weekday === 'Thu' ? 'card' : 'legacy';
+}
+
 async function raceweek({ getRaces = thisWeekOpenRaces, getDossier = loadDossier, send = sendTelegramDossier,
-  markAnnounced = id => q('update races set raceweek_announced_at = now() where id = $1', [id]), warnings = [] } = {}) {
+  markAnnounced = id => q('update races set raceweek_announced_at = now() where id = $1', [id]), now = new Date(), warnings = [] } = {}) {
   const races = (await getRaces()).filter((r) => !r.raceweek_announced_at);
   if (races.length === 0) {
     console.log('raceweek: анонсировать нечего (нет новой открытой гонки на этой неделе)');
     return;
   }
   for (const r of races) {
-    const dossier = await prepareDossier(r, getDossier, {}, warnings);
-    await send(buildDossierMessage(r, dossier), predictButton(r.id), warning => warnings.push(warning));
+    const dossier = await prepareDossier(r, getDossier, { now, includeHistory: true }, warnings);
+    await send(buildDossierMessage(r, dossier, { format: dossierFormat(now) }), predictButton(r.id), warning => warnings.push(warning));
     await markAnnounced(r.id);
     console.log(`raceweek: отправлено для ${r.name}`);
   }
@@ -251,9 +256,10 @@ async function deadline({ getRaces = thisWeekOpenRaces, getDossier = loadDossier
     return;
   }
   for (const r of races) {
-    const dossier = await prepareDossier(r, getDossier, { now, includeHistory: true }, warnings);
+    const format = dossierFormat(now);
+    const dossier = await prepareDossier(r, getDossier, { now, includeHistory: format === 'card' }, warnings);
     const missing = isDeadlineDayMsk(r.deadline_utc, now) ? await getMissing(r.id) : undefined;
-    await send(buildDossierMessage(r, dossier, { mode: 'deadline', missing }), predictButton(r.id), warning => warnings.push(warning));
+    await send(buildDossierMessage(r, dossier, { mode: 'deadline', missing, format }), predictButton(r.id), warning => warnings.push(warning));
     console.log(`deadline: отправлено для ${r.name}`);
   }
 }

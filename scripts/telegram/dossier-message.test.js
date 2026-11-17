@@ -98,3 +98,34 @@ test('automatic messages carry the current full card, caption and safe unavailab
   const empty = buildDossierMessage(race, { circuit: null, sources: [] });
   assert.doesNotMatch(empty.cardHtml, /Invalid Date|NaN/);
 });
+
+test('legacy Wednesday sends the previous banner and Rich Message without rendering a new card', async () => {
+  const message = buildDossierMessage(race, dossier, { mode: 'deadline', format: 'legacy' });
+  const calls = [];
+  await deliverDossier(message, { token: 't', chatId: 'c', replyMarkup: { inline_keyboard: [] },
+    renderCard: async () => { assert.fail('Wednesday must not render the new card'); },
+    fetchImpl: async (url, options) => { calls.push({ url, options }); return { json: async () => ({ ok: true }) }; },
+  });
+  assert.equal(calls.length, 1);
+  assert.match(calls[0].url, /sendRichMessage$/);
+  const rich = JSON.parse(calls[0].options.body.get('rich_message'));
+  assert.match(rich.html, /Не забудь сделать прогноз/);
+  assert.equal(message.cardHtml, undefined);
+  assert.equal(rich.media[0].id, 'dossier_banner');
+  assert.equal(calls[0].options.body.get('banner').type, 'image/png');
+});
+
+test('legacy fallback only follows an explicit rejection, never an ambiguous send failure', async () => {
+  for (const code of [400, 404, 503, 'timeout']) {
+    const calls = [];
+    const sending = deliverDossier({ format: 'legacy', richHtml: '<p>x</p>', fallbackHtml: 'x' }, {
+      token: 't', chatId: 'c', fetchImpl: async url => {
+        calls.push(url);
+        if (code === 'timeout') throw new Error('timeout');
+        return { status: code, json: async () => calls.length === 1 ? { ok: false, error_code: code } : { ok: true } };
+      },
+    });
+    if (code === 400 || code === 404) { await sending; assert.equal(calls.length, 2); assert.match(calls[1], /sendMessage$/); }
+    else { await assert.rejects(sending); assert.equal(calls.length, 1); }
+  }
+});

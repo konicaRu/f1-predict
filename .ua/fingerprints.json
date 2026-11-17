@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "gitCommitHash": "35f97e34622bfd6e78d7207d7dfc03f7b247ecae",
-  "generatedAt": "2026-11-17T20:28:12.946Z",
+  "gitCommitHash": "1f991a891599ef6a1f48d253d47f4434a21b1ae8",
+  "generatedAt": "2026-11-17T20:32:10.586Z",
   "files": {
     ".github/workflows/deploy.yml": {
       "filePath": ".github/workflows/deploy.yml",
@@ -1924,12 +1924,12 @@
     },
     "scripts/telegram/README.md": {
       "filePath": "scripts/telegram/README.md",
-      "contentHash": "d862bea2c39547c3cd23ac00a618e0c486b661d070faafa4e4572e7434a2ef68",
+      "contentHash": "fafe68ca57db56be2e868eef95ca0454aaa7702d6697abf3898d3cf14bc0957e",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 110,
+      "totalLines": 113,
       "hasStructuralAnalysis": false
     },
     "scripts/telegram/lib.js": {
@@ -2028,7 +2028,7 @@
     },
     "scripts/telegram/notify.js": {
       "filePath": "scripts/telegram/notify.js",
-      "contentHash": "e6849a17e3c490e5f8417de39ea153b5c7e086ce40db14c85cb347bfeafd46ea",
+      "contentHash": "14b4d6a6140f26eda9286c17c003d8ca9f80906c1bad56572af5108f373dd8fe",
       "functions": [
         {
           "name": "siteLink",
@@ -2136,6 +2136,14 @@
           "lineCount": 10
         },
         {
+          "name": "dossierFormat",
+          "params": [
+            "now"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
           "name": "raceweek",
           "params": [],
           "exported": false,
@@ -2153,7 +2161,7 @@
           "name": "deadline",
           "params": [],
           "exported": false,
-          "lineCount": 14
+          "lineCount": 15
         },
         {
           "name": "driverCodeMap",
@@ -2253,7 +2261,7 @@
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 560,
+      "totalLines": 566,
       "hasStructuralAnalysis": true
     },
     "scripts/telegram/notify.test.js": {
@@ -6096,7 +6104,7 @@
     },
     "scripts/telegram/dossier-message.js": {
       "filePath": "scripts/telegram/dossier-message.js",
-      "contentHash": "5592aa98780e24e4ebb605ba46a0a29525fc647da7bbe7064e9fa48ec41d14d3",
+      "contentHash": "42191a46940bf3038755e85a8e32c68d2c200e833de31b6c854c8f1952050cc5",
       "functions": [
         {
           "name": "escape",
@@ -6139,33 +6147,33 @@
             "message"
           ],
           "exported": false,
-          "lineCount": 28
+          "lineCount": 46
         }
       ],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 103,
+      "totalLines": 121,
       "hasStructuralAnalysis": true
     },
     "scripts/telegram/dossier-message.test.js": {
       "filePath": "scripts/telegram/dossier-message.test.js",
-      "contentHash": "4349202e3f065dda39bf28b81ce685b4b5e3fee4de0659b277384171392500d2",
+      "contentHash": "e96f6e0d9e8fb40dd9da427a0caba8d31f0d4c5911b93ac2bad09f6e5f584355",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 101,
+      "totalLines": 132,
       "hasStructuralAnalysis": true
     },
     "scripts/telegram/dossier-notify.test.js": {
       "filePath": "scripts/telegram/dossier-notify.test.js",
-      "contentHash": "aadeb2a4d5067f140febe5cc330db85b9a8273c50a7d6a9686bc0d140eacaaaa",
+      "contentHash": "eae5034598fe1199d0c8caab9e5a50e4765d0ddf2c3dd17e9b5fd2a08eb3bfe1",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 41,
+      "totalLines": 60,
       "hasStructuralAnalysis": true
     },
     "scripts/telegram/dossier.js": {
@@ -6407,6 +6415,16 @@
       "exports": [],
       "totalLines": 20,
       "hasStructuralAnalysis": true
+    },
+    "docs/superpowers/plans/2026-11-17-dossier-weekdays.md": {
+      "filePath": "docs/superpowers/plans/2026-11-17-dossier-weekdays.md",
+      "contentHash": "18e7b07e1d75fef29679aa2fc24070c37711807203b64219e7830b0847357cad",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": false
     }
   }
 }

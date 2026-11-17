@@ -5815,71 +5815,6 @@
       "complexity": "moderate"
     },
     {
-      "id": "file:scripts/telegram/dossier-message.js",
-      "type": "file",
-      "name": "dossier-message.js",
-      "filePath": "scripts/telegram/dossier-message.js",
-      "summary": "Формирует единое досье трассы для Rich Message и обычного HTML. Отправляет баннер и кнопку прогноза, переключаясь на HTML только после явного отказа Telegram.",
-      "tags": [
-        "telegram",
-        "race-dossier",
-        "automation",
-        "tested"
-      ],
-      "complexity": "moderate"
-    },
-    {
-      "id": "function:scripts/telegram/dossier-message.js:weatherLines",
-      "type": "function",
-      "name": "weatherLines",
-      "filePath": "scripts/telegram/dossier-message.js",
-      "lineRange": [
-        8,
-        21
-      ],
-      "summary": "Формирует строки прогноза воздуха, осадков и ветра и отдельно подписывает фактический замер полотна.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/dossier-message.js:buildDossierMessage",
-      "type": "function",
-      "name": "buildDossierMessage",
-      "filePath": "scripts/telegram/dossier-message.js",
-      "lineRange": [
-        23,
-        66
-      ],
-      "summary": "Собирает анонс или напоминание, баннер, источники и два варианта HTML с экранированием и ограничением длины.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "moderate"
-    },
-    {
-      "id": "function:scripts/telegram/dossier-message.js:deliverDossier",
-      "type": "function",
-      "name": "deliverDossier",
-      "filePath": "scripts/telegram/dossier-message.js",
-      "lineRange": [
-        68,
-        89
-      ],
-      "summary": "Отправляет multipart Rich Message; при явном отказе 400/404 выполняет одну отправку обычного HTML.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "moderate"
-    },
-    {
       "id": "file:scripts/telegram/dossier-message.test.js",
       "type": "file",
       "name": "dossier-message.test.js",
@@ -6148,394 +6083,6 @@
         "race-dossier"
       ],
       "complexity": "simple"
-    },
-    {
-      "id": "file:scripts/telegram/notify.js",
-      "type": "file",
-      "name": "notify.js",
-      "filePath": "scripts/telegram/notify.js",
-      "summary": "Оркестрирует анонсы и напоминания с досье, результаты, очередь администратора и контроль сторожа. Автоматически открывает гонки, проверяет состав пилотов и страхует участие GridBot.",
-      "tags": [
-        "telegram",
-        "race-dossier",
-        "automation",
-        "tested"
-      ],
-      "complexity": "complex"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:predictButton",
-      "type": "function",
-      "name": "predictButton",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        17,
-        19
-      ],
-      "summary": "Строит inline-кнопку Mini App для прогноза на конкретную гонку.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:mskWeekday",
-      "type": "function",
-      "name": "mskWeekday",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        36,
-        38
-      ],
-      "summary": "Возвращает название дня недели по московскому времени.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:isDeadlineDayMsk",
-      "type": "function",
-      "name": "isDeadlineDayMsk",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        42,
-        45
-      ],
-      "summary": "Проверяет совпадение текущей московской даты с датой дедлайна.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:notVotedNames",
-      "type": "function",
-      "name": "notVotedNames",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        47,
-        53
-      ],
-      "summary": "Возвращает отсортированные имена участников без прогноза.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:ensureCurrentWeekOpen",
-      "type": "function",
-      "name": "ensureCurrentWeekOpen",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        61,
-        72
-      ],
-      "summary": "Открывает демонстрационные гонки с дедлайном на текущей московской неделе.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:thisWeekOpenRaces",
-      "type": "function",
-      "name": "thisWeekOpenRaces",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        74,
-        84
-      ],
-      "summary": "Выбирает открытые гонки текущей недели вместе с датами и отметкой анонса.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:diffPoolAdditions",
-      "type": "function",
-      "name": "diffPoolAdditions",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        89,
-        107
-      ],
-      "summary": "Вычисляет отсутствующих в пуле активных пилотов и фиксирует источники их обнаружения.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:fetchOpenF1SessionCodes",
-      "type": "function",
-      "name": "fetchOpenF1SessionCodes",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        115,
-        136
-      ],
-      "summary": "Находит ближайшую сессию уикенда и возвращает коды участвовавших пилотов.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "moderate"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:checkDriverPool",
-      "type": "function",
-      "name": "checkDriverPool",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        144,
-        207
-      ],
-      "summary": "Синхронизирует пилотов, сверяет источники, уведомляет об изменениях и расширяет пул гонки.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "complex"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:prepareDossier",
-      "type": "function",
-      "name": "prepareDossier",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        214,
-        223
-      ],
-      "summary": "Загружает досье, собирает предупреждения и возвращает минимальную структуру при полном отказе источника.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:raceweek",
-      "type": "function",
-      "name": "raceweek",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        225,
-        238
-      ],
-      "summary": "Анонсирует ещё не объявленные открытые гонки и ставит отметку только после доставки досье.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:deadline",
-      "type": "function",
-      "name": "deadline",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        246,
-        259
-      ],
-      "summary": "Обновляет погоду перед напоминанием и добавляет непроголосовавших в московский день дедлайна.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:podiumText",
-      "type": "function",
-      "name": "podiumText",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        272,
-        277
-      ],
-      "summary": "Преобразует первые три позиции прогноза в строку кодов пилотов.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:roundWinnerLine",
-      "type": "function",
-      "name": "roundWinnerLine",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        279,
-        284
-      ],
-      "summary": "Формирует строку победителей тура с одинаковым максимальным числом очков.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:rankStandings",
-      "type": "function",
-      "name": "rankStandings",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        286,
-        303
-      ],
-      "summary": "Сортирует сезонный зачёт по очкам и дополнительным критериям и назначает совместные места.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:resultDiff",
-      "type": "function",
-      "name": "resultDiff",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        307,
-        316
-      ],
-      "summary": "Описывает перемещения пилотов между исходным и пересмотренным топ-10.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:results",
-      "type": "function",
-      "name": "results",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        321,
-        405
-      ],
-      "summary": "Публикует финальные результаты, очки и зачёт, объясняет пересмотр после штрафов и отмечает доставку.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "complex"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:remind",
-      "type": "function",
-      "name": "remind",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        407,
-        425
-      ],
-      "summary": "Напоминает администратору вручную занести отсутствующий результат завершившейся гонки.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:adminflush",
-      "type": "function",
-      "name": "adminflush",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        427,
-        439
-      ],
-      "summary": "Отправляет сообщения из административной очереди и удаляет каждое после успешной доставки.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:isAlertQuietHours",
-      "type": "function",
-      "name": "isAlertQuietHours",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        442,
-        445
-      ],
-      "summary": "Определяет тихие часы тревог с 23:00 до 10:00 по Москве.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:checkWatchdogAlive",
-      "type": "function",
-      "name": "checkWatchdogAlive",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        463,
-        485
-      ],
-      "summary": "Обнаруживает отсутствие пульса сторожа и отправляет ограниченные по частоте тревоги вне тихих часов.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "moderate"
-    },
-    {
-      "id": "function:scripts/telegram/notify.js:main",
-      "type": "function",
-      "name": "main",
-      "filePath": "scripts/telegram/notify.js",
-      "lineRange": [
-        487,
-        550
-      ],
-      "summary": "Запускает CLI-сценарий, управляет подготовкой и завершением работы и сохраняет ошибки и предупреждения.",
-      "tags": [
-        "telegram",
-        "utility",
-        "race-dossier"
-      ],
-      "complexity": "complex"
     },
     {
       "id": "file:scripts/telegram/preview-dossier.js",
@@ -6975,19 +6522,6 @@
       "complexity": "simple"
     },
     {
-      "id": "document:scripts/telegram/README.md",
-      "type": "document",
-      "name": "README.md",
-      "filePath": "scripts/telegram/README.md",
-      "summary": "Документирует графическую карточку, источники истории и погоды, направление ветра и правила текстового fallback. Описывает Chromium в GitHub Actions, безопасные локальные проверки, настройку и запуск уведомлений.",
-      "tags": [
-        "documentation",
-        "telegram",
-        "race-dossier"
-      ],
-      "complexity": "moderate"
-    },
-    {
       "id": "config:scripts/telegram/package.json",
       "type": "config",
       "name": "package.json",
@@ -6999,6 +6533,502 @@
         "race-dossier"
       ],
       "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/telegram/dossier-message.js",
+      "type": "file",
+      "name": "dossier-message.js",
+      "filePath": "scripts/telegram/dossier-message.js",
+      "summary": "Готовит единое досье и отправляет его в формате card или legacy. Большая карточка рендерится в PNG и идёт через sendPhoto, прежний формат использует Rich Message; общий текстовый fallback сохраняет кнопку и ограничивает повторную доставку.",
+      "tags": [
+        "telegram",
+        "race-dossier",
+        "scheduling",
+        "tested"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/telegram/dossier-message.js:weatherLines",
+      "type": "function",
+      "name": "weatherLines",
+      "filePath": "scripts/telegram/dossier-message.js",
+      "lineRange": [
+        10,
+        24
+      ],
+      "summary": "Формирует строки прогноза на первые два часа гонки, направления ветра на старте и отдельно подписанного фактического замера полотна.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/dossier-message.js:buildDossierMessage",
+      "type": "function",
+      "name": "buildDossierMessage",
+      "filePath": "scripts/telegram/dossier-message.js",
+      "lineRange": [
+        26,
+        71
+      ],
+      "summary": "Собирает текст, источники, кнопку и подпись досье; создаёт HTML большой карточки только для формата card, сохраняя Rich HTML для legacy.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/telegram/dossier-message.js:deliverDossier",
+      "type": "function",
+      "name": "deliverDossier",
+      "filePath": "scripts/telegram/dossier-message.js",
+      "lineRange": [
+        73,
+        118
+      ],
+      "summary": "Отправляет legacy через Rich Message, а card через рендерер и sendPhoto. Внутреннее замыкание sendText реализует общий текстовый fallback при ошибке рендера или явном отказе 400/404 без повторов после неоднозначного сбоя.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:scripts/telegram/notify.js",
+      "type": "file",
+      "name": "notify.js",
+      "filePath": "scripts/telegram/notify.js",
+      "summary": "Оркестрирует анонсы, напоминания, результаты и административные проверки. Выбирает большую карточку только в понедельник и четверг по Москве, включая подстраховочные анонсы; в другие дни сохраняет прежний Rich Message.",
+      "tags": [
+        "telegram",
+        "race-dossier",
+        "scheduling",
+        "tested"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:predictButton",
+      "type": "function",
+      "name": "predictButton",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        17,
+        19
+      ],
+      "summary": "Строит inline-кнопку Mini App для прогноза на конкретную гонку.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:mskWeekday",
+      "type": "function",
+      "name": "mskWeekday",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        36,
+        38
+      ],
+      "summary": "Возвращает название дня недели по московскому времени.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:isDeadlineDayMsk",
+      "type": "function",
+      "name": "isDeadlineDayMsk",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        42,
+        45
+      ],
+      "summary": "Проверяет совпадение текущей московской даты с датой дедлайна.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:notVotedNames",
+      "type": "function",
+      "name": "notVotedNames",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        47,
+        53
+      ],
+      "summary": "Возвращает отсортированные имена участников без прогноза.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:ensureCurrentWeekOpen",
+      "type": "function",
+      "name": "ensureCurrentWeekOpen",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        61,
+        72
+      ],
+      "summary": "Открывает демонстрационные гонки с дедлайном на текущей московской неделе.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:thisWeekOpenRaces",
+      "type": "function",
+      "name": "thisWeekOpenRaces",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        74,
+        84
+      ],
+      "summary": "Выбирает открытые гонки текущей недели вместе с датами и отметкой анонса.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:diffPoolAdditions",
+      "type": "function",
+      "name": "diffPoolAdditions",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        89,
+        107
+      ],
+      "summary": "Вычисляет отсутствующих в пуле активных пилотов и фиксирует источники их обнаружения.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:fetchOpenF1SessionCodes",
+      "type": "function",
+      "name": "fetchOpenF1SessionCodes",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        115,
+        136
+      ],
+      "summary": "Находит ближайшую сессию уикенда и возвращает коды участвовавших пилотов.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:checkDriverPool",
+      "type": "function",
+      "name": "checkDriverPool",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        144,
+        207
+      ],
+      "summary": "Синхронизирует пилотов, сверяет источники, уведомляет об изменениях и расширяет пул гонки.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:prepareDossier",
+      "type": "function",
+      "name": "prepareDossier",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        214,
+        223
+      ],
+      "summary": "Загружает досье, собирает предупреждения и возвращает минимальную структуру при полном отказе источника.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:dossierFormat",
+      "type": "function",
+      "name": "dossierFormat",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        225,
+        228
+      ],
+      "summary": "Выбирает большую карточку в понедельник и четверг по Europe/Moscow, в остальные дни возвращает legacy.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:raceweek",
+      "type": "function",
+      "name": "raceweek",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        230,
+        243
+      ],
+      "summary": "Загружает историю и погоду для нового анонса, выбирает формат по московскому дню и отмечает доставку только после успешной отправки.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:deadline",
+      "type": "function",
+      "name": "deadline",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        251,
+        265
+      ],
+      "summary": "Получает свежую погоду перед дедлайном, загружает историю для card и добавляет непроголосовавших в московский день дедлайна.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:podiumText",
+      "type": "function",
+      "name": "podiumText",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        278,
+        283
+      ],
+      "summary": "Преобразует первые три позиции прогноза в строку кодов пилотов.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:roundWinnerLine",
+      "type": "function",
+      "name": "roundWinnerLine",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        285,
+        290
+      ],
+      "summary": "Формирует строку победителей тура с одинаковым максимальным числом очков.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:rankStandings",
+      "type": "function",
+      "name": "rankStandings",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        292,
+        309
+      ],
+      "summary": "Сортирует сезонный зачёт по очкам и дополнительным критериям и назначает совместные места.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:resultDiff",
+      "type": "function",
+      "name": "resultDiff",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        313,
+        322
+      ],
+      "summary": "Описывает перемещения пилотов между исходным и пересмотренным топ-10.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:results",
+      "type": "function",
+      "name": "results",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        327,
+        411
+      ],
+      "summary": "Публикует финальные результаты, очки и зачёт, объясняет пересмотр после штрафов и отмечает доставку.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:remind",
+      "type": "function",
+      "name": "remind",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        413,
+        431
+      ],
+      "summary": "Напоминает администратору вручную занести отсутствующий результат завершившейся гонки.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:adminflush",
+      "type": "function",
+      "name": "adminflush",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        433,
+        445
+      ],
+      "summary": "Отправляет сообщения из административной очереди и удаляет каждое после успешной доставки.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:isAlertQuietHours",
+      "type": "function",
+      "name": "isAlertQuietHours",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        448,
+        451
+      ],
+      "summary": "Определяет тихие часы тревог с 23:00 до 10:00 по Москве.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:checkWatchdogAlive",
+      "type": "function",
+      "name": "checkWatchdogAlive",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        469,
+        491
+      ],
+      "summary": "Обнаруживает отсутствие пульса сторожа и отправляет ограниченные по частоте тревоги вне тихих часов.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/telegram/notify.js:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "scripts/telegram/notify.js",
+      "lineRange": [
+        493,
+        556
+      ],
+      "summary": "Запускает CLI-сценарий, управляет подготовкой и завершением работы и сохраняет ошибки и предупреждения.",
+      "tags": [
+        "telegram",
+        "utility",
+        "race-dossier"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:docs/superpowers/plans/2026-11-17-dossier-weekdays.md",
+      "type": "document",
+      "name": "2026-11-17-dossier-weekdays.md",
+      "filePath": "docs/superpowers/plans/2026-11-17-dossier-weekdays.md",
+      "summary": "Фиксирует распределение форматов по московским дням: большая карточка в понедельник и четверг, прежний Rich Message в среду и остальные дни. Описывает проверки перехода UTC → МСК и сохранение гейтов и расписания.",
+      "tags": [
+        "documentation",
+        "race-dossier",
+        "scheduling"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:scripts/telegram/README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "scripts/telegram/README.md",
+      "summary": "Документирует форматы досье по дням Europe/Moscow, источники истории и погоды, Chromium и правила fallback. Описывает настройку уведомлений, безопасный предпросмотр и эксплуатационные команды.",
+      "tags": [
+        "documentation",
+        "race-dossier",
+        "scheduling"
+      ],
+      "complexity": "moderate"
     }
   ],
   "edges": [
@@ -13149,48 +13179,6 @@
       "weight": 0.5
     },
     {
-      "source": "file:scripts/telegram/dossier-message.js",
-      "target": "function:scripts/telegram/dossier-message.js:weatherLines",
-      "type": "contains",
-      "direction": "forward",
-      "weight": 1
-    },
-    {
-      "source": "file:scripts/telegram/dossier-message.js",
-      "target": "function:scripts/telegram/dossier-message.js:weatherLines",
-      "type": "exports",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "file:scripts/telegram/dossier-message.js",
-      "target": "function:scripts/telegram/dossier-message.js:buildDossierMessage",
-      "type": "contains",
-      "direction": "forward",
-      "weight": 1
-    },
-    {
-      "source": "file:scripts/telegram/dossier-message.js",
-      "target": "function:scripts/telegram/dossier-message.js:buildDossierMessage",
-      "type": "exports",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "file:scripts/telegram/dossier-message.js",
-      "target": "function:scripts/telegram/dossier-message.js:deliverDossier",
-      "type": "contains",
-      "direction": "forward",
-      "weight": 1
-    },
-    {
-      "source": "file:scripts/telegram/dossier-message.js",
-      "target": "function:scripts/telegram/dossier-message.js:deliverDossier",
-      "type": "exports",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
       "source": "file:scripts/telegram/dossier.js",
       "target": "function:scripts/telegram/dossier.js:summarizeWeather",
       "type": "contains",
@@ -13352,6 +13340,377 @@
       "weight": 0.8
     },
     {
+      "source": "file:scripts/telegram/preview-dossier.js",
+      "target": "function:scripts/telegram/preview-dossier.js:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "function:scripts/telegram/dossier.js:loadDossier",
+      "target": "function:scripts/telegram/dossier.js:summarizeWeather",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/dossier.js:loadDossier",
+      "target": "function:scripts/telegram/dossier.js:selectWinners",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/dossier.js:loadDossier",
+      "target": "function:scripts/telegram/dossier.js:previousYearTimes",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/lib.js:ensure",
+      "target": "function:scripts/telegram/lib.js:readEnv",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/lib.js:q",
+      "target": "function:scripts/telegram/lib.js:ensure",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/lib.js:recordRun",
+      "target": "function:scripts/telegram/lib.js:q",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/lib.js:sendTelegram",
+      "target": "function:scripts/telegram/lib.js:readEnv",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/lib.js:sendTelegramPhoto",
+      "target": "function:scripts/telegram/lib.js:readEnv",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/lib.js:sendTelegramDossier",
+      "target": "function:scripts/telegram/lib.js:readEnv",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/preview-dossier.js:main",
+      "target": "function:scripts/telegram/dossier.js:loadDossier",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/telegram/dossier.js",
+      "target": "file:scripts/telegram/dossier.test.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/telegram/preview-dossier.js",
+      "target": "file:docs/mockups/telegram-dossier-live.html",
+      "type": "writes_to",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/telegram/preview-dossier.js",
+      "target": "config:docs/mockups/telegram-dossier-live.json",
+      "type": "writes_to",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:MEMORY.md",
+      "target": "file:scripts/telegram/dossier.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/mockups/las-vegas-track-LICENSE.md",
+      "target": "file:docs/mockups/las-vegas-track.geojson",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:docs/mockups/telegram-dossier-live.html",
+      "target": "config:docs/mockups/telegram-dossier-live.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/superpowers/plans/2026-11-17-automatic-race-dossier.md",
+      "target": "file:scripts/telegram/dossier.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/superpowers/plans/2026-11-17-race-dossier-telegram-driver-form.md",
+      "target": "file:docs/mockups/telegram-las-vegas-dossier.html",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:docs/mockups/render-compact-dossier.cjs",
+      "target": "config:docs/mockups/telegram-dossier-live.json",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:docs/mockups/render-compact-dossier.cjs",
+      "target": "file:docs/mockups/telegram-dossier-compact.html",
+      "type": "writes_to",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:docs/mockups/render-compact-dossier.cjs",
+      "target": "file:docs/mockups/telegram-dossier-compact-text.html",
+      "type": "writes_to",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:docs/mockups/render-dark-dossier.cjs",
+      "target": "config:docs/mockups/telegram-dossier-live.json",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:docs/mockups/render-dark-dossier.cjs",
+      "target": "file:docs/mockups/telegram-dossier-dark.html",
+      "type": "writes_to",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/telegram/dossier-banner.js",
+      "target": "function:scripts/telegram/dossier-banner.js:buildBannerSvg",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/dossier-banner.js",
+      "target": "function:scripts/telegram/dossier-banner.js:buildBannerSvg",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "document:scripts/telegram/data/GEOMETRY-LICENSE.md",
+      "target": "file:scripts/telegram/data/vegas.geojson",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/telegram/render-dossier-banner.js",
+      "target": "file:scripts/telegram/data/vegas.geojson",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/telegram/dossier.js",
+      "target": "file:scripts/telegram/dossier-card.test.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/telegram/dossier-card.js",
+      "target": "function:scripts/telegram/dossier-card.js:windLabel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/dossier-card.js",
+      "target": "function:scripts/telegram/dossier-card.js:windLabel",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/telegram/dossier-card.js",
+      "target": "function:scripts/telegram/dossier-card.js:buildDossierCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/dossier-card.js",
+      "target": "function:scripts/telegram/dossier-card.js:buildDossierCard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/dossier-card.js:buildDossierCard",
+      "target": "function:scripts/telegram/dossier-banner.js:buildBannerSvg",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/dossier-card.js:buildDossierCard",
+      "target": "function:scripts/telegram/dossier-card.js:windLabel",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:docs/mockups/telegram-dossier-mobile.html",
+      "target": "file:scripts/telegram/dossier-card.js",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/superpowers/plans/2026-11-17-mobile-dossier-card.md",
+      "target": "file:scripts/telegram/dossier-card.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/superpowers/plans/2026-11-17-mobile-dossier-card.md",
+      "target": "file:scripts/telegram/dossier-card.test.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/telegram/render-dossier-card.js",
+      "target": "function:scripts/telegram/render-dossier-card.js:renderDossierCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/render-dossier-card.js",
+      "target": "function:scripts/telegram/render-dossier-card.js:renderDossierCard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/telegram/render-dossier-card.js",
+      "target": "file:scripts/telegram/dossier-render.test.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "pipeline:.github/workflows/telegram-notify.yml",
+      "target": "file:scripts/telegram/dossier-render.test.js",
+      "type": "triggers",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "pipeline:.github/workflows/telegram-notify.yml",
+      "target": "config:scripts/telegram/package.json",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "document:docs/superpowers/plans/2026-11-17-automatic-mobile-card.md",
+      "target": "file:scripts/telegram/render-dossier-card.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/superpowers/plans/2026-11-17-automatic-mobile-card.md",
+      "target": "pipeline:.github/workflows/telegram-notify.yml",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:scripts/telegram/package.json",
+      "target": "file:scripts/telegram/render-dossier-card.js",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:scripts/telegram/package.json",
+      "target": "file:scripts/telegram/dossier-render.test.js",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:scripts/telegram/dossier-message.js",
+      "target": "function:scripts/telegram/dossier-message.js:weatherLines",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/dossier-message.js",
+      "target": "function:scripts/telegram/dossier-message.js:weatherLines",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/telegram/dossier-message.js",
+      "target": "function:scripts/telegram/dossier-message.js:buildDossierMessage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/dossier-message.js",
+      "target": "function:scripts/telegram/dossier-message.js:buildDossierMessage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/telegram/dossier-message.js",
+      "target": "function:scripts/telegram/dossier-message.js:deliverDossier",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/dossier-message.js",
+      "target": "function:scripts/telegram/dossier-message.js:deliverDossier",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
       "source": "file:scripts/telegram/notify.js",
       "target": "function:scripts/telegram/notify.js:predictButton",
       "type": "contains",
@@ -13452,6 +13811,13 @@
     {
       "source": "file:scripts/telegram/notify.js",
       "target": "function:scripts/telegram/notify.js:prepareDossier",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/notify.js",
+      "target": "function:scripts/telegram/notify.js:dossierFormat",
       "type": "contains",
       "direction": "forward",
       "weight": 1
@@ -13590,11 +13956,11 @@
       "weight": 1
     },
     {
-      "source": "file:scripts/telegram/preview-dossier.js",
-      "target": "function:scripts/telegram/preview-dossier.js:main",
-      "type": "contains",
+      "source": "function:scripts/telegram/dossier-message.js:weatherLines",
+      "target": "function:scripts/telegram/dossier-card.js:windLabel",
+      "type": "calls",
       "direction": "forward",
-      "weight": 1
+      "weight": 0.8
     },
     {
       "source": "function:scripts/telegram/dossier-message.js:buildDossierMessage",
@@ -13604,78 +13970,29 @@
       "weight": 0.8
     },
     {
-      "source": "function:scripts/telegram/dossier.js:loadDossier",
-      "target": "function:scripts/telegram/dossier.js:summarizeWeather",
-      "type": "calls",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "function:scripts/telegram/dossier.js:loadDossier",
-      "target": "function:scripts/telegram/dossier.js:selectWinners",
-      "type": "calls",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "function:scripts/telegram/dossier.js:loadDossier",
-      "target": "function:scripts/telegram/dossier.js:previousYearTimes",
-      "type": "calls",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "function:scripts/telegram/lib.js:ensure",
-      "target": "function:scripts/telegram/lib.js:readEnv",
-      "type": "calls",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "function:scripts/telegram/lib.js:q",
-      "target": "function:scripts/telegram/lib.js:ensure",
-      "type": "calls",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "function:scripts/telegram/lib.js:recordRun",
-      "target": "function:scripts/telegram/lib.js:q",
-      "type": "calls",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "function:scripts/telegram/lib.js:sendTelegram",
-      "target": "function:scripts/telegram/lib.js:readEnv",
-      "type": "calls",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "function:scripts/telegram/lib.js:sendTelegramPhoto",
-      "target": "function:scripts/telegram/lib.js:readEnv",
-      "type": "calls",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "function:scripts/telegram/lib.js:sendTelegramDossier",
-      "target": "function:scripts/telegram/lib.js:readEnv",
+      "source": "function:scripts/telegram/dossier-message.js:buildDossierMessage",
+      "target": "function:scripts/telegram/dossier-card.js:buildDossierCard",
       "type": "calls",
       "direction": "forward",
       "weight": 0.8
     },
     {
       "source": "function:scripts/telegram/notify.js:ensureCurrentWeekOpen",
-      "target": "function:scripts/telegram/lib.js:q",
+      "target": "function:scripts/import/lib.js:q",
       "type": "calls",
       "direction": "forward",
       "weight": 0.8
     },
     {
       "source": "function:scripts/telegram/notify.js:thisWeekOpenRaces",
-      "target": "function:scripts/telegram/lib.js:q",
+      "target": "function:scripts/import/lib.js:q",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/notify.js:checkDriverPool",
+      "target": "function:scripts/import/import.js:importDrivers",
       "type": "calls",
       "direction": "forward",
       "weight": 0.8
@@ -13689,7 +14006,7 @@
     },
     {
       "source": "function:scripts/telegram/notify.js:checkDriverPool",
-      "target": "function:scripts/telegram/lib.js:q",
+      "target": "function:scripts/import/lib.js:q",
       "type": "calls",
       "direction": "forward",
       "weight": 0.8
@@ -13724,7 +14041,7 @@
     },
     {
       "source": "function:scripts/telegram/notify.js:raceweek",
-      "target": "function:scripts/telegram/lib.js:q",
+      "target": "function:scripts/import/lib.js:q",
       "type": "calls",
       "direction": "forward",
       "weight": 0.8
@@ -13745,7 +14062,21 @@
     },
     {
       "source": "function:scripts/telegram/notify.js:raceweek",
+      "target": "function:scripts/telegram/notify.js:dossierFormat",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/notify.js:raceweek",
       "target": "function:scripts/telegram/notify.js:predictButton",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/telegram/notify.js:deadline",
+      "target": "function:scripts/telegram/notify.js:dossierFormat",
       "type": "calls",
       "direction": "forward",
       "weight": 0.8
@@ -13780,7 +14111,7 @@
     },
     {
       "source": "function:scripts/telegram/notify.js:results",
-      "target": "function:scripts/telegram/lib.js:q",
+      "target": "function:scripts/import/lib.js:q",
       "type": "calls",
       "direction": "forward",
       "weight": 0.8
@@ -13822,7 +14153,7 @@
     },
     {
       "source": "function:scripts/telegram/notify.js:remind",
-      "target": "function:scripts/telegram/lib.js:q",
+      "target": "function:scripts/import/lib.js:q",
       "type": "calls",
       "direction": "forward",
       "weight": 0.8
@@ -13843,7 +14174,7 @@
     },
     {
       "source": "function:scripts/telegram/notify.js:adminflush",
-      "target": "function:scripts/telegram/lib.js:q",
+      "target": "function:scripts/import/lib.js:q",
       "type": "calls",
       "direction": "forward",
       "weight": 0.8
@@ -13857,7 +14188,7 @@
     },
     {
       "source": "function:scripts/telegram/notify.js:checkWatchdogAlive",
-      "target": "function:scripts/telegram/lib.js:q",
+      "target": "function:scripts/import/lib.js:q",
       "type": "calls",
       "direction": "forward",
       "weight": 0.8
@@ -13927,169 +14258,36 @@
     },
     {
       "source": "function:scripts/telegram/notify.js:main",
-      "target": "function:scripts/telegram/lib.js:close",
+      "target": "function:scripts/import/lib.js:close",
       "type": "calls",
       "direction": "forward",
       "weight": 0.8
     },
     {
-      "source": "function:scripts/telegram/preview-dossier.js:main",
-      "target": "function:scripts/telegram/dossier.js:loadDossier",
-      "type": "calls",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "function:scripts/telegram/preview-dossier.js:main",
-      "target": "function:scripts/telegram/dossier-message.js:buildDossierMessage",
-      "type": "calls",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "file:scripts/telegram/dossier-message.js",
-      "target": "file:scripts/telegram/dossier-message.test.js",
-      "type": "tested_by",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:scripts/telegram/notify.js",
-      "target": "file:scripts/telegram/dossier-notify.test.js",
-      "type": "tested_by",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:scripts/telegram/dossier.js",
-      "target": "file:scripts/telegram/dossier.test.js",
-      "type": "tested_by",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:scripts/telegram/preview-dossier.js",
-      "target": "file:docs/mockups/telegram-dossier-live.html",
-      "type": "writes_to",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:scripts/telegram/preview-dossier.js",
-      "target": "config:docs/mockups/telegram-dossier-live.json",
-      "type": "writes_to",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:MEMORY.md",
+      "source": "document:docs/superpowers/plans/2026-11-17-dossier-weekdays.md",
       "target": "file:scripts/telegram/notify.js",
       "type": "documents",
       "direction": "forward",
       "weight": 0.5
     },
     {
-      "source": "document:MEMORY.md",
-      "target": "file:scripts/telegram/dossier.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/mockups/las-vegas-track-LICENSE.md",
-      "target": "file:docs/mockups/las-vegas-track.geojson",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:docs/mockups/telegram-dossier-live.html",
-      "target": "config:docs/mockups/telegram-dossier-live.json",
-      "type": "related",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/plans/2026-11-17-automatic-race-dossier.md",
-      "target": "file:scripts/telegram/dossier.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/plans/2026-11-17-automatic-race-dossier.md",
+      "source": "document:docs/superpowers/plans/2026-11-17-dossier-weekdays.md",
       "target": "file:scripts/telegram/dossier-message.js",
       "type": "documents",
       "direction": "forward",
       "weight": 0.5
     },
     {
-      "source": "document:docs/superpowers/plans/2026-11-17-race-dossier-telegram-driver-form.md",
-      "target": "file:docs/mockups/telegram-las-vegas-dossier.html",
+      "source": "document:scripts/telegram/README.md",
+      "target": "file:scripts/telegram/notify.js",
       "type": "documents",
       "direction": "forward",
       "weight": 0.5
     },
     {
-      "source": "file:docs/mockups/render-compact-dossier.cjs",
-      "target": "config:docs/mockups/telegram-dossier-live.json",
-      "type": "reads_from",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:docs/mockups/render-compact-dossier.cjs",
-      "target": "file:docs/mockups/telegram-dossier-compact.html",
-      "type": "writes_to",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:docs/mockups/render-compact-dossier.cjs",
-      "target": "file:docs/mockups/telegram-dossier-compact-text.html",
-      "type": "writes_to",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:docs/mockups/render-dark-dossier.cjs",
-      "target": "config:docs/mockups/telegram-dossier-live.json",
-      "type": "reads_from",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:docs/mockups/render-dark-dossier.cjs",
-      "target": "file:docs/mockups/telegram-dossier-dark.html",
-      "type": "writes_to",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:scripts/telegram/dossier-banner.js",
-      "target": "function:scripts/telegram/dossier-banner.js:buildBannerSvg",
-      "type": "contains",
-      "direction": "forward",
-      "weight": 1
-    },
-    {
-      "source": "file:scripts/telegram/dossier-banner.js",
-      "target": "function:scripts/telegram/dossier-banner.js:buildBannerSvg",
-      "type": "exports",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "document:scripts/telegram/data/GEOMETRY-LICENSE.md",
-      "target": "file:scripts/telegram/data/vegas.geojson",
+      "source": "document:scripts/telegram/README.md",
+      "target": "file:scripts/telegram/dossier-message.js",
       "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:scripts/telegram/render-dossier-banner.js",
-      "target": "file:scripts/telegram/data/vegas.geojson",
-      "type": "reads_from",
       "direction": "forward",
       "weight": 0.5
     },
@@ -14102,179 +14300,12 @@
       "description": "Path-based pairing (deterministic)"
     },
     {
-      "source": "file:scripts/telegram/dossier.js",
-      "target": "file:scripts/telegram/dossier-card.test.js",
-      "type": "tested_by",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:scripts/telegram/dossier-card.js",
-      "target": "function:scripts/telegram/dossier-card.js:windLabel",
-      "type": "contains",
-      "direction": "forward",
-      "weight": 1
-    },
-    {
-      "source": "file:scripts/telegram/dossier-card.js",
-      "target": "function:scripts/telegram/dossier-card.js:windLabel",
-      "type": "exports",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "file:scripts/telegram/dossier-card.js",
-      "target": "function:scripts/telegram/dossier-card.js:buildDossierCard",
-      "type": "contains",
-      "direction": "forward",
-      "weight": 1
-    },
-    {
-      "source": "file:scripts/telegram/dossier-card.js",
-      "target": "function:scripts/telegram/dossier-card.js:buildDossierCard",
-      "type": "exports",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "function:scripts/telegram/dossier-card.js:buildDossierCard",
-      "target": "function:scripts/telegram/dossier-banner.js:buildBannerSvg",
-      "type": "calls",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "function:scripts/telegram/dossier-card.js:buildDossierCard",
-      "target": "function:scripts/telegram/dossier-card.js:windLabel",
-      "type": "calls",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "file:docs/mockups/telegram-dossier-mobile.html",
-      "target": "file:scripts/telegram/dossier-card.js",
-      "type": "related",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/plans/2026-11-17-mobile-dossier-card.md",
-      "target": "file:scripts/telegram/dossier-card.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/plans/2026-11-17-mobile-dossier-card.md",
-      "target": "file:scripts/telegram/dossier-card.test.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:scripts/telegram/render-dossier-card.js",
-      "target": "function:scripts/telegram/render-dossier-card.js:renderDossierCard",
-      "type": "contains",
-      "direction": "forward",
-      "weight": 1
-    },
-    {
-      "source": "file:scripts/telegram/render-dossier-card.js",
-      "target": "function:scripts/telegram/render-dossier-card.js:renderDossierCard",
-      "type": "exports",
-      "direction": "forward",
-      "weight": 0.8
-    },
-    {
-      "source": "file:scripts/telegram/render-dossier-card.js",
-      "target": "file:scripts/telegram/dossier-render.test.js",
-      "type": "tested_by",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
       "source": "file:scripts/telegram/dossier-message.js",
-      "target": "file:scripts/telegram/dossier-render.test.js",
+      "target": "file:scripts/telegram/dossier-message.test.js",
       "type": "tested_by",
       "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "pipeline:.github/workflows/telegram-notify.yml",
-      "target": "file:scripts/telegram/notify.js",
-      "type": "triggers",
-      "direction": "forward",
-      "weight": 0.6
-    },
-    {
-      "source": "pipeline:.github/workflows/telegram-notify.yml",
-      "target": "file:scripts/telegram/dossier-render.test.js",
-      "type": "triggers",
-      "direction": "forward",
-      "weight": 0.6
-    },
-    {
-      "source": "pipeline:.github/workflows/telegram-notify.yml",
-      "target": "config:scripts/telegram/package.json",
-      "type": "depends_on",
-      "direction": "forward",
-      "weight": 0.6
-    },
-    {
-      "source": "document:docs/superpowers/plans/2026-11-17-automatic-mobile-card.md",
-      "target": "file:scripts/telegram/render-dossier-card.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/plans/2026-11-17-automatic-mobile-card.md",
-      "target": "file:scripts/telegram/dossier-message.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/plans/2026-11-17-automatic-mobile-card.md",
-      "target": "pipeline:.github/workflows/telegram-notify.yml",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:scripts/telegram/README.md",
-      "target": "file:scripts/telegram/render-dossier-card.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:scripts/telegram/README.md",
-      "target": "file:scripts/telegram/dossier-message.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:scripts/telegram/README.md",
-      "target": "pipeline:.github/workflows/telegram-notify.yml",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "config:scripts/telegram/package.json",
-      "target": "file:scripts/telegram/render-dossier-card.js",
-      "type": "configures",
-      "direction": "forward",
-      "weight": 0.6
-    },
-    {
-      "source": "config:scripts/telegram/package.json",
-      "target": "file:scripts/telegram/dossier-render.test.js",
-      "type": "configures",
-      "direction": "forward",
-      "weight": 0.6
+      "weight": 0.5,
+      "description": "Path-based pairing (deterministic)"
     },
     {
       "source": "file:scripts/ai-player/predict.js",
@@ -15444,8 +15475,8 @@
       "GitHub Actions"
     ],
     "description": "Закрытая лига прогнозов на гонки Формулы-1: участники составляют топ-10, система считает очки и сезонный зачёт. Примечание: в проекте более 100 файлов; для ускорения анализа можно ограничить его отдельным каталогом.",
-    "analyzedAt": "2026-11-17T20:28:12.879Z",
-    "gitCommitHash": "35f97e34622bfd6e78d7207d7dfc03f7b247ecae"
+    "analyzedAt": "2026-11-17T20:32:10.274Z",
+    "gitCommitHash": "1f991a891599ef6a1f48d253d47f4434a21b1ae8"
   },
   "layers": [
     {
@@ -15743,7 +15774,8 @@
         "document:scripts/telegram/data/GEOMETRY-LICENSE.md",
         "file:docs/mockups/telegram-dossier-mobile.html",
         "document:docs/superpowers/plans/2026-11-17-mobile-dossier-card.md",
-        "document:docs/superpowers/plans/2026-11-17-automatic-mobile-card.md"
+        "document:docs/superpowers/plans/2026-11-17-automatic-mobile-card.md",
+        "document:docs/superpowers/plans/2026-11-17-dossier-weekdays.md"
       ]
     },
     {

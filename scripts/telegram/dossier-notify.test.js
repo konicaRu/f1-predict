@@ -38,3 +38,22 @@ test('each reminder fetches weather anew, expired races excluded, missing names 
   await deadline({ ...options, now: new Date('2026-11-18T10:00:00Z'), send: async m => assert.doesNotMatch(m.richHtml, /Ещё не сделали/) });
   assert.equal(missing, 2);
 });
+
+test('new card is used only Monday and Thursday in Moscow, Wednesday retains the previous format', async () => {
+  for (const [at, format] of [
+    ['2026-11-16T07:05:00Z', 'card'],
+    ['2026-11-18T07:05:00Z', 'legacy'],
+    ['2026-11-19T07:05:00Z', 'card'],
+    ['2026-11-18T21:05:00Z', 'card'], // уже четверг в Москве
+    ['2026-11-17T07:05:00Z', 'legacy'],
+  ]) {
+    const sent = [], history = [];
+    const options = { now: new Date(at), getRaces: async () => [race],
+      getDossier: async (_, opts) => { history.push(opts.includeHistory); return empty; },
+      getMissing: async () => [], send: async m => { sent.push(m); }, markAnnounced: async () => {} };
+    await raceweek(options);
+    await deadline(options);
+    assert.deepEqual(sent.map(m => m.format), [format, format], at);
+    assert.equal(history[1], format === 'card', at);
+  }
+});

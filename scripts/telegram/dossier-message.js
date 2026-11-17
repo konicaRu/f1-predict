@@ -23,7 +23,7 @@ function weatherLines(d) {
   return lines;
 }
 
-function buildDossierMessage(race, d, { mode = 'raceweek', missing } = {}) {
+function buildDossierMessage(race, d, { mode = 'raceweek', missing, format = 'card' } = {}) {
   const opening = mode === 'raceweek';
   const sections = [];
   const add = (title, lines) => sections.push({ title, lines });
@@ -67,10 +67,34 @@ function buildDossierMessage(race, d, { mode = 'raceweek', missing } = {}) {
   if (fallbackHtml.length > 4096) throw new Error('Досье превышает лимит обычного сообщения');
   const photoCaption = `${opening ? '🏁 Приём прогнозов открыт' : '⏳ Не забудь сделать прогноз'}\n${sections[0].lines.join('\n')}` +
     (!opening && Array.isArray(missing) ? `\n\n${missing.length ? `Ещё не сделали прогноз: ${missing.join(', ').slice(0, 650)}` : 'Все уже сделали прогноз!'}` : '');
-  return { richHtml, fallbackHtml, banner, cardHtml: buildDossierCard(race, d), photoCaption: photoCaption.slice(0, 1024) };
+  return { format, richHtml, fallbackHtml, banner, cardHtml: format === 'card' ? buildDossierCard(race, d) : undefined, photoCaption: photoCaption.slice(0, 1024) };
 }
 
 async function deliverDossier(message, { token, chatId, replyMarkup, fetchImpl = fetch, renderCard = renderDossierCard, onFallback = () => {} }) {
+  const sendText = async () => {
+    const fallback = await fetchImpl(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(20000),
+      body: JSON.stringify({ chat_id: chatId, text: message.fallbackHtml, parse_mode: 'HTML', reply_markup: replyMarkup, link_preview_options: { is_disabled: true } }),
+    });
+    const result = await fallback.json();
+    if (!result.ok) throw new Error(`Telegram fallback: ${result.error_code || fallback.status}`);
+    return result;
+  };
+  if (message.format === 'legacy') {
+    const rich = { html: message.richHtml };
+    if (message.banner) rich.media = [{ id: 'dossier_banner', media: { type: 'photo', media: 'attach://banner' } }];
+    const form = new FormData();
+    form.append('chat_id', String(chatId));
+    form.append('rich_message', JSON.stringify(rich));
+    if (replyMarkup) form.append('reply_markup', JSON.stringify(replyMarkup));
+    if (message.banner) form.append('banner', new Blob([message.banner], { type: 'image/png' }), 'dossier.png');
+    const response = await fetchImpl(`https://api.telegram.org/bot${token}/sendRichMessage`, { method: 'POST', body: form, signal: AbortSignal.timeout(20000) });
+    const data = await response.json();
+    if (data.ok) return data;
+    if (![400, 404].includes(data.error_code)) throw new Error(`Telegram Rich Message: ${data.error_code || response.status}`);
+    onFallback(`Rich Message отклонён Telegram (${data.error_code}); отправляем текст`);
+    return sendText();
+  }
   let photo;
   try {
     photo = await renderCard(message.cardHtml);
@@ -90,13 +114,7 @@ async function deliverDossier(message, { token, chatId, replyMarkup, fetchImpl =
     if (![400, 404].includes(data.error_code)) throw new Error(`Telegram photo: ${data.error_code || response.status}`);
     onFallback(`Фото отклонено Telegram (${data.error_code}); отправляем текст`);
   }
-  const fallback = await fetchImpl(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(20000),
-    body: JSON.stringify({ chat_id: chatId, text: message.fallbackHtml, parse_mode: 'HTML', reply_markup: replyMarkup, link_preview_options: { is_disabled: true } }),
-  });
-  const result = await fallback.json();
-  if (!result.ok) throw new Error(`Telegram fallback: ${result.error_code || fallback.status}`);
-  return result;
+  return sendText();
 }
 
 module.exports = { buildDossierMessage, deliverDossier, weatherLines };
