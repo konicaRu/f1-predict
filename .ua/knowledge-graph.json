@@ -3459,19 +3459,6 @@
       "complexity": "moderate"
     },
     {
-      "id": "pipeline:.github/workflows/deploy.yml",
-      "type": "pipeline",
-      "name": "deploy.yml",
-      "filePath": ".github/workflows/deploy.yml",
-      "summary": "Собирает Vite на Node 20 при push в main или ручном запуске и публикует dist в GitHub Pages. Копирует index.html в 404.html для прямых SPA-ссылок и отменяет устаревшие деплои.",
-      "tags": [
-        "ci-cd",
-        "автоматизация",
-        "github-actions"
-      ],
-      "complexity": "simple"
-    },
-    {
       "id": "pipeline:.github/workflows/keepalive.yml",
       "type": "pipeline",
       "name": "keepalive.yml",
@@ -3483,19 +3470,6 @@
         "github-actions"
       ],
       "complexity": "simple"
-    },
-    {
-      "id": "pipeline:.github/workflows/telegram-notify.yml",
-      "type": "pipeline",
-      "name": "telegram-notify.yml",
-      "filePath": ".github/workflows/telegram-notify.yml",
-      "summary": "Запускает по московскому расписанию анонсы, напоминания, автозабор результатов и разгрузку ночной очереди на Node 20. Устанавливает зависимости четырёх скриптовых пакетов и отправляет прямую тревогу при падении GitHub Actions.",
-      "tags": [
-        "ci-cd",
-        "автоматизация",
-        "github-actions"
-      ],
-      "complexity": "moderate"
     },
     {
       "id": "table:supabase/migrations/0001_schema.sql:migration",
@@ -4199,32 +4173,6 @@
         "лига"
       ],
       "complexity": "moderate"
-    },
-    {
-      "id": "document:MEMORY.md",
-      "type": "document",
-      "name": "MEMORY.md",
-      "filePath": "MEMORY.md",
-      "summary": "Хранит состояние проекта, открытые вопросы и подробный журнал реализации, эксплуатационных инцидентов и принятых исправлений.",
-      "tags": [
-        "документация",
-        "архитектура",
-        "лига"
-      ],
-      "complexity": "complex"
-    },
-    {
-      "id": "document:README.md",
-      "type": "document",
-      "name": "README.md",
-      "filePath": "README.md",
-      "summary": "Объясняет использование лиги и начисление очков, архитектуру и RLS, работу GridBot и Telegram, локальный запуск и резервное копирование.",
-      "tags": [
-        "документация",
-        "архитектура",
-        "лига"
-      ],
-      "complexity": "complex"
     },
     {
       "id": "file:index.html",
@@ -5363,19 +5311,6 @@
       "complexity": "simple"
     },
     {
-      "id": "document:scripts/export/README.md",
-      "type": "document",
-      "name": "README.md",
-      "filePath": "scripts/export/README.md",
-      "summary": "Описывает настройку сервисного аккаунта Google и таблицы, ручной экспорт прогнозов, результатов и очков в Google Sheets.",
-      "tags": [
-        "документация",
-        "эксплуатация",
-        "лига"
-      ],
-      "complexity": "simple"
-    },
-    {
       "id": "file:scripts/export/export.js",
       "type": "file",
       "name": "export.js",
@@ -5568,19 +5503,6 @@
         "автоматизация",
         "интеграция",
         "функция"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "config:scripts/export/package.json",
-      "type": "config",
-      "name": "package.json",
-      "filePath": "scripts/export/package.json",
-      "summary": "Задаёт команду экспорта в Google Sheets и зависимости googleapis и pg для CommonJS-пакета.",
-      "tags": [
-        "конфигурация",
-        "nodejs",
-        "автоматизация"
       ],
       "complexity": "simple"
     },
@@ -5786,6 +5708,679 @@
         "интеграция"
       ],
       "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/export/encrypted-backup.js",
+      "type": "file",
+      "name": "encrypted-backup.js",
+      "filePath": "scripts/export/encrypted-backup.js",
+      "summary": "Шифрует полные резервные копии с AES-256-GCM и проверяет ключ, формат и целостность контейнера.",
+      "tags": [
+        "security",
+        "backup",
+        "encryption",
+        "tested"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/export/encrypted-backup.js:encryptBackup",
+      "type": "function",
+      "name": "encryptBackup",
+      "filePath": "scripts/export/encrypted-backup.js",
+      "lineRange": [
+        9,
+        15
+      ],
+      "summary": "Шифрует содержимое AES-256-GCM и возвращает контейнер с IV и тегом аутентификации.",
+      "tags": [
+        "backup",
+        "validation",
+        "api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/export/encrypted-backup.js:decryptBackup",
+      "type": "function",
+      "name": "decryptBackup",
+      "filePath": "scripts/export/encrypted-backup.js",
+      "lineRange": [
+        17,
+        28
+      ],
+      "summary": "Проверяет контейнер и расшифровывает содержимое с контролем подлинности.",
+      "tags": [
+        "backup",
+        "validation",
+        "api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/export/encrypted-backup.test.js",
+      "type": "file",
+      "name": "encrypted-backup.test.js",
+      "filePath": "scripts/export/encrypted-backup.test.js",
+      "summary": "Проверяет обратимость шифрования и отказ при неверном ключе или повреждении данных.",
+      "tags": [
+        "test",
+        "backup",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/export/full-backup.js",
+      "type": "file",
+      "name": "full-backup.js",
+      "filePath": "scripts/export/full-backup.js",
+      "summary": "Создаёт зашифрованный дамп auth/public/extensions и проверяет восстановление в изолированном Docker-контейнере перед сохранением.",
+      "tags": [
+        "backup",
+        "data-pipeline",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/export/full-backup.js:command",
+      "type": "function",
+      "name": "command",
+      "filePath": "scripts/export/full-backup.js",
+      "lineRange": [
+        26,
+        45
+      ],
+      "summary": "Выполняет Docker-команду с ограничением времени и безопасной диагностикой ошибки.",
+      "tags": [
+        "backup",
+        "validation",
+        "workflow"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/export/full-backup.js:capture",
+      "type": "function",
+      "name": "capture",
+      "filePath": "scripts/export/full-backup.js",
+      "lineRange": [
+        47,
+        79
+      ],
+      "summary": "Получает согласованный дамп PostgreSQL и метаданные проверки восстановления.",
+      "tags": [
+        "backup",
+        "validation",
+        "workflow"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/export/full-backup.js:rehearse",
+      "type": "function",
+      "name": "rehearse",
+      "filePath": "scripts/export/full-backup.js",
+      "lineRange": [
+        81,
+        136
+      ],
+      "summary": "Восстанавливает дамп без сети, сверяет данные и права пользователя и проверяет удаление контейнера.",
+      "tags": [
+        "backup",
+        "validation",
+        "workflow"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:scripts/export/full-backup.js:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "scripts/export/full-backup.js",
+      "lineRange": [
+        138,
+        191
+      ],
+      "summary": "Запускает сценарий архивации и проверки копий по аргументам командной строки.",
+      "tags": [
+        "backup",
+        "validation",
+        "workflow"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:scripts/export/github-archive.js",
+      "type": "file",
+      "name": "github-archive.js",
+      "filePath": "scripts/export/github-archive.js",
+      "summary": "Сохраняет проверенные игровые снимки в приватный GitHub checkout и обновляет latest после проверки файлов.",
+      "tags": [
+        "backup",
+        "data-pipeline",
+        "validation",
+        "tested"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/export/github-archive.js:saveArchive",
+      "type": "function",
+      "name": "saveArchive",
+      "filePath": "scripts/export/github-archive.js",
+      "lineRange": [
+        8,
+        42
+      ],
+      "summary": "Записывает проверенный снимок и атомарно обновляет latest без дублирования результатов.",
+      "tags": [
+        "backup",
+        "validation",
+        "api"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/export/github-archive.js:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "scripts/export/github-archive.js",
+      "lineRange": [
+        44,
+        59
+      ],
+      "summary": "Запускает сценарий архивации и проверки копий по аргументам командной строки.",
+      "tags": [
+        "backup",
+        "validation",
+        "workflow"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/export/github-archive.test.js",
+      "type": "file",
+      "name": "github-archive.test.js",
+      "filePath": "scripts/export/github-archive.test.js",
+      "summary": "Проверяет сохранение игровых архивов, отсутствие дубликатов и обработку повреждённых снимков.",
+      "tags": [
+        "test",
+        "backup",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/export/snapshot.js",
+      "type": "file",
+      "name": "snapshot.js",
+      "filePath": "scripts/export/snapshot.js",
+      "summary": "Публикует проверяемые игровые снимки в Google Sheets и скачивает локальные копии без данных auth.",
+      "tags": [
+        "backup",
+        "data-pipeline",
+        "validation",
+        "tested"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:scripts/export/snapshot.js:encodeSnapshot",
+      "type": "function",
+      "name": "encodeSnapshot",
+      "filePath": "scripts/export/snapshot.js",
+      "lineRange": [
+        18,
+        34
+      ],
+      "summary": "Разбивает исходный JSON таблиц на части и создаёт манифест с контрольными суммами.",
+      "tags": [
+        "backup",
+        "validation",
+        "api"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/export/snapshot.js:decodeSnapshot",
+      "type": "function",
+      "name": "decodeSnapshot",
+      "filePath": "scripts/export/snapshot.js",
+      "lineRange": [
+        36,
+        68
+      ],
+      "summary": "Проверяет статус снимка, порядок частей, контрольные суммы и количество строк.",
+      "tags": [
+        "backup",
+        "validation",
+        "api"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/export/snapshot.js:publishSnapshot",
+      "type": "function",
+      "name": "publishSnapshot",
+      "filePath": "scripts/export/snapshot.js",
+      "lineRange": [
+        70,
+        83
+      ],
+      "summary": "Публикует снимок через транспорт и проверяет повторным чтением перед финализацией и после неё.",
+      "tags": [
+        "backup",
+        "validation",
+        "api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/export/snapshot.js:readLocalBackup",
+      "type": "function",
+      "name": "readLocalBackup",
+      "filePath": "scripts/export/snapshot.js",
+      "lineRange": [
+        85,
+        98
+      ],
+      "summary": "Проверяет манифест и JSON всех игровых таблиц локальной копии.",
+      "tags": [
+        "backup",
+        "validation",
+        "api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/export/snapshot.js:privateBackupPath",
+      "type": "function",
+      "name": "privateBackupPath",
+      "filePath": "scripts/export/snapshot.js",
+      "lineRange": [
+        100,
+        116
+      ],
+      "summary": "Разрешает путь и запрещает создание копий внутри публичного репозитория.",
+      "tags": [
+        "backup",
+        "validation",
+        "api"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/export/snapshot.js:captureArchive",
+      "type": "function",
+      "name": "captureArchive",
+      "filePath": "scripts/export/snapshot.js",
+      "lineRange": [
+        118,
+        150
+      ],
+      "summary": "Читает игровые таблицы в согласованной транзакции, сохраняя исходный JSON чисел.",
+      "tags": [
+        "backup",
+        "validation",
+        "api"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/export/snapshot.js:sheetsTransport",
+      "type": "function",
+      "name": "sheetsTransport",
+      "filePath": "scripts/export/snapshot.js",
+      "lineRange": [
+        152,
+        184
+      ],
+      "summary": "Создаёт транспорт Google Sheets для записи, чтения и финализации снимков.",
+      "tags": [
+        "backup",
+        "validation",
+        "workflow"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/export/snapshot.js:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "scripts/export/snapshot.js",
+      "lineRange": [
+        186,
+        223
+      ],
+      "summary": "Запускает сценарий архивации и проверки копий по аргументам командной строки.",
+      "tags": [
+        "backup",
+        "validation",
+        "workflow"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:scripts/export/snapshot.test.js",
+      "type": "file",
+      "name": "snapshot.test.js",
+      "filePath": "scripts/export/snapshot.test.js",
+      "summary": "Проверяет формат снимков, полноту таблиц, контрольные суммы и ограничения приватного пути.",
+      "tags": [
+        "test",
+        "backup",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:scripts/db/restore-json.js",
+      "type": "file",
+      "name": "restore-json.js",
+      "filePath": "scripts/db/restore-json.js",
+      "summary": "Разбирает JSON-массивы с сохранением исходных числовых токенов через JSON.rawJSON для точного восстановления bigint.",
+      "tags": [
+        "backup",
+        "data-pipeline",
+        "validation",
+        "tested"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/db/restore-json.js:parseRestoreRows",
+      "type": "function",
+      "name": "parseRestoreRows",
+      "filePath": "scripts/db/restore-json.js",
+      "lineRange": [
+        2,
+        8
+      ],
+      "summary": "Разбирает массив JSON без потери точности чисел через JSON.rawJSON.",
+      "tags": [
+        "backup",
+        "validation",
+        "api"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/db/restore-json.test.js",
+      "type": "file",
+      "name": "restore-json.test.js",
+      "filePath": "scripts/db/restore-json.test.js",
+      "summary": "Проверяет сохранение больших целых чисел при разборе резервного JSON.",
+      "tags": [
+        "test",
+        "backup",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "pipeline:.github/workflows/archive-backup.yml",
+      "name": "archive-backup.yml",
+      "tags": [
+        "ci-cd",
+        "automation",
+        "deployment"
+      ],
+      "complexity": "simple",
+      "filePath": ".github/workflows/archive-backup.yml",
+      "type": "pipeline",
+      "summary": "Ежедневно и вручную создаёт и проверяет датированный снимок игровых данных в Google Sheets. Временно сохраняет ключ сервисного аккаунта в закрытый каталог runner и удаляет его после запуска."
+    },
+    {
+      "id": "pipeline:.github/workflows/deploy.yml",
+      "name": "deploy.yml",
+      "tags": [
+        "ci-cd",
+        "automation",
+        "deployment"
+      ],
+      "complexity": "moderate",
+      "filePath": ".github/workflows/deploy.yml",
+      "type": "pipeline",
+      "summary": "Собирает Vite-приложение и публичный просмотрщик карты проекта на Node 22, публикует общий артефакт в GitHub Pages. Создаёт 404.html для прямых SPA-ссылок и включает граф проекта с русской конфигурацией."
+    },
+    {
+      "id": "pipeline:.github/workflows/full-backup.yml",
+      "name": "full-backup.yml",
+      "tags": [
+        "ci-cd",
+        "automation",
+        "deployment"
+      ],
+      "complexity": "moderate",
+      "filePath": ".github/workflows/full-backup.yml",
+      "type": "pipeline",
+      "summary": "Создаёт зашифрованную копию пользователей и данных, проверяет восстановление в изолированном PostgreSQL и сохраняет зашифрованные файлы в закрытый GitHub-архив. Запускается по расписанию, вручную или из другого workflow и очищает временные контейнеры и дампы."
+    },
+    {
+      "id": "pipeline:.github/workflows/github-archive.yml",
+      "name": "github-archive.yml",
+      "tags": [
+        "ci-cd",
+        "automation",
+        "deployment"
+      ],
+      "complexity": "moderate",
+      "filePath": ".github/workflows/github-archive.yml",
+      "type": "pipeline",
+      "summary": "Сохраняет проверенные снимки результатов в закрытом GitHub-репозитории по расписанию, вручную или по вызову workflow. При изменении архива запускает зашифрованное резервирование с проверкой восстановления."
+    },
+    {
+      "id": "pipeline:.github/workflows/telegram-notify.yml",
+      "name": "telegram-notify.yml",
+      "tags": [
+        "ci-cd",
+        "automation",
+        "deployment"
+      ],
+      "complexity": "moderate",
+      "filePath": ".github/workflows/telegram-notify.yml",
+      "type": "pipeline",
+      "summary": "Оркестрирует Telegram-напоминания, получение результатов, прогноз GridBot и административные уведомления по расписанию и вручную. После режимов результатов запускает архивирование; при сбое предупреждает администратора вне тихих часов."
+    },
+    {
+      "id": "document:AGENTS.md",
+      "type": "document",
+      "name": "AGENTS.md",
+      "filePath": "AGENTS.md",
+      "summary": "Определяет автоматическое инкрементальное обновление карты проекта при изменении Git HEAD и сохранение предыдущей карты при ошибке.",
+      "tags": [
+        "документация",
+        "эксплуатация",
+        "резервирование"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:MEMORY.md",
+      "type": "document",
+      "name": "MEMORY.md",
+      "filePath": "MEMORY.md",
+      "summary": "Хранит состояние проекта, открытые вопросы и журнал реализации и эксплуатационных инцидентов. Последняя запись описывает резервирование, восстановление и развитие досье гонки.",
+      "tags": [
+        "документация",
+        "эксплуатация",
+        "резервирование"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "document:README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "README.md",
+      "summary": "Объясняет использование лиги, начисление очков, архитектуру и RLS, работу GridBot и Telegram. Описывает локальный запуск, структуру репозитория и резервирование.",
+      "tags": [
+        "документация",
+        "эксплуатация",
+        "резервирование"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:docs/mockups/telegram-f1-style-v2.html",
+      "name": "telegram-f1-style-v2.html",
+      "tags": [
+        "mockup",
+        "telegram",
+        "html",
+        "responsive"
+      ],
+      "complexity": "moderate",
+      "filePath": "docs/mockups/telegram-f1-style-v2.html",
+      "type": "file",
+      "summary": "Обновлённый адаптивный HTML-макет Telegram-уведомлений об открытии недели, дедлайне и прогнозе GridBot. Показывает диагональные графитовые баннеры, техническую типографику и слоган «Лига пророков» с локальной демонстрацией кнопок."
+    },
+    {
+      "id": "file:docs/mockups/telegram-f1-style.html",
+      "name": "telegram-f1-style.html",
+      "tags": [
+        "mockup",
+        "telegram",
+        "html",
+        "responsive"
+      ],
+      "complexity": "simple",
+      "filePath": "docs/mockups/telegram-f1-style.html",
+      "type": "file",
+      "summary": "Первоначальный адаптивный HTML-макет трёх Telegram-уведомлений: открытие недели, напоминание о дедлайне и прогноз GridBot. Демонстрирует светлые карточки с графитовыми баннерами, блоками погоды и локальными кнопками."
+    },
+    {
+      "id": "file:docs/mockups/telegram-results-v2.html",
+      "name": "telegram-results-v2.html",
+      "tags": [
+        "mockup",
+        "telegram",
+        "html",
+        "responsive"
+      ],
+      "complexity": "moderate",
+      "filePath": "docs/mockups/telegram-results-v2.html",
+      "type": "file",
+      "summary": "HTML-макет итогового Telegram-уведомления с коротким и раскрытым представлением результатов. Показывает совместных победителей по очкам, точные попадания, подиум, прогнозы и сезонный зачёт в раскрывающихся блоках."
+    },
+    {
+      "id": "document:docs/superpowers/plans/2026-11-17-archive-snapshots.md",
+      "type": "document",
+      "name": "2026-11-17-archive-snapshots.md",
+      "filePath": "docs/superpowers/plans/2026-11-17-archive-snapshots.md",
+      "summary": "Планирует версионные снимки игрового архива в Google Sheets, ограничения безопасности и проверки публикации и автоматического запуска.",
+      "tags": [
+        "документация",
+        "планирование",
+        "резервирование"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:docs/superpowers/plans/2026-11-17-encrypted-users-recovery.md",
+      "type": "document",
+      "name": "2026-11-17-encrypted-users-recovery.md",
+      "filePath": "docs/superpowers/plans/2026-11-17-encrypted-users-recovery.md",
+      "summary": "Описывает план зашифрованного резервирования пользователей и авторизации с изолированной репетицией восстановления, ограничениями и критериями проверки.",
+      "tags": [
+        "документация",
+        "планирование",
+        "резервирование"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:docs/superpowers/plans/2026-11-17-github-result-archive.md",
+      "type": "document",
+      "name": "2026-11-17-github-result-archive.md",
+      "filePath": "docs/superpowers/plans/2026-11-17-github-result-archive.md",
+      "summary": "Планирует дополнительный архив результатов в приватном GitHub и фиксирует проверку реализации после получения результатов.",
+      "tags": [
+        "документация",
+        "планирование",
+        "резервирование"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:docs/superpowers/plans/2026-11-17-race-dossier-telegram-driver-form.md",
+      "type": "document",
+      "name": "2026-11-17-race-dossier-telegram-driver-form.md",
+      "filePath": "docs/superpowers/plans/2026-11-17-race-dossier-telegram-driver-form.md",
+      "summary": "Разбивает развитие досье трассы, погоды, Telegram-уведомлений и формы пилотов на этапы с источниками данных, ограничениями и проверками.",
+      "tags": [
+        "документация",
+        "планирование",
+        "telegram"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:scripts/export/ARCHIVE-RESTORE.md",
+      "type": "document",
+      "name": "ARCHIVE-RESTORE.md",
+      "filePath": "scripts/export/ARCHIVE-RESTORE.md",
+      "summary": "Объясняет проверку и частичное восстановление семи игровых таблиц из Google Sheets. Указывает необходимые auth UUID и отличия от полной копии Supabase.",
+      "tags": [
+        "документация",
+        "восстановление",
+        "резервирование"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:scripts/export/FULL-RECOVERY.md",
+      "type": "document",
+      "name": "FULL-RECOVERY.md",
+      "filePath": "scripts/export/FULL-RECOVERY.md",
+      "summary": "Описывает состав зашифрованной копии пользователей и авторизации, отдельное хранение ключа, расписание, проверки восстановления и получение dump при аварии.",
+      "tags": [
+        "документация",
+        "восстановление",
+        "резервирование"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:scripts/export/README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "scripts/export/README.md",
+      "summary": "Документирует настройку и ручной экспорт Google Sheets, версионные снимки, ежедневные задания, приватный GitHub-архив и зашифрованный резерв авторизации.",
+      "tags": [
+        "документация",
+        "восстановление",
+        "резервирование"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:scripts/export/package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "scripts/export/package.json",
+      "summary": "Задаёт CommonJS-пакет экспорта с командами ручной выгрузки, резервирования и тестов; подключает googleapis и pg.",
+      "tags": [
+        "конфигурация",
+        "nodejs",
+        "автоматизация"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:docs/superpowers/specs/2026-11-17-archive-backup-audit.md",
+      "type": "document",
+      "name": "2026-11-17-archive-backup-audit.md",
+      "filePath": "docs/superpowers/specs/2026-11-17-archive-backup-audit.md",
+      "summary": "Фиксирует аудит резервирования, выбранный формат датированных снимков, требования целостности и безопасности, результат локальной копии и включение автоматики.",
+      "tags": [
+        "документация",
+        "эксплуатация",
+        "резервирование"
+      ],
+      "complexity": "moderate"
     }
   ],
   "edges": [
@@ -5804,146 +6399,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/App.tsx",
-      "target": "file:src/auth/AdminRoute.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/auth/AnalyticsTracker.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/auth/AuthContext.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/auth/ProtectedRoute.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/auth/RootRedirect.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/components/GuestShell.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/components/Shell.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/pages/Admin.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/pages/AdminPool.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/pages/AdminResult.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/pages/Calendar.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/pages/GuestCalendar.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/pages/Login.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/pages/Predict.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/pages/RedeemInvite.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/pages/ResetPassword.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/pages/Results.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/pages/Rules.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/pages/Signup.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/App.tsx",
-      "target": "file:src/pages/Standings.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/auth/AdminRoute.tsx",
       "target": "function:src/auth/AdminRoute.tsx:AdminRoute",
       "type": "contains",
@@ -5958,13 +6413,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/auth/AdminRoute.tsx",
-      "target": "file:src/auth/AuthContext.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/auth/AnalyticsTracker.tsx",
       "target": "function:src/auth/AnalyticsTracker.tsx:AnalyticsTracker",
       "type": "contains",
@@ -5977,20 +6425,6 @@
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:src/auth/AnalyticsTracker.tsx",
-      "target": "file:src/auth/AuthContext.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/auth/AnalyticsTracker.tsx",
-      "target": "file:src/lib/analytics.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "file:src/auth/AuthContext.tsx",
@@ -6021,20 +6455,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/auth/AuthContext.tsx",
-      "target": "file:src/lib/db.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/auth/AuthContext.tsx",
-      "target": "file:src/lib/supabase.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/auth/ProtectedRoute.tsx",
       "target": "function:src/auth/ProtectedRoute.tsx:ProtectedRoute",
       "type": "contains",
@@ -6049,13 +6469,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/auth/ProtectedRoute.tsx",
-      "target": "file:src/auth/AuthContext.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/auth/RootRedirect.tsx",
       "target": "function:src/auth/RootRedirect.tsx:RootRedirect",
       "type": "contains",
@@ -6068,20 +6481,6 @@
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:src/auth/RootRedirect.tsx",
-      "target": "file:src/auth/AuthContext.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/auth/RootRedirect.tsx",
-      "target": "file:src/lib/telegram.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "file:src/components/GuestShell.tsx",
@@ -6124,13 +6523,6 @@
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:src/components/Shell.tsx",
-      "target": "file:src/auth/AuthContext.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "file:src/lib/analytics.ts",
@@ -6189,20 +6581,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/main.tsx",
-      "target": "file:src/App.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/main.tsx",
-      "target": "file:src/styles/app.css",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/pages/Login.tsx",
       "target": "function:src/pages/Login.tsx:Login",
       "type": "contains",
@@ -6215,34 +6593,6 @@
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:src/pages/Login.tsx",
-      "target": "file:src/auth/AuthContext.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Login.tsx",
-      "target": "file:src/components/PasswordInput.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Login.tsx",
-      "target": "file:src/lib/analytics.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Login.tsx",
-      "target": "file:src/lib/supabase.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "file:src/pages/RedeemInvite.tsx",
@@ -6259,27 +6609,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/pages/RedeemInvite.tsx",
-      "target": "file:src/auth/AuthContext.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/RedeemInvite.tsx",
-      "target": "file:src/lib/analytics.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/RedeemInvite.tsx",
-      "target": "file:src/lib/db.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/pages/ResetPassword.tsx",
       "target": "function:src/pages/ResetPassword.tsx:ResetPassword",
       "type": "contains",
@@ -6294,20 +6623,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/pages/ResetPassword.tsx",
-      "target": "file:src/components/PasswordInput.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/ResetPassword.tsx",
-      "target": "file:src/lib/supabase.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/pages/Signup.tsx",
       "target": "function:src/pages/Signup.tsx:Signup",
       "type": "contains",
@@ -6320,34 +6635,6 @@
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:src/pages/Signup.tsx",
-      "target": "file:src/auth/AuthContext.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Signup.tsx",
-      "target": "file:src/components/PasswordInput.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Signup.tsx",
-      "target": "file:src/lib/analytics.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Signup.tsx",
-      "target": "file:src/lib/supabase.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "function:src/auth/AdminRoute.tsx:AdminRoute",
@@ -6441,20 +6728,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/components/DriftChart.tsx",
-      "target": "file:src/lib/scoring.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/components/DriftChart.tsx",
-      "target": "file:src/lib/types.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/components/DriverChip.tsx",
       "target": "function:src/components/DriverChip.tsx:DriverChip",
       "type": "contains",
@@ -6469,13 +6742,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/components/DriverChip.tsx",
-      "target": "file:src/lib/types.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/components/DriverPool.tsx",
       "target": "function:src/components/DriverPool.tsx:DriverPool",
       "type": "contains",
@@ -6488,20 +6754,6 @@
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:src/components/DriverPool.tsx",
-      "target": "file:src/components/DriverChip.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/components/DriverPool.tsx",
-      "target": "file:src/lib/types.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "file:src/components/Flag.tsx",
@@ -6532,20 +6784,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/components/PredictionSlots.tsx",
-      "target": "file:src/components/DriverChip.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/components/PredictionSlots.tsx",
-      "target": "file:src/lib/types.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/components/RaceCard.tsx",
       "target": "function:src/components/RaceCard.tsx:classifyRace",
       "type": "contains",
@@ -6572,34 +6810,6 @@
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:src/components/RaceCard.tsx",
-      "target": "file:src/components/Flag.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/components/RaceCard.tsx",
-      "target": "file:src/lib/countdown.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/components/RaceCard.tsx",
-      "target": "file:src/lib/flags.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/components/RaceCard.tsx",
-      "target": "file:src/lib/types.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "file:src/lib/countdown.ts",
@@ -6957,20 +7167,6 @@
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:src/lib/db.ts",
-      "target": "file:src/lib/supabase.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/lib/db.ts",
-      "target": "file:src/lib/types.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "file:src/lib/flags.ts",
@@ -7218,41 +7414,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/pages/Admin.tsx",
-      "target": "file:src/components/Flag.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Admin.tsx",
-      "target": "file:src/lib/countdown.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Admin.tsx",
-      "target": "file:src/lib/db.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Admin.tsx",
-      "target": "file:src/lib/flags.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Admin.tsx",
-      "target": "file:src/lib/types.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/pages/AdminPool.tsx",
       "target": "function:src/pages/AdminPool.tsx:AdminPool",
       "type": "contains",
@@ -7265,20 +7426,6 @@
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:src/pages/AdminPool.tsx",
-      "target": "file:src/lib/db.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/AdminPool.tsx",
-      "target": "file:src/lib/types.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "file:src/pages/AdminResult.tsx",
@@ -7295,34 +7442,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/pages/AdminResult.tsx",
-      "target": "file:src/components/DriverPool.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/AdminResult.tsx",
-      "target": "file:src/components/PredictionSlots.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/AdminResult.tsx",
-      "target": "file:src/lib/db.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/AdminResult.tsx",
-      "target": "file:src/lib/types.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/pages/Calendar.tsx",
       "target": "function:src/pages/Calendar.tsx:Calendar",
       "type": "contains",
@@ -7335,27 +7454,6 @@
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:src/pages/Calendar.tsx",
-      "target": "file:src/components/RaceCard.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Calendar.tsx",
-      "target": "file:src/lib/db.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Calendar.tsx",
-      "target": "file:src/lib/types.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "file:src/pages/GuestCalendar.tsx",
@@ -7372,27 +7470,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/pages/GuestCalendar.tsx",
-      "target": "file:src/components/RaceCard.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/GuestCalendar.tsx",
-      "target": "file:src/lib/db.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/GuestCalendar.tsx",
-      "target": "file:src/lib/types.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/pages/Predict.tsx",
       "target": "function:src/pages/Predict.tsx:Predict",
       "type": "contains",
@@ -7407,48 +7484,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/pages/Predict.tsx",
-      "target": "file:src/components/DriverPool.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Predict.tsx",
-      "target": "file:src/components/PredictionSlots.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Predict.tsx",
-      "target": "file:src/lib/analytics.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Predict.tsx",
-      "target": "file:src/lib/countdown.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Predict.tsx",
-      "target": "file:src/lib/db.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Predict.tsx",
-      "target": "file:src/lib/types.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/pages/Results.tsx",
       "target": "function:src/pages/Results.tsx:Results",
       "type": "contains",
@@ -7461,34 +7496,6 @@
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:src/pages/Results.tsx",
-      "target": "file:src/components/DriftChart.tsx",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Results.tsx",
-      "target": "file:src/lib/db.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Results.tsx",
-      "target": "file:src/lib/supabase.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Results.tsx",
-      "target": "file:src/lib/types.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "function:src/pages/Admin.tsx:Admin",
@@ -7904,13 +7911,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:scripts/ai-player/predict.js",
-      "target": "file:scripts/ai-player/lib.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "function:scripts/ai-player/predict.js:openRaceThisWeek",
       "target": "function:scripts/ai-player/lib.js:q",
       "type": "calls",
@@ -8016,13 +8016,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:scripts/ai-player/predict.test.js",
-      "target": "file:scripts/ai-player/predict.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:scripts/ai-player/predict.js",
       "target": "file:scripts/ai-player/predict.test.js",
       "type": "tested_by",
@@ -8030,39 +8023,11 @@
       "weight": 0.5
     },
     {
-      "source": "file:scripts/import/deadlines.test.js",
-      "target": "file:scripts/import/deadlines.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:scripts/import/deadlines.js",
       "target": "file:scripts/import/deadlines.test.js",
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.5
-    },
-    {
-      "source": "file:scripts/import/import.js",
-      "target": "file:scripts/import/deadlines.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:scripts/import/import.js",
-      "target": "file:scripts/import/lib.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:scripts/import/import.js",
-      "target": "file:scripts/import/teams.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "function:scripts/import/import.js:driverTeams",
@@ -8478,13 +8443,6 @@
       "weight": 1
     },
     {
-      "source": "file:scripts/import/verify.js",
-      "target": "file:scripts/import/lib.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "function:scripts/telegram/lib.js:ensure",
       "target": "function:scripts/telegram/lib.js:readEnv",
       "type": "calls",
@@ -8518,34 +8476,6 @@
       "type": "calls",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:scripts/telegram/notify.js",
-      "target": "file:scripts/ai-player/predict.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:scripts/telegram/notify.js",
-      "target": "file:scripts/import/import.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:scripts/telegram/notify.js",
-      "target": "file:scripts/import/lib.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:scripts/telegram/notify.js",
-      "target": "file:scripts/telegram/lib.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "function:scripts/telegram/notify.js:ensureCurrentWeekOpen",
@@ -8842,13 +8772,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:scripts/telegram/notify.test.js",
-      "target": "file:scripts/telegram/notify.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:scripts/telegram/notify.js",
       "target": "file:scripts/telegram/notify.test.js",
       "type": "tested_by",
@@ -8996,32 +8919,11 @@
       "weight": 0.8
     },
     {
-      "source": "file:supabase/functions/admin-notify/format.test.ts",
-      "target": "file:supabase/functions/admin-notify/format.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:supabase/functions/admin-notify/format.ts",
       "target": "file:supabase/functions/admin-notify/format.test.ts",
       "type": "tested_by",
       "direction": "forward",
       "weight": 0.5
-    },
-    {
-      "source": "file:supabase/functions/admin-notify/index.ts",
-      "target": "file:supabase/functions/admin-notify/format.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:supabase/functions/admin-notify/index.ts",
-      "target": "file:supabase/functions/admin-notify/joke.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "function:supabase/functions/admin-notify/index.ts:makeJoke",
@@ -9064,13 +8966,6 @@
       "type": "calls",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:supabase/functions/admin-notify/joke.test.ts",
-      "target": "file:supabase/functions/admin-notify/joke.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "file:supabase/functions/admin-notify/joke.ts",
@@ -9227,27 +9122,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:scripts/autoresults/fetch.js",
-      "target": "file:scripts/autoresults/jolpica.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:scripts/autoresults/fetch.js",
-      "target": "file:scripts/autoresults/lib.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:scripts/autoresults/fetch.js",
-      "target": "file:scripts/autoresults/openf1.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "function:scripts/autoresults/fetch.js:recheck",
       "target": "function:scripts/autoresults/lib.js:q",
       "type": "calls",
@@ -9332,13 +9206,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/lib/scoring.test.ts",
-      "target": "file:src/lib/scoring.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/lib/scoring.ts",
       "target": "function:src/lib/scoring.ts:scoreSlot",
       "type": "contains",
@@ -9379,13 +9246,6 @@
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:src/pages/Rules.tsx",
-      "target": "file:src/lib/scoring.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "function:src/lib/scoring.ts:scoreDriftSlots",
@@ -9414,20 +9274,6 @@
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:supabase/functions/telegram-auth/index.ts",
-      "target": "file:supabase/functions/telegram-auth/verify.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:supabase/functions/telegram-auth/verify.test.ts",
-      "target": "file:supabase/functions/telegram-auth/verify.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "file:supabase/functions/telegram-auth/verify.ts",
@@ -9619,13 +9465,6 @@
       "weight": 1
     },
     {
-      "source": "file:supabase/functions/watchdog/checks.test.ts",
-      "target": "file:supabase/functions/watchdog/checks.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:supabase/functions/watchdog/checks.ts",
       "target": "file:supabase/functions/watchdog/checks.test.ts",
       "type": "tested_by",
@@ -9724,13 +9563,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:supabase/functions/watchdog/index.ts",
-      "target": "file:supabase/functions/watchdog/checks.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "function:supabase/functions/watchdog/index.ts:runWatchdog",
       "target": "function:supabase/functions/watchdog/checks.ts:evaluate",
       "type": "calls",
@@ -9764,34 +9596,6 @@
       "type": "calls",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "pipeline:.github/workflows/deploy.yml",
-      "target": "file:src/main.tsx",
-      "type": "deploys",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "pipeline:.github/workflows/telegram-notify.yml",
-      "target": "file:scripts/telegram/notify.js",
-      "type": "triggers",
-      "direction": "forward",
-      "weight": 0.6
-    },
-    {
-      "source": "pipeline:.github/workflows/telegram-notify.yml",
-      "target": "file:scripts/autoresults/fetch.js",
-      "type": "triggers",
-      "direction": "forward",
-      "weight": 0.6
-    },
-    {
-      "source": "pipeline:.github/workflows/telegram-notify.yml",
-      "target": "file:scripts/ai-player/predict.js",
-      "type": "triggers",
-      "direction": "forward",
-      "weight": 0.6
     },
     {
       "source": "table:supabase/migrations/0001_schema.sql:migration",
@@ -10298,13 +10102,6 @@
       "weight": 0.6
     },
     {
-      "source": "document:README.md",
-      "target": "file:src/App.tsx",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
       "source": "document:ARCHITECTURE.md",
       "target": "file:src/App.tsx",
       "type": "documents",
@@ -10312,22 +10109,8 @@
       "weight": 0.5
     },
     {
-      "source": "document:README.md",
-      "target": "file:src/lib/db.ts",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
       "source": "document:ARCHITECTURE.md",
       "target": "file:src/lib/db.ts",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:README.md",
-      "target": "file:src/lib/scoring.ts",
       "type": "documents",
       "direction": "forward",
       "weight": 0.5
@@ -11062,13 +10845,6 @@
     },
     {
       "source": "document:docs/superpowers/plans/2026-07-15-sheets-backup.md",
-      "target": "config:scripts/export/package.json",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/plans/2026-07-15-sheets-backup.md",
       "target": "file:scripts/import/lib.js",
       "type": "documents",
       "direction": "forward",
@@ -11084,13 +10860,6 @@
     {
       "source": "document:docs/superpowers/plans/2026-07-19-telegram-notify.md",
       "target": "pipeline:.github/workflows/keepalive.yml",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/plans/2026-07-19-telegram-notify.md",
-      "target": "pipeline:.github/workflows/telegram-notify.yml",
       "type": "documents",
       "direction": "forward",
       "weight": 0.5
@@ -11148,13 +10917,6 @@
       "source": "document:docs/superpowers/plans/2026-07-19-telegram-notify.md",
       "target": "document:docs/superpowers/specs/2026-07-19-telegram-notify-design.md",
       "type": "related",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/plans/2026-07-20-autoresults.md",
-      "target": "pipeline:.github/workflows/telegram-notify.yml",
-      "type": "documents",
       "direction": "forward",
       "weight": 0.5
     },
@@ -11448,13 +11210,6 @@
     {
       "source": "document:docs/superpowers/plans/2026-07-22-telegram-results-message.md",
       "target": "table:supabase/migrations/0002_scoring.sql:migration",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/plans/2026-07-24-ai-player.md",
-      "target": "pipeline:.github/workflows/telegram-notify.yml",
       "type": "documents",
       "direction": "forward",
       "weight": 0.5
@@ -11769,13 +11524,6 @@
     },
     {
       "source": "document:docs/superpowers/plans/2026-08-05-admin-notify.md",
-      "target": "pipeline:.github/workflows/telegram-notify.yml",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/plans/2026-08-05-admin-notify.md",
       "target": "config:package.json",
       "type": "documents",
       "direction": "forward",
@@ -12021,21 +11769,7 @@
     },
     {
       "source": "document:docs/superpowers/specs/2026-07-19-telegram-notify-design.md",
-      "target": "pipeline:.github/workflows/deploy.yml",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/specs/2026-07-19-telegram-notify-design.md",
       "target": "pipeline:.github/workflows/keepalive.yml",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/specs/2026-07-19-telegram-notify-design.md",
-      "target": "pipeline:.github/workflows/telegram-notify.yml",
       "type": "documents",
       "direction": "forward",
       "weight": 0.5
@@ -12071,13 +11805,6 @@
     {
       "source": "document:docs/superpowers/specs/2026-07-19-telegram-notify-design.md",
       "target": "file:scripts/telegram/notify.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/specs/2026-07-20-autoresults-design.md",
-      "target": "pipeline:.github/workflows/telegram-notify.yml",
       "type": "documents",
       "direction": "forward",
       "weight": 0.5
@@ -12155,13 +11882,6 @@
     {
       "source": "document:docs/superpowers/specs/2026-07-21-drift-chart-design.md",
       "target": "file:src/pages/Results.tsx",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/specs/2026-07-22-deadline-not-voted-list.md",
-      "target": "pipeline:.github/workflows/telegram-notify.yml",
       "type": "documents",
       "direction": "forward",
       "weight": 0.5
@@ -12281,13 +12001,6 @@
     {
       "source": "document:docs/superpowers/specs/2026-07-22-telegram-results-message-design.md",
       "target": "file:src/lib/standings.ts",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/specs/2026-07-24-ai-player-design.md",
-      "target": "pipeline:.github/workflows/telegram-notify.yml",
       "type": "documents",
       "direction": "forward",
       "weight": 0.5
@@ -12699,13 +12412,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:scripts/export/export.js",
-      "target": "file:scripts/export/lib.js",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "function:scripts/export/export.js:exportPredictions",
       "target": "function:scripts/export/lib.js:q",
       "type": "calls",
@@ -12882,20 +12588,6 @@
     },
     {
       "source": "document:docs/superpowers/plans/2026-09-03-driver-pool-check.md",
-      "target": "pipeline:.github/workflows/telegram-notify.yml",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/plans/2026-09-03-driver-pool-check.md",
-      "target": "document:MEMORY.md",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:docs/superpowers/plans/2026-09-03-driver-pool-check.md",
       "target": "document:docs/superpowers/specs/2026-09-03-driver-pool-check-design.md",
       "type": "documents",
       "direction": "forward",
@@ -13014,13 +12706,6 @@
       "weight": 0.6
     },
     {
-      "source": "config:scripts/export/package.json",
-      "target": "file:scripts/export/export.js",
-      "type": "configures",
-      "direction": "forward",
-      "weight": 0.6
-    },
-    {
       "source": "document:scripts/ai-player/README.md",
       "target": "file:scripts/ai-player/predict.js",
       "type": "documents",
@@ -13028,13 +12713,6 @@
       "weight": 0.5
     },
     {
-      "source": "document:scripts/export/README.md",
-      "target": "file:scripts/export/export.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
       "source": "file:src/lib/standings.ts",
       "target": "function:src/lib/standings.ts:aggregateStandings",
       "type": "contains",
@@ -13049,13 +12727,6 @@
       "weight": 0.8
     },
     {
-      "source": "file:src/lib/standings.ts",
-      "target": "file:src/lib/types.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
       "source": "file:src/pages/Standings.tsx",
       "target": "function:src/pages/Standings.tsx:Standings",
       "type": "contains",
@@ -13068,27 +12739,6 @@
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
-    },
-    {
-      "source": "file:src/pages/Standings.tsx",
-      "target": "file:src/lib/db.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Standings.tsx",
-      "target": "file:src/lib/standings.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
-    },
-    {
-      "source": "file:src/pages/Standings.tsx",
-      "target": "file:src/lib/supabase.ts",
-      "type": "imports",
-      "direction": "forward",
-      "weight": 0.7
     },
     {
       "source": "function:src/pages/Standings.tsx:Standings",
@@ -13198,13 +12848,6 @@
     {
       "source": "document:scripts/telegram/README.md",
       "target": "file:scripts/telegram/notify.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:scripts/telegram/README.md",
-      "target": "pipeline:.github/workflows/telegram-notify.yml",
       "type": "documents",
       "direction": "forward",
       "weight": 0.5
@@ -13348,6 +12991,1383 @@
       "type": "contains",
       "direction": "forward",
       "weight": 1
+    },
+    {
+      "source": "file:scripts/export/encrypted-backup.js",
+      "target": "function:scripts/export/encrypted-backup.js:encryptBackup",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/encrypted-backup.js",
+      "target": "function:scripts/export/encrypted-backup.js:encryptBackup",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/export/encrypted-backup.js",
+      "target": "function:scripts/export/encrypted-backup.js:decryptBackup",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/encrypted-backup.js",
+      "target": "function:scripts/export/encrypted-backup.js:decryptBackup",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/export/encrypted-backup.js",
+      "target": "file:scripts/export/encrypted-backup.test.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/export/full-backup.js",
+      "target": "function:scripts/export/full-backup.js:command",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/full-backup.js",
+      "target": "function:scripts/export/full-backup.js:capture",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/full-backup.js",
+      "target": "function:scripts/export/full-backup.js:rehearse",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/full-backup.js",
+      "target": "function:scripts/export/full-backup.js:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/github-archive.js",
+      "target": "function:scripts/export/github-archive.js:saveArchive",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/github-archive.js",
+      "target": "function:scripts/export/github-archive.js:saveArchive",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/export/github-archive.js",
+      "target": "function:scripts/export/github-archive.js:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/github-archive.js",
+      "target": "file:scripts/export/github-archive.test.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "function:scripts/export/snapshot.js:encodeSnapshot",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "function:scripts/export/snapshot.js:encodeSnapshot",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "function:scripts/export/snapshot.js:decodeSnapshot",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "function:scripts/export/snapshot.js:decodeSnapshot",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "function:scripts/export/snapshot.js:publishSnapshot",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "function:scripts/export/snapshot.js:publishSnapshot",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "function:scripts/export/snapshot.js:readLocalBackup",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "function:scripts/export/snapshot.js:readLocalBackup",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "function:scripts/export/snapshot.js:privateBackupPath",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "function:scripts/export/snapshot.js:privateBackupPath",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "function:scripts/export/snapshot.js:captureArchive",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "function:scripts/export/snapshot.js:captureArchive",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "function:scripts/export/snapshot.js:sheetsTransport",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "function:scripts/export/snapshot.js:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "file:scripts/export/snapshot.test.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "function:scripts/export/full-backup.js:capture",
+      "target": "function:scripts/export/full-backup.js:command",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/full-backup.js:rehearse",
+      "target": "function:scripts/export/full-backup.js:command",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/full-backup.js:main",
+      "target": "function:scripts/export/snapshot.js:privateBackupPath",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/full-backup.js:main",
+      "target": "function:scripts/export/encrypted-backup.js:decryptBackup",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/full-backup.js:main",
+      "target": "function:scripts/export/full-backup.js:capture",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/full-backup.js:main",
+      "target": "function:scripts/export/encrypted-backup.js:encryptBackup",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/full-backup.js:main",
+      "target": "function:scripts/export/full-backup.js:rehearse",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/github-archive.js:saveArchive",
+      "target": "function:scripts/export/snapshot.js:encodeSnapshot",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/github-archive.js:saveArchive",
+      "target": "function:scripts/export/snapshot.js:decodeSnapshot",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/github-archive.js:saveArchive",
+      "target": "function:scripts/export/snapshot.js:readLocalBackup",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/github-archive.js:main",
+      "target": "function:scripts/export/github-archive.js:saveArchive",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/github-archive.js:main",
+      "target": "function:scripts/export/snapshot.js:captureArchive",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/snapshot.js:publishSnapshot",
+      "target": "function:scripts/export/snapshot.js:encodeSnapshot",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/snapshot.js:publishSnapshot",
+      "target": "function:scripts/export/snapshot.js:decodeSnapshot",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/snapshot.js:main",
+      "target": "function:scripts/export/snapshot.js:sheetsTransport",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/snapshot.js:main",
+      "target": "function:scripts/export/snapshot.js:readLocalBackup",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/snapshot.js:main",
+      "target": "function:scripts/export/snapshot.js:publishSnapshot",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/snapshot.js:main",
+      "target": "function:scripts/export/snapshot.js:privateBackupPath",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/snapshot.js:main",
+      "target": "function:scripts/export/snapshot.js:decodeSnapshot",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:scripts/export/snapshot.js:main",
+      "target": "function:scripts/export/snapshot.js:captureArchive",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/db/restore-json.js",
+      "target": "function:scripts/db/restore-json.js:parseRestoreRows",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/db/restore-json.js",
+      "target": "function:scripts/db/restore-json.js:parseRestoreRows",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/db/restore-json.js",
+      "target": "file:scripts/db/restore-json.test.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "target": "pipeline:.github/workflows/github-archive.yml",
+      "direction": "forward",
+      "source": "pipeline:.github/workflows/telegram-notify.yml",
+      "type": "triggers",
+      "weight": 0.6
+    },
+    {
+      "target": "pipeline:.github/workflows/full-backup.yml",
+      "direction": "forward",
+      "source": "pipeline:.github/workflows/github-archive.yml",
+      "type": "triggers",
+      "weight": 0.6
+    },
+    {
+      "target": "file:docs/mockups/telegram-f1-style.html",
+      "direction": "forward",
+      "source": "file:docs/mockups/telegram-f1-style-v2.html",
+      "type": "related",
+      "weight": 0.5
+    },
+    {
+      "target": "file:docs/mockups/telegram-f1-style-v2.html",
+      "direction": "forward",
+      "source": "file:docs/mockups/telegram-results-v2.html",
+      "type": "related",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/ai-player/predict.js",
+      "target": "file:scripts/ai-player/lib.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/ai-player/predict.test.js",
+      "target": "file:scripts/ai-player/predict.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/autoresults/fetch.js",
+      "target": "file:scripts/autoresults/jolpica.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/autoresults/fetch.js",
+      "target": "file:scripts/autoresults/lib.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/autoresults/fetch.js",
+      "target": "file:scripts/autoresults/openf1.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/db/restore-json.test.js",
+      "target": "file:scripts/db/restore-json.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/db/restore.js",
+      "target": "file:scripts/db/restore-json.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/export/encrypted-backup.test.js",
+      "target": "file:scripts/export/encrypted-backup.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/export/export.js",
+      "target": "file:scripts/export/lib.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/export/full-backup.js",
+      "target": "file:scripts/export/encrypted-backup.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/export/full-backup.js",
+      "target": "file:scripts/export/lib.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/export/full-backup.js",
+      "target": "file:scripts/export/snapshot.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/export/github-archive.js",
+      "target": "file:scripts/export/snapshot.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/export/github-archive.test.js",
+      "target": "file:scripts/export/github-archive.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/export/snapshot.js",
+      "target": "file:scripts/export/lib.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/export/snapshot.test.js",
+      "target": "file:scripts/export/snapshot.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/import/deadlines.test.js",
+      "target": "file:scripts/import/deadlines.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/import/import.js",
+      "target": "file:scripts/import/deadlines.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/import/import.js",
+      "target": "file:scripts/import/lib.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/import/import.js",
+      "target": "file:scripts/import/teams.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/import/verify.js",
+      "target": "file:scripts/import/lib.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/notify.js",
+      "target": "file:scripts/ai-player/predict.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/notify.js",
+      "target": "file:scripts/import/import.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/notify.js",
+      "target": "file:scripts/import/lib.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/notify.js",
+      "target": "file:scripts/telegram/lib.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/notify.test.js",
+      "target": "file:scripts/telegram/notify.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/auth/AdminRoute.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/auth/AnalyticsTracker.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/auth/AuthContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/auth/ProtectedRoute.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/auth/RootRedirect.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/components/GuestShell.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/components/Shell.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/pages/Admin.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/pages/AdminPool.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/pages/AdminResult.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/pages/Calendar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/pages/GuestCalendar.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/pages/Login.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/pages/Predict.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/pages/RedeemInvite.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/pages/ResetPassword.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/pages/Results.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/pages/Rules.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/pages/Signup.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/App.tsx",
+      "target": "file:src/pages/Standings.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/auth/AdminRoute.tsx",
+      "target": "file:src/auth/AuthContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/auth/AnalyticsTracker.tsx",
+      "target": "file:src/auth/AuthContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/auth/AnalyticsTracker.tsx",
+      "target": "file:src/lib/analytics.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/auth/AuthContext.tsx",
+      "target": "file:src/lib/db.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/auth/AuthContext.tsx",
+      "target": "file:src/lib/supabase.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/auth/ProtectedRoute.tsx",
+      "target": "file:src/auth/AuthContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/auth/RootRedirect.tsx",
+      "target": "file:src/auth/AuthContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/auth/RootRedirect.tsx",
+      "target": "file:src/lib/telegram.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/DriftChart.tsx",
+      "target": "file:src/lib/scoring.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/DriftChart.tsx",
+      "target": "file:src/lib/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/DriverChip.tsx",
+      "target": "file:src/lib/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/DriverPool.tsx",
+      "target": "file:src/components/DriverChip.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/DriverPool.tsx",
+      "target": "file:src/lib/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/PredictionSlots.tsx",
+      "target": "file:src/components/DriverChip.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/PredictionSlots.tsx",
+      "target": "file:src/lib/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/RaceCard.tsx",
+      "target": "file:src/components/Flag.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/RaceCard.tsx",
+      "target": "file:src/lib/countdown.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/RaceCard.tsx",
+      "target": "file:src/lib/flags.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/RaceCard.tsx",
+      "target": "file:src/lib/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/components/Shell.tsx",
+      "target": "file:src/auth/AuthContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/lib/db.ts",
+      "target": "file:src/lib/supabase.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/lib/db.ts",
+      "target": "file:src/lib/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/lib/scoring.test.ts",
+      "target": "file:src/lib/scoring.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/lib/standings.ts",
+      "target": "file:src/lib/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/main.tsx",
+      "target": "file:src/App.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/main.tsx",
+      "target": "file:src/styles/app.css",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Admin.tsx",
+      "target": "file:src/components/Flag.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Admin.tsx",
+      "target": "file:src/lib/countdown.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Admin.tsx",
+      "target": "file:src/lib/db.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Admin.tsx",
+      "target": "file:src/lib/flags.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Admin.tsx",
+      "target": "file:src/lib/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/AdminPool.tsx",
+      "target": "file:src/lib/db.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/AdminPool.tsx",
+      "target": "file:src/lib/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/AdminResult.tsx",
+      "target": "file:src/components/DriverPool.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/AdminResult.tsx",
+      "target": "file:src/components/PredictionSlots.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/AdminResult.tsx",
+      "target": "file:src/lib/db.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/AdminResult.tsx",
+      "target": "file:src/lib/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Calendar.tsx",
+      "target": "file:src/components/RaceCard.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Calendar.tsx",
+      "target": "file:src/lib/db.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Calendar.tsx",
+      "target": "file:src/lib/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/GuestCalendar.tsx",
+      "target": "file:src/components/RaceCard.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/GuestCalendar.tsx",
+      "target": "file:src/lib/db.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/GuestCalendar.tsx",
+      "target": "file:src/lib/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Login.tsx",
+      "target": "file:src/auth/AuthContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Login.tsx",
+      "target": "file:src/components/PasswordInput.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Login.tsx",
+      "target": "file:src/lib/analytics.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Login.tsx",
+      "target": "file:src/lib/supabase.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Predict.tsx",
+      "target": "file:src/components/DriverPool.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Predict.tsx",
+      "target": "file:src/components/PredictionSlots.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Predict.tsx",
+      "target": "file:src/lib/analytics.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Predict.tsx",
+      "target": "file:src/lib/countdown.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Predict.tsx",
+      "target": "file:src/lib/db.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Predict.tsx",
+      "target": "file:src/lib/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/RedeemInvite.tsx",
+      "target": "file:src/auth/AuthContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/RedeemInvite.tsx",
+      "target": "file:src/lib/analytics.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/RedeemInvite.tsx",
+      "target": "file:src/lib/db.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/ResetPassword.tsx",
+      "target": "file:src/components/PasswordInput.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/ResetPassword.tsx",
+      "target": "file:src/lib/supabase.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Results.tsx",
+      "target": "file:src/components/DriftChart.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Results.tsx",
+      "target": "file:src/lib/db.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Results.tsx",
+      "target": "file:src/lib/supabase.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Results.tsx",
+      "target": "file:src/lib/types.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Rules.tsx",
+      "target": "file:src/lib/scoring.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Signup.tsx",
+      "target": "file:src/auth/AuthContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Signup.tsx",
+      "target": "file:src/components/PasswordInput.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Signup.tsx",
+      "target": "file:src/lib/analytics.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Signup.tsx",
+      "target": "file:src/lib/supabase.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Standings.tsx",
+      "target": "file:src/lib/db.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Standings.tsx",
+      "target": "file:src/lib/standings.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:src/pages/Standings.tsx",
+      "target": "file:src/lib/supabase.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:supabase/functions/admin-notify/format.test.ts",
+      "target": "file:supabase/functions/admin-notify/format.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:supabase/functions/admin-notify/index.ts",
+      "target": "file:supabase/functions/admin-notify/format.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:supabase/functions/admin-notify/index.ts",
+      "target": "file:supabase/functions/admin-notify/joke.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:supabase/functions/admin-notify/joke.test.ts",
+      "target": "file:supabase/functions/admin-notify/joke.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:supabase/functions/telegram-auth/index.ts",
+      "target": "file:supabase/functions/telegram-auth/verify.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:supabase/functions/telegram-auth/verify.test.ts",
+      "target": "file:supabase/functions/telegram-auth/verify.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:supabase/functions/watchdog/checks.test.ts",
+      "target": "file:supabase/functions/watchdog/checks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:supabase/functions/watchdog/index.ts",
+      "target": "file:supabase/functions/watchdog/checks.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
     }
   ],
   "version": "1.0.0",
@@ -13372,14 +14392,14 @@
       "GitHub Actions"
     ],
     "description": "Закрытая лига прогнозов на гонки Формулы-1: участники составляют топ-10, система считает очки и сезонный зачёт. Примечание: в проекте более 100 файлов; для ускорения анализа можно ограничить его отдельным каталогом.",
-    "analyzedAt": "2026-11-03T08:53:51.342Z",
-    "gitCommitHash": "8d1f0e28fbf2f644bdb5a36ec043bd0993da265b"
+    "analyzedAt": "2026-11-17T14:39:01.326Z",
+    "gitCommitHash": "b0dd7d98623749af3dabdf9731b98a8e1c1c9b9b"
   },
   "layers": [
     {
       "id": "layer:ui",
       "name": "Экраны и компоненты",
-      "description": "Маршруты React, календарь, прогнозы, админка, результаты, зачёт и адаптивные визуальные компоненты лиги.",
+      "description": "Экраны React, маршрутизация и адаптивные компоненты календаря, прогнозов, результатов и административной части лиги.",
       "nodeIds": [
         "file:src/App.tsx",
         "file:src/components/GuestShell.tsx",
@@ -13408,7 +14428,7 @@
     {
       "id": "layer:auth",
       "name": "Вход и членство",
-      "description": "Сессия Supabase, вступление по инвайту, Telegram-вход, восстановление пароля и защита маршрутов участников и администраторов.",
+      "description": "Авторизация Supabase, регистрация участников, инвайты, восстановление пароля и ограничения доступа к маршрутам.",
       "nodeIds": [
         "file:src/auth/AdminRoute.tsx",
         "file:src/auth/AuthContext.tsx",
@@ -13423,7 +14443,7 @@
     {
       "id": "layer:client-data",
       "name": "Клиентские данные и правила",
-      "description": "Клиент Supabase, запросы и RPC, типы, очки, сезонный зачёт, московское время, Telegram deep links и аналитика.",
+      "description": "Клиентские запросы и RPC Supabase, типы данных, расчёт очков, сезонный зачёт, время и интеграция Telegram.",
       "nodeIds": [
         "file:src/auth/AnalyticsTracker.tsx",
         "file:src/lib/analytics.ts",
@@ -13440,7 +14460,7 @@
     {
       "id": "layer:database",
       "name": "Схема БД и безопасность",
-      "description": "Таблицы Postgres, миграции, RLS, серверные проверки прогнозов, очки, RPC и служебные очереди лиги.",
+      "description": "Схема Postgres, миграции, RLS и серверные правила прогнозирования, начисления очков и служебных очередей.",
       "nodeIds": [
         "table:supabase/migrations/0001_schema.sql:migration",
         "table:supabase/migrations/0001_schema.sql:users",
@@ -13493,7 +14513,7 @@
     {
       "id": "layer:edge-functions",
       "name": "Облачные обработчики",
-      "description": "Edge Functions проверяют Telegram-подпись, обрабатывают административные события и следят за пульсом автоматики через watchdog.",
+      "description": "Облачные обработчики Supabase проверяют Telegram-вход, формируют административные сообщения и отслеживают сбои автоматики.",
       "nodeIds": [
         "file:supabase/functions/admin-notify/format.ts",
         "file:supabase/functions/admin-notify/index.ts",
@@ -13507,7 +14527,7 @@
     {
       "id": "layer:automation",
       "name": "Гоночная автоматика",
-      "description": "Node-скрипты импортируют данные F1, заносят результаты, создают прогноз GridBot, отправляют Telegram-сообщения и экспортируют копию в Sheets.",
+      "description": "Node-скрипты импортируют гоночные данные, получают результаты, формируют прогноз GridBot и отправляют Telegram-уведомления.",
       "nodeIds": [
         "file:scripts/ai-player/lib.js",
         "file:scripts/ai-player/predict.js",
@@ -13521,26 +14541,31 @@
         "file:scripts/autoresults/fetch.js",
         "file:scripts/autoresults/jolpica.js",
         "file:scripts/autoresults/lib.js",
-        "file:scripts/autoresults/openf1.js",
-        "file:scripts/export/export.js",
-        "file:scripts/export/lib.js"
+        "file:scripts/autoresults/openf1.js"
       ]
     },
     {
       "id": "layer:database-operations",
       "name": "Обслуживание БД",
-      "description": "Cloud-direct инструменты применения SQL, резервного копирования, восстановления и разового открытия гонки для разработки.",
+      "description": "Инструменты обслуживания Postgres, экспорта в Sheets, проверяемых снимков, закрытого GitHub-архива, шифрования резервных копий и репетиции восстановления.",
       "nodeIds": [
         "file:scripts/db/backup.js",
         "file:scripts/db/restore.js",
         "file:scripts/db/runner.js",
-        "file:scripts/dev/bootstrap-open-belgium.js"
+        "file:scripts/dev/bootstrap-open-belgium.js",
+        "file:scripts/export/export.js",
+        "file:scripts/export/lib.js",
+        "file:scripts/export/encrypted-backup.js",
+        "file:scripts/export/full-backup.js",
+        "file:scripts/export/github-archive.js",
+        "file:scripts/export/snapshot.js",
+        "file:scripts/db/restore-json.js"
       ]
     },
     {
       "id": "layer:tests",
       "name": "Проверки и регрессии",
-      "description": "Тесты формулы очков, RLS и прав, серверных RPC, Telegram-входа, уведомлений, сторожа и чистых функций автоматики.",
+      "description": "Регрессионные проверки клиентских правил, RLS и RPC, уведомлений, гоночной автоматики, архивирования, шифрования и восстановления.",
       "nodeIds": [
         "file:scripts/ai-player/predict.test.js",
         "file:scripts/import/deadlines.test.js",
@@ -13559,18 +14584,20 @@
         "file:scripts/db/scoring.test.js",
         "file:scripts/db/security_grants.test.js",
         "file:scripts/db/set_race_result.test.js",
-        "file:scripts/db/view.test.js"
+        "file:scripts/db/view.test.js",
+        "file:scripts/export/encrypted-backup.test.js",
+        "file:scripts/export/github-archive.test.js",
+        "file:scripts/export/snapshot.test.js",
+        "file:scripts/db/restore-json.test.js"
       ]
     },
     {
       "id": "layer:documentation",
       "name": "Документация и история решений",
-      "description": "Руководства участников и разработчиков, конституция, архитектура, roadmap и исторические планы и спецификации функций.",
+      "description": "Руководства, архитектурные решения, планы, спецификации и HTML-макеты Telegram-сообщений, включая инструкции восстановления архивов.",
       "nodeIds": [
         "document:ARCHITECTURE.md",
         "document:CLAUDE.md",
-        "document:MEMORY.md",
-        "document:README.md",
         "document:docs/constitution.md",
         "document:docs/frontend.md",
         "document:docs/plan.md",
@@ -13622,19 +14649,30 @@
         "document:docs/superpowers/specs/2026-09-03-driver-pool-check-design.md",
         "document:product-roadmap/ROADMAP.md",
         "document:scripts/ai-player/README.md",
-        "document:scripts/export/README.md",
         "document:scripts/import/README.md",
-        "document:scripts/telegram/README.md"
+        "document:scripts/telegram/README.md",
+        "document:AGENTS.md",
+        "document:MEMORY.md",
+        "document:README.md",
+        "file:docs/mockups/telegram-f1-style-v2.html",
+        "file:docs/mockups/telegram-f1-style.html",
+        "file:docs/mockups/telegram-results-v2.html",
+        "document:docs/superpowers/plans/2026-11-17-archive-snapshots.md",
+        "document:docs/superpowers/plans/2026-11-17-encrypted-users-recovery.md",
+        "document:docs/superpowers/plans/2026-11-17-github-result-archive.md",
+        "document:docs/superpowers/plans/2026-11-17-race-dossier-telegram-driver-form.md",
+        "document:scripts/export/ARCHIVE-RESTORE.md",
+        "document:scripts/export/FULL-RECOVERY.md",
+        "document:scripts/export/README.md",
+        "document:docs/superpowers/specs/2026-11-17-archive-backup-audit.md"
       ]
     },
     {
       "id": "layer:infrastructure",
       "name": "Сборка и расписания",
-      "description": "Конфигурации Vite, TypeScript, Node, Deno и Supabase, а также GitHub Actions для Pages, keep-alive и гоночных задач.",
+      "description": "Настройки сборки Vite и TypeScript, окружения Node и Deno, конфигурация Supabase и GitHub Actions для Pages, расписаний и резервирования.",
       "nodeIds": [
-        "pipeline:.github/workflows/deploy.yml",
         "pipeline:.github/workflows/keepalive.yml",
-        "pipeline:.github/workflows/telegram-notify.yml",
         "config:package.json",
         "config:tsconfig.json",
         "config:tsconfig.node.json",
@@ -13642,7 +14680,6 @@
         "config:scripts/ai-player/package.json",
         "config:scripts/autoresults/package.json",
         "config:scripts/dev/package.json",
-        "config:scripts/export/package.json",
         "config:scripts/import/package.json",
         "config:scripts/telegram/package.json",
         "file:src/vite-env.d.ts",
@@ -13650,7 +14687,13 @@
         "config:supabase/functions/admin-notify/deno.json",
         "config:supabase/functions/telegram-auth/deno.json",
         "config:supabase/functions/watchdog/deno.json",
-        "file:vite.config.ts"
+        "file:vite.config.ts",
+        "pipeline:.github/workflows/archive-backup.yml",
+        "pipeline:.github/workflows/deploy.yml",
+        "pipeline:.github/workflows/full-backup.yml",
+        "pipeline:.github/workflows/github-archive.yml",
+        "pipeline:.github/workflows/telegram-notify.yml",
+        "config:scripts/export/package.json"
       ]
     }
   ],
@@ -13658,7 +14701,7 @@
     {
       "order": 1,
       "title": "Назначение закрытой лиги",
-      "description": "Начните с README: участники закрытой лиги прогнозируют топ-10 Формулы-1, а приложение показывает результаты и сезонный зачёт. Здесь связаны React-интерфейс, Supabase, GridBot и Telegram-автоматика. Архивные планы в docs/superpowers объясняют историю решений; текущее поведение далее изучается по коду и миграциям.",
+      "description": "Начните с README: участники закрытой лиги прогнозируют топ-10 Формулы-1 и сравнивают очки за гонку и сезон. Приложение связывает React, Supabase, GridBot и Telegram-автоматику; далее маршрут ведёт от входа и прогнозов к серверным ограничениям и эксплуатации. Документы с планами и HTML-макеты помогают понять направление развития, а текущее поведение определяется кодом и миграциями.",
       "nodeIds": [
         "document:README.md"
       ]
@@ -13780,14 +14823,49 @@
     },
     {
       "order": 12,
-      "title": "Публикация и восстановление",
-      "description": "Завершите обзор эксплуатацией: GitHub Pages получает Vite-сборку и SPA-фолбэк для прямых ссылок на страницы. Резервное копирование сохраняет таблицы и манифест в JSON, а восстановление сначала показывает различия и заменяет данные только с --apply. RESTORE.md описывает сценарии восстановления, а экспорт в Google Sheets даёт отдельное представление прогнозов, результатов и очков.",
+      "title": "Публикация и восстановление JSON",
+      "description": "После контроля автоматики рассмотрите эксплуатацию приложения: GitHub Pages публикует Vite-сборку и просмотрщик карты, создавая SPA-фолбэк для прямых ссылок. Инструменты обслуживания выгружают таблицы в JSON и сначала сравнивают резерв с живой БД; замена включается отдельным --apply. Парсер восстановления сохраняет исходные числовые токены, чтобы большие идентификаторы не теряли точность.",
       "nodeIds": [
         "pipeline:.github/workflows/deploy.yml",
         "file:scripts/db/backup.js",
         "file:scripts/db/restore.js",
-        "document:scripts/db/RESTORE.md",
-        "file:scripts/export/export.js"
+        "file:scripts/db/restore-json.js",
+        "document:scripts/db/RESTORE.md"
+      ],
+      "languageLesson": "JSON.rawJSON в Node.js 22+ позволяет повторно сериализовать исходное числовое представление без округления через JavaScript Number."
+    },
+    {
+      "order": 13,
+      "title": "Проверяемые игровые архивы",
+      "description": "Развивая тему резервирования, отделите игровые снимки от полного восстановления пользователей: snapshot.js сохраняет игровые таблицы без auth. Манифест, контрольные суммы и повторное чтение проверяют публикацию в Google Sheets, а GitHub-архив хранит локальные проверенные снимки и указатель latest. Расписания создают копии регулярно, а архивирование результатов связывает их с гоночным циклом.",
+      "nodeIds": [
+        "file:scripts/export/snapshot.js",
+        "file:scripts/export/github-archive.js",
+        "pipeline:.github/workflows/archive-backup.yml",
+        "pipeline:.github/workflows/github-archive.yml",
+        "document:scripts/export/ARCHIVE-RESTORE.md"
+      ]
+    },
+    {
+      "order": 14,
+      "title": "Шифрование и репетиция восстановления",
+      "description": "Игрового архива недостаточно для возврата пользователей и их идентичностей, поэтому полный резерв включает дамп auth/public/extensions. AES-256-GCM защищает содержимое, а перед сохранением скрипт восстанавливает именно расшифрованный резерв в PostgreSQL-контейнере без сети и проверяет данные и доступ пользователя. Workflow сохраняет зашифрованные файлы в закрытом архиве; руководство объясняет восстановление и проверку такой копии.",
+      "nodeIds": [
+        "file:scripts/export/full-backup.js",
+        "file:scripts/export/encrypted-backup.js",
+        "pipeline:.github/workflows/full-backup.yml",
+        "document:scripts/export/FULL-RECOVERY.md",
+        "file:scripts/export/encrypted-backup.test.js"
+      ]
+    },
+    {
+      "order": 15,
+      "title": "Планы и макеты развития",
+      "description": "Завершите маршрут границей между работающей системой и будущими изменениями. HTML-макеты показывают варианты оформления Telegram-уведомлений и раскрытия результатов, а план досье гонки описывает дальнейшие продуктовые сценарии. Эти демонстрации и планы не подтверждают наличие соответствующих функций в действующем боте; сопоставляйте их с изученными обработчиками и скриптами.",
+      "nodeIds": [
+        "file:docs/mockups/telegram-f1-style-v2.html",
+        "file:docs/mockups/telegram-results-v2.html",
+        "document:docs/superpowers/plans/2026-11-17-race-dossier-telegram-driver-form.md"
       ]
     }
   ]

@@ -129,4 +129,10 @@ async function sendTelegramPhoto(photoUrl, caption, replyMarkup) {
   return data;
 }
 
-module.exports = { readEnv, q, close, recordRun, sendTelegram, sendTelegramPhoto };
+async function sendTelegramDossier(message, replyMarkup, onFallback) {
+  return require('./dossier-message').deliverDossier(message, {
+    token: readEnv('TELEGRAM_BOT_TOKEN'), chatId: readEnv('TELEGRAM_CHAT_ID'), replyMarkup, onFallback,
+  });
+}
+
+module.exports = { readEnv, q, close, recordRun, sendTelegram, sendTelegramPhoto, sendTelegramDossier };

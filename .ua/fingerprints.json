@@ -1,16 +1,16 @@
 {
   "version": "1.0.0",
-  "gitCommitHash": "8d1f0e28fbf2f644bdb5a36ec043bd0993da265b",
-  "generatedAt": "2026-11-03T08:55:00.135Z",
+  "gitCommitHash": "b0dd7d98623749af3dabdf9731b98a8e1c1c9b9b",
+  "generatedAt": "2026-11-17T14:39:01.415Z",
   "files": {
     ".github/workflows/deploy.yml": {
       "filePath": ".github/workflows/deploy.yml",
-      "contentHash": "0faac469067c0a612f322b43b3e07f181ffa2b1e6d0ef9cd8a3cc73cc8d2981c",
+      "contentHash": "5e79b77b281cecb11bb10ac4a2c39e84f5b8d0041322d58db7e06c2ac8666263",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 54,
+      "totalLines": 76,
       "hasStructuralAnalysis": false
     },
     ".github/workflows/keepalive.yml": {
@@ -25,12 +25,12 @@
     },
     ".github/workflows/telegram-notify.yml": {
       "filePath": ".github/workflows/telegram-notify.yml",
-      "contentHash": "35044113ba4f4414abe677eadcb852cd6299d6872c7e8ca5ae2580860d3e4839",
+      "contentHash": "793cf8acec601b9cce9bd7a20d0b15f5e877cc11161f7e0651c78e354a74e9de",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 100,
+      "totalLines": 109,
       "hasStructuralAnalysis": false
     },
     "ARCHITECTURE.md": {
@@ -55,22 +55,22 @@
     },
     "MEMORY.md": {
       "filePath": "MEMORY.md",
-      "contentHash": "24dfda7149016c4194c7358a693b78a856f73a440f4c691cea9db0f55d19ea89",
+      "contentHash": "65555e2d54a2880e770e723adfcfa1865e1432a3b29f1f979ad9ef73cbe7983b",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 1458,
+      "totalLines": 1596,
       "hasStructuralAnalysis": false
     },
     "README.md": {
       "filePath": "README.md",
-      "contentHash": "2b6f410ce62b7d17d45fe7dc17ae440ef94f3c5914e699a40caadee70295a1df",
+      "contentHash": "b52d92163df7194acd844d0fef6288b05aed070548e796ce3f1adb8dc891a920",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 520,
+      "totalLines": 522,
       "hasStructuralAnalysis": false
     },
     "docs/constitution.md": {
@@ -1217,7 +1217,7 @@
     },
     "scripts/db/restore.js": {
       "filePath": "scripts/db/restore.js",
-      "contentHash": "e7bce4bdeab8b7ec3911a30571d28604a90a41a56e6c4cccd71216047a98059d",
+      "contentHash": "a9019728d25a80779ea90dfbb132b1dbfb71b694e6d02cfb0bb19ff70329bcba",
       "functions": [
         {
           "name": "dbUrl",
@@ -1277,7 +1277,7 @@
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 190,
+      "totalLines": 191,
       "hasStructuralAnalysis": true
     },
     "scripts/db/rls.test.js": {
@@ -1566,12 +1566,12 @@
     },
     "scripts/export/README.md": {
       "filePath": "scripts/export/README.md",
-      "contentHash": "fbe053f9ce452cea8d0a5607a83eddab1a96c6fa5babe03814e4867d990ebd4e",
+      "contentHash": "5020030027a7a3efec81813b4ad1a0f68609df730140f1229a2c7b66eb188dbb",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 53,
+      "totalLines": 137,
       "hasStructuralAnalysis": false
     },
     "scripts/export/export.js": {
@@ -1671,7 +1671,7 @@
     },
     "scripts/export/lib.js": {
       "filePath": "scripts/export/lib.js",
-      "contentHash": "f76241e05f655af032e36107e1b27201153bde177569ae3dc69520ee589b0e2e",
+      "contentHash": "907c89bbc395af573a9449d785bf7c06ee8abce5019c8eb14147091a7aba5c2b",
       "functions": [
         {
           "name": "readEnv",
@@ -1679,7 +1679,7 @@
             "key"
           ],
           "exported": false,
-          "lineCount": 6
+          "lineCount": 7
         },
         {
           "name": "ensure",
@@ -1720,17 +1720,17 @@
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 56,
+      "totalLines": 57,
       "hasStructuralAnalysis": true
     },
     "scripts/export/package.json": {
       "filePath": "scripts/export/package.json",
-      "contentHash": "ccdc44be4320f9cdc57a1e4c2873899c0ece7c90fc1077a54b8a381c0b69af65",
+      "contentHash": "e0732b9954d5b142b14277eaae9d98797d5f30cc0e4a48683cbeb1c86f2dcaf9",
       "functions": [],
       "classes": [],
       "imports": [],
       "exports": [],
-      "totalLines": 13,
+      "totalLines": 15,
       "hasStructuralAnalysis": false
     },
     "scripts/import/README.md": {
@@ -5442,6 +5442,448 @@
       ],
       "exports": [],
       "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    ".github/workflows/archive-backup.yml": {
+      "filePath": ".github/workflows/archive-backup.yml",
+      "contentHash": "063c4a6ee9f1ac1ce84e8c54c9d910466d56e54e57c702cbafdda1029514ee79",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 44,
+      "hasStructuralAnalysis": false
+    },
+    ".github/workflows/full-backup.yml": {
+      "filePath": ".github/workflows/full-backup.yml",
+      "contentHash": "752afb22b8426c750a1b994fb51605740ea00b2754c7d3ceac0dd257fc4b3039",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 67,
+      "hasStructuralAnalysis": false
+    },
+    ".github/workflows/github-archive.yml": {
+      "filePath": ".github/workflows/github-archive.yml",
+      "contentHash": "1cdfe1457e8795cd5afcc0bdd48f22d5db243bb344b3da4e8119190d948c448f",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 68,
+      "hasStructuralAnalysis": false
+    },
+    "AGENTS.md": {
+      "filePath": "AGENTS.md",
+      "contentHash": "83dddcf88f10774e74bd0a507333160f3c81ecdbd7792b7fec62760dad9cc73d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": false
+    },
+    "docs/mockups/telegram-f1-style-v2.html": {
+      "filePath": "docs/mockups/telegram-f1-style-v2.html",
+      "contentHash": "733256ea380ae163d60f3eea20b123409cf4abf931ab37bca052406a2ebddf6d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 53,
+      "hasStructuralAnalysis": false
+    },
+    "docs/mockups/telegram-f1-style.html": {
+      "filePath": "docs/mockups/telegram-f1-style.html",
+      "contentHash": "c3b3693c2b2dfe1304b42b9fbbd89f6cb78263823c82a739a077a6d095e805e1",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 34,
+      "hasStructuralAnalysis": false
+    },
+    "docs/mockups/telegram-results-v2.html": {
+      "filePath": "docs/mockups/telegram-results-v2.html",
+      "contentHash": "d83cfafa0c7a84c301075fc1de7c3b40dcefd533ba596087c3a196a6d0871489",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 66,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-11-17-archive-snapshots.md": {
+      "filePath": "docs/superpowers/plans/2026-11-17-archive-snapshots.md",
+      "contentHash": "1bb2de7b393f5d09667d0e1627dea0f3e6969f6ef45a008a95977067c8454f45",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 50,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-11-17-encrypted-users-recovery.md": {
+      "filePath": "docs/superpowers/plans/2026-11-17-encrypted-users-recovery.md",
+      "contentHash": "42119d85da8f706fc0d12f56022706797389b77c114f8a719d80abf61d530e9a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 56,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-11-17-github-result-archive.md": {
+      "filePath": "docs/superpowers/plans/2026-11-17-github-result-archive.md",
+      "contentHash": "f971000d6f0342ea0d778fe4dab0de9ba734be1a28404c9cb7c5b569f024a99e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 35,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/plans/2026-11-17-race-dossier-telegram-driver-form.md": {
+      "filePath": "docs/superpowers/plans/2026-11-17-race-dossier-telegram-driver-form.md",
+      "contentHash": "846207bc4ef0c5828fb31c62fc2415c0d16e1d0aad85fb63ae37db2114b4f7b0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 176,
+      "hasStructuralAnalysis": false
+    },
+    "docs/superpowers/specs/2026-11-17-archive-backup-audit.md": {
+      "filePath": "docs/superpowers/specs/2026-11-17-archive-backup-audit.md",
+      "contentHash": "6e8e379fbcae587873a3c8dcb5dcc2172ff6e97ee16b53d3b9bfcc05fdf61cd3",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 73,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/db/restore-json.js": {
+      "filePath": "scripts/db/restore-json.js",
+      "contentHash": "bfd4981320a2f23f82406c005d05994e06871dc5efbc43519c1fa545f360b0ff",
+      "functions": [
+        {
+          "name": "parseRestoreRows",
+          "params": [
+            "json"
+          ],
+          "exported": false,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/db/restore-json.test.js": {
+      "filePath": "scripts/db/restore-json.test.js",
+      "contentHash": "cfceeacbd4778b7f5abb4b460208eaf8635800e956d280ffe69aab90b2a448ba",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 10,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/export/ARCHIVE-RESTORE.md": {
+      "filePath": "scripts/export/ARCHIVE-RESTORE.md",
+      "contentHash": "72c5378785220157dc9915060ba83e70bfa5d6d6dc129c19d44da50734477bc6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 37,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/export/FULL-RECOVERY.md": {
+      "filePath": "scripts/export/FULL-RECOVERY.md",
+      "contentHash": "5899023d03cf40f319471ec4f8a2bcaeaa6f2001f67051e74b25790a54f427da",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 77,
+      "hasStructuralAnalysis": false
+    },
+    "scripts/export/encrypted-backup.js": {
+      "filePath": "scripts/export/encrypted-backup.js",
+      "contentHash": "0e463db41aa3813472a318de7de896f66954caf59e2744059df76cc8f5717a30",
+      "functions": [
+        {
+          "name": "keyBytes",
+          "params": [
+            "key"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "encryptBackup",
+          "params": [
+            "plaintext",
+            "key"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "decryptBackup",
+          "params": [
+            "envelope",
+            "key"
+          ],
+          "exported": false,
+          "lineCount": 12
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 31,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/export/encrypted-backup.test.js": {
+      "filePath": "scripts/export/encrypted-backup.test.js",
+      "contentHash": "2e184c2c509be43afbacad8b6df353dd94c9b32c97ec2f7218177ed2bf1e8fc0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 28,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/export/full-backup.js": {
+      "filePath": "scripts/export/full-backup.js",
+      "contentHash": "54005585f9bbeac2abf910ad2ef68b958d32a110857aa265e2cd8c23b8666288",
+      "functions": [
+        {
+          "name": "hash",
+          "params": [
+            "bytes"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "quote",
+          "params": [
+            "name"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "qualified",
+          "params": [
+            "name"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "fingerprintSQL",
+          "params": [
+            "name"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "sourceEnvironment",
+          "params": [],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "command",
+          "params": [
+            "args",
+            "label",
+            "directory"
+          ],
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "capture",
+          "params": [
+            "directory"
+          ],
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "rehearse",
+          "params": [
+            "bundle",
+            "directory"
+          ],
+          "exported": false,
+          "lineCount": 56
+        },
+        {
+          "name": "main",
+          "params": [
+            "args"
+          ],
+          "exported": false,
+          "lineCount": 54
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 194,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/export/github-archive.js": {
+      "filePath": "scripts/export/github-archive.js",
+      "contentHash": "d69b26cb543c421d7effcbf9804bcd82e416d9aeeb5a6244140e176049f2d599",
+      "functions": [
+        {
+          "name": "saveArchive",
+          "params": [
+            "repository",
+            "tables",
+            "metadata"
+          ],
+          "exported": false,
+          "lineCount": 35
+        },
+        {
+          "name": "main",
+          "params": [
+            "repository"
+          ],
+          "exported": false,
+          "lineCount": 16
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 63,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/export/github-archive.test.js": {
+      "filePath": "scripts/export/github-archive.test.js",
+      "contentHash": "8b5ad60bca73bb3d8bf7be31c62ed5fef2a5de8f755271346cbb564a8ad9065b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 38,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/export/snapshot.js": {
+      "filePath": "scripts/export/snapshot.js",
+      "contentHash": "1cae471c9e7869a19fec78c68ffd4d33578ce8177d8a66beb8461897f0ff67b8",
+      "functions": [
+        {
+          "name": "sha256",
+          "params": [
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "requireAllTables",
+          "params": [
+            "tables"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "encodeSnapshot",
+          "params": [
+            "tables",
+            "metadata"
+          ],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "decodeSnapshot",
+          "params": [
+            "rows"
+          ],
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "publishSnapshot",
+          "params": [
+            "transport",
+            "tables",
+            "metadata"
+          ],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "readLocalBackup",
+          "params": [
+            "directory"
+          ],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "privateBackupPath",
+          "params": [
+            "destination"
+          ],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "captureArchive",
+          "params": [],
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "sheetsTransport",
+          "params": [
+            "sheets",
+            "spreadsheetId"
+          ],
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "main",
+          "params": [
+            "args"
+          ],
+          "exported": false,
+          "lineCount": 38
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 227,
+      "hasStructuralAnalysis": true
+    },
+    "scripts/export/snapshot.test.js": {
+      "filePath": "scripts/export/snapshot.test.js",
+      "contentHash": "5b54e6e4e6d78c71ce5942286ea12bc9e99d0f2396c6fad3723f746f44642344",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 105,
       "hasStructuralAnalysis": true
     }
   }

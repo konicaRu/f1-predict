@@ -1,9 +1,10 @@
-const { q, close, recordRun, sendTelegram, sendTelegramPhoto, readEnv } = require('./lib');
+const { q, close, recordRun, sendTelegram, sendTelegramDossier, readEnv } = require('./lib');
+const { loadDossier } = require('./dossier');
+const { buildDossierMessage } = require('./dossier-message');
 
 const SITE_URL = 'https://konicaru.github.io/f1-predict';
 const BOT_USERNAME = 'che_f1_predict_bot';
 const MINI_APP_SHORT_NAME = 'predict'; // зарегистрировано через BotFather /newapp (Task 10)
-const DEADLINE_BANNER_URL = `${SITE_URL}/telegram-banner.png`;
 
 // Сайт на GitHub Pages из РФ открывается только через VPN — напоминаем рядом с каждой ссылкой.
 function siteLink(path) {
@@ -72,7 +73,7 @@ async function ensureCurrentWeekOpen() {
 
 async function thisWeekOpenRaces() {
   const { rows } = await q(`
-    select id, round, name, deadline_utc, race_datetime_utc, raceweek_announced_at
+    select id, season, round, name, deadline_utc, race_datetime_utc, raceweek_announced_at
     from races
     where status = 'open'
       and date_trunc('week', deadline_utc at time zone 'Europe/Moscow')
@@ -210,44 +211,49 @@ async function checkDriverPool(warnings = []) {
 // крону. Если понедельничный слот пропущен GitHub Actions — анонс всё равно уйдёт при следующем
 // прогоне (максимум через ~2ч, самый частый крон в проекте), просто без "🏁 RACE WEEK" в
 // правильный день недели.
-async function raceweek() {
-  const races = (await thisWeekOpenRaces()).filter((r) => !r.raceweek_announced_at);
+async function prepareDossier(race, getDossier, options, warnings) {
+  try {
+    const dossier = await getDossier(race, options);
+    warnings.push(...(dossier.warnings || []).map(w => `досье ${race.name}: ${w}`));
+    return dossier;
+  } catch (e) {
+    warnings.push(`досье ${race.name}: ${e.message}`);
+    return { circuit: null, winners: null, sources: [] };
+  }
+}
+
+async function raceweek({ getRaces = thisWeekOpenRaces, getDossier = loadDossier, send = sendTelegramDossier,
+  markAnnounced = id => q('update races set raceweek_announced_at = now() where id = $1', [id]), warnings = [] } = {}) {
+  const races = (await getRaces()).filter((r) => !r.raceweek_announced_at);
   if (races.length === 0) {
     console.log('raceweek: анонсировать нечего (нет новой открытой гонки на этой неделе)');
     return;
   }
   for (const r of races) {
-    const text =
-      `🏁 RACE WEEK! На очереди <b>${escapeHtml(r.name)}</b> (раунд ${r.round}).\n` +
-      `Дедлайн прогнозов — ${mskWeekday(r.deadline_utc)} ${toMskTime(r.deadline_utc)} МСК.\n` +
-      `Ставь: ${siteLink('/predict')}`;
-    await sendTelegram(text);
-    await q('update races set raceweek_announced_at = now() where id = $1', [r.id]);
+    const dossier = await prepareDossier(r, getDossier, {}, warnings);
+    await send(buildDossierMessage(r, dossier), predictButton(r.id), warning => warnings.push(warning));
+    await markAnnounced(r.id);
     console.log(`raceweek: отправлено для ${r.name}`);
   }
 }
 
-async function deadline() {
-  const races = (await thisWeekOpenRaces()).filter((r) => new Date(r.deadline_utc) > new Date());
+async function missingNames(raceId) {
+  const { rows: predRows } = await q('select user_id from predictions where race_id = $1', [raceId]);
+  const { rows: userRows } = await q('select id, display_name from users');
+  return notVotedNames(userRows, predRows.map((p) => p.user_id));
+}
+
+async function deadline({ getRaces = thisWeekOpenRaces, getDossier = loadDossier, send = sendTelegramDossier,
+  getMissing = missingNames, now = new Date(), warnings = [] } = {}) {
+  const races = (await getRaces()).filter((r) => new Date(r.deadline_utc) > now);
   if (races.length === 0) {
     console.log('deadline: нет открытой гонки с дедлайном впереди, ничего не шлём');
     return;
   }
   for (const r of races) {
-    let text =
-      `⏰ Не забудь сделать прогноз на <b>${escapeHtml(r.name)}</b>!\n` +
-      `Дедлайн — ${mskWeekday(r.deadline_utc)} ${toMskTime(r.deadline_utc)} МСК.\n` +
-      siteLink('/predict');
-    if (isDeadlineDayMsk(r.deadline_utc)) {
-      const { rows: predRows } = await q('select user_id from predictions where race_id = $1', [r.id]);
-      const { rows: userRows } = await q('select id, display_name from users');
-      const missing = notVotedNames(userRows, predRows.map((p) => p.user_id));
-      text +=
-        missing.length === 0
-          ? '\n\nВсе уже сделали прогноз, красавцы! 👍'
-          : `\n\nЕщё не сделали: ${missing.map(escapeHtml).join(', ')}`;
-    }
-    await sendTelegramPhoto(DEADLINE_BANNER_URL, text, predictButton(r.id));
+    const dossier = await prepareDossier(r, getDossier, { now, includeHistory: false }, warnings);
+    const missing = isDeadlineDayMsk(r.deadline_utc, now) ? await getMissing(r.id) : undefined;
+    await send(buildDossierMessage(r, dossier, { mode: 'deadline', missing }), predictButton(r.id), warning => warnings.push(warning));
     console.log(`deadline: отправлено для ${r.name}`);
   }
 }
@@ -491,7 +497,7 @@ async function main() {
   const warnings = [];
   try {
     await ensureCurrentWeekOpen();
-    await raceweek(); // идемпотентна — подстраховка, если понедельничный слот пропал (см. её комментарий)
+    await raceweek({ warnings }); // идемпотентна — подстраховка, если понедельничный слот пропал (см. её комментарий)
     // Раньше очередь разгружал только один крон-слот раз в сутки (07:05 UTC) — если именно он
     // пропадал (баг GitHub Actions, см. MEMORY.md; живьём поймано 2026-10-08: пропало ~4 часа
     // подряд, включая этот слот, два уведомления о прогнозах зависли в очереди на часы), очередь
@@ -526,7 +532,7 @@ async function main() {
         warnings.push(`aiplayer: ${e.message}`);
       }
     }
-    await modes[mode]();
+    await modes[mode]({ warnings });
     try {
       await checkWatchdogAlive();
     } catch (e) {
@@ -550,4 +556,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { mskWeekday, isDeadlineDayMsk, isAlertQuietHours, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions, resultDiff };
+module.exports = { raceweek, deadline, mskWeekday, isDeadlineDayMsk, isAlertQuietHours, notVotedNames, podiumText, roundWinnerLine, rankStandings, predictButton, diffPoolAdditions, resultDiff };

@@ -68,6 +68,8 @@ jobs:
           cd ../autoresults && npm install
           cd ../ai-player && npm install
           cd ../import && npm install
+      - name: Проверить шаблоны и расчёты уведомлений
+        run: npm test --prefix scripts/telegram
       - name: Запустить режимы
         run: |
           for m in ${{ steps.mode.outputs.modes }}; do

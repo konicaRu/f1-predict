@@ -1,0 +1,15 @@
+{
+  "vegas": {
+    "title": "LAS VEGAS",
+    "lengthKm": 6.201,
+    "corners": 17,
+    "laps": 50,
+    "record": { "time": "1:33.365", "driver": "Max Verstappen", "year": 2025 },
+    "verifiedThrough": 2025,
+    "elevationChangeM": null,
+    "openf1Location": "Las Vegas",
+    "geometry": "vegas.geojson",
+    "source": "https://www.formula1.com/en/racing/2025/las-vegas",
+    "geometrySource": "https://github.com/bacinger/f1-circuits/blob/master/circuits/us-2023.geojson"
+  }
+}

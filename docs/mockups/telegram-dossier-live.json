@@ -1,0 +1,94 @@
+{
+  "race": {
+    "id": "preview",
+    "season": 2026,
+    "round": 21,
+    "name": "Las Vegas Grand Prix",
+    "deadline_utc": "2026-11-19T20:00:00.000Z",
+    "race_datetime_utc": "2026-11-22T04:00:00Z"
+  },
+  "dossier": {
+    "circuit": {
+      "id": "vegas",
+      "name": "Las Vegas Strip Street Circuit"
+    },
+    "facts": {
+      "title": "LAS VEGAS",
+      "lengthKm": 6.201,
+      "corners": 17,
+      "laps": 50,
+      "record": {
+        "time": "1:33.365",
+        "driver": "Max Verstappen",
+        "year": 2025
+      },
+      "verifiedThrough": 2025,
+      "elevationChangeM": null,
+      "openf1Location": "Las Vegas",
+      "geometry": "vegas.geojson",
+      "source": "https://www.formula1.com/en/racing/2025/las-vegas",
+      "geometrySource": "https://github.com/bacinger/f1-circuits/blob/master/circuits/us-2023.geojson"
+    },
+    "winners": [
+      {
+        "year": 2025,
+        "date": "2025-11-23",
+        "driver": "Max Verstappen",
+        "team": "Red Bull"
+      },
+      {
+        "year": 2024,
+        "date": "2024-11-23",
+        "driver": "George Russell",
+        "team": "Mercedes"
+      },
+      {
+        "year": 2023,
+        "date": "2023-11-19",
+        "driver": "Max Verstappen",
+        "team": "Red Bull"
+      }
+    ],
+    "previous": {
+      "year": 2025,
+      "fastest": {
+        "time": "1:33.365",
+        "driver": "Max Verstappen"
+      },
+      "pole": {
+        "time": "1:47.934",
+        "driver": "Lando Norris"
+      }
+    },
+    "weather": {
+      "air": [
+        12.6,
+        13
+      ],
+      "rainMax": 0,
+      "windMax": 2.1,
+      "hours": 2,
+      "start": "2026-11-22T04:00:00.000Z",
+      "end": "2026-11-22T06:00:00.000Z",
+      "fetchedAt": "2026-11-17T15:15:28.958Z"
+    },
+    "trackTemperature": null,
+    "fetchedAt": "2026-11-17T15:15:28.958Z",
+    "warnings": [],
+    "sources": [
+      {
+        "name": "Jolpica",
+        "url": "https://api.jolpi.ca/ergast/f1/2026/21.json"
+      },
+      {
+        "name": "Formula 1",
+        "url": "https://www.formula1.com/en/racing/2025/las-vegas"
+      },
+      {
+        "name": "Open-Meteo",
+        "url": "https://open-meteo.com/"
+      }
+    ]
+  },
+  "fallbackHtml": "<b>ЛИГА ПРОРОКОВ</b>\n\n<b>Приём прогнозов открыт</b>\nLas Vegas Grand Prix · раунд 21\nДедлайн: 19 ноября в 23:00 МСК.\nСтарт гонки: 22 ноября в 07:00 МСК.\n\n<b>Досье трассы</b>\nLas Vegas Strip Street Circuit\n6,201 км · 17 поворотов · 50 кругов.\nРекорд круга в гонке: 1:33.365 · Max Verstappen, 2025 (F1, данные по 2025 год).\n\n<b>Ориентиры 2025 года</b>\nЛучший круг гонки: 1:33.365 · Max Verstappen.\nПоул: 1:47.934 · Lando Norris.\nСессии могли проходить в разных условиях; времена не сравнивают напрямую.\n\n<b>Последние победители</b>\n2025 · Max Verstappen · Red Bull\n2024 · George Russell · Mercedes\n2023 · Max Verstappen · Red Bull\n\n<b>Погода на трассе</b>\nПрогноз на первые 2 часа гонки:\nВоздух: 12,6…13 °C.\nДождь: до 0% по часам. Ветер: до 2,1 м/с.\nOpen-Meteo · получено 17 ноября в 18:15 МСК.\nПолотно: свежих замеров пока нет.\n\n<a href=\"https://t.me/che_f1_predict_bot/predict?startapp=predict_preview\">Сделать прогноз</a>"
+}
