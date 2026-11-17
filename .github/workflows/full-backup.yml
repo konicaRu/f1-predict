@@ -1,0 +1,61 @@
+name: Encrypted users backup and restore rehearsal
+
+on:
+  workflow_call:
+    secrets:
+      SUPABASE_DB_URL:
+        required: true
+      ARCHIVE_DEPLOY_KEY:
+        required: true
+      FULL_BACKUP_KEY:
+        required: true
+  workflow_dispatch:
+  schedule:
+    - cron: '35 7 * * *' # ежедневно 10:35 МСК
+
+permissions:
+  contents: read
+
+concurrency:
+  group: encrypted-users-backup
+  cancel-in-progress: false
+
+jobs:
+  recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: scripts/export/package-lock.json
+      - run: npm ci
+        working-directory: scripts/export
+      - uses: actions/checkout@v4
+        with:
+          repository: konicaRu/f1-predict-archive
+          ssh-key: ${{ secrets.ARCHIVE_DEPLOY_KEY }}
+          path: archive-store
+      - name: Pull pinned isolated PostgreSQL image
+        run: docker pull supabase/postgres:17.6.1.136
+      - name: Encrypt users and data, restore into isolated database, verify
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          FULL_BACKUP_KEY: ${{ secrets.FULL_BACKUP_KEY }}
+        run: node scripts/export/full-backup.js archive-store
+      - name: Save only encrypted files to private repository
+        working-directory: archive-store
+        run: |
+          git config user.name "F1 Predict Archive"
+          git config user.email "archive@users.noreply.github.com"
+          git add -- full
+          git commit -m "backup: encrypted users and data, restore verified $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - name: Always remove sensitive rehearsal containers and temporary dumps
+        if: always()
+        run: |
+          docker ps -aq --filter "label=f1-recovery=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" | xargs -r docker rm -fv
+          node -e "const fs=require('fs'),path=require('path');const root=process.env.RUNNER_TEMP;for(const entry of fs.readdirSync(root)){if(entry.startsWith('f1-full-backup-'))fs.rmSync(path.join(root,entry),{recursive:true,force:true});}"

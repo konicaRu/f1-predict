@@ -54,6 +54,7 @@ async function main(repository) {
     migrations: fs.readdirSync(path.join(root, 'supabase/migrations')).filter((file) => file.endsWith('.sql')).sort(),
     source: 'github-after-results' };
   const result = saveArchive(destination, await captureArchive(), metadata);
+  if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, `changed=${result.changed}\n`);
   console.log(result.changed ? `Verified new archive: ${result.directory}` : 'Results unchanged; existing archive verified');
 }
 

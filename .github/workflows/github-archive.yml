@@ -7,6 +7,8 @@ on:
         required: true
       ARCHIVE_DEPLOY_KEY:
         required: true
+      FULL_BACKUP_KEY:
+        required: true
   workflow_dispatch:
   schedule:
     - cron: '25 7 * * *' # 10:25 МСК: повтор после сбоев / ручных исправлений
@@ -22,6 +24,8 @@ jobs:
   archive:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    outputs:
+      changed: ${{ steps.capture.outputs.changed }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -38,6 +42,7 @@ jobs:
           ssh-key: ${{ secrets.ARCHIVE_DEPLOY_KEY }}
           path: archive-store
       - name: Capture game archive and verify files
+        id: capture
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: node scripts/export/github-archive.js archive-store
@@ -51,5 +56,12 @@ jobs:
             echo "Results unchanged; nothing to commit"
           else
             git commit -m "archive: save results snapshot $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git pull --rebase origin main
             git push origin HEAD:main
           fi
+
+  full-backup:
+    needs: archive
+    if: ${{ needs.archive.outputs.changed == 'true' }}
+    uses: ./.github/workflows/full-backup.yml
+    secrets: inherit
