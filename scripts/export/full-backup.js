@@ -37,7 +37,7 @@ async function command(args, label, directory, options = {}) {
         if (code === 0) return resolve(output.trim());
         // Выводим только название отсутствующей системной зависимости, не SQL/строки auth.
         const diagnostic = fs.readFileSync(path.join(directory, label + '.stderr'), 'utf8');
-        const safe = diagnostic.match(/ERROR: (?:extension|role|schema|relation) "([a-zA-Z0-9_.-]+)" (?:is not available|does not exist|already exists)/);
+        const safe = diagnostic.match(/ERROR:\s+(?:extension|role|schema|relation) "([a-zA-Z0-9_.-]+)" (?:is not available|does not exist|already exists)/);
         reject(new Error(`${label}: failed${safe ? '; system dependency: ' + safe[1] : ''}`));
       });
     });
@@ -136,6 +136,7 @@ async function rehearse(bundle, directory) {
 async function main(args) {
   const key = readEnv('FULL_BACKUP_KEY');
   const directory = fs.mkdtempSync(path.join(process.env.RUNNER_TEMP || os.tmpdir(), 'f1-full-backup-'));
+  let privateRepository;
   try {
     if (args[0] === 'decrypt') {
       if (!args[1] || !args[2]) throw new Error('Usage: full-backup.js decrypt <encrypted-file> <new-private-directory>');
@@ -154,6 +155,7 @@ async function main(args) {
     const repository = path.resolve(args[0] || '');
     const remote = execFileSync('git', ['remote', 'get-url', 'origin'], { cwd: repository, encoding: 'utf8' }).trim();
     if (!/github\.com[:/]konicaRu\/f1-predict-archive(?:\.git)?$/.test(remote)) throw new Error('Private archive repository required');
+    privateRepository = repository;
     const bundle = await capture(directory);
     const sealed = encryptBackup(Buffer.from(JSON.stringify(bundle)), key);
     const encryptedFile = path.join(directory, 'backup.enc.json');
@@ -168,6 +170,17 @@ async function main(args) {
     fs.writeFileSync(path.join(output, 'latest.json'), JSON.stringify({ file: filename, sha256: hash(fs.readFileSync(encryptedFile)), ...report }, null, 2));
     console.log(`Encrypted backup and isolated restore VERIFIED: full/${filename}`);
     console.log(JSON.stringify(report)); // Только имена таблиц и количества строк, без данных пользователей.
+  } catch (error) {
+    // Ошибки могут содержать фрагменты SQL/auth: сохраняем только зашифрованную диагностику.
+    if (privateRepository) {
+      const diagnostics = {};
+      for (const filename of fs.readdirSync(directory).filter((name) => name.endsWith('.stderr'))) diagnostics[filename] = fs.readFileSync(path.join(directory, filename), 'utf8');
+      const diagnostic = encryptBackup(Buffer.from(JSON.stringify({ stage: error.message, diagnostics })), key);
+      const output = path.join(privateRepository, 'full/diagnostics');
+      fs.mkdirSync(output, { recursive: true });
+      fs.writeFileSync(path.join(output, new Date().toISOString().replace(/[:.]/g, '-') + '.enc.json'), JSON.stringify(diagnostic));
+    }
+    throw error;
   } finally {
     const temporaryRoot = path.resolve(process.env.RUNNER_TEMP || os.tmpdir());
     if (!path.resolve(directory).startsWith(temporaryRoot + path.sep)) throw new Error('Unsafe temporary directory');

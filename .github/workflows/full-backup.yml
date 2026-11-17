@@ -46,14 +46,19 @@ jobs:
           FULL_BACKUP_KEY: ${{ secrets.FULL_BACKUP_KEY }}
         run: node scripts/export/full-backup.js archive-store
       - name: Save only encrypted files to private repository
+        if: ${{ always() && !cancelled() }}
         working-directory: archive-store
         run: |
           git config user.name "F1 Predict Archive"
           git config user.email "archive@users.noreply.github.com"
-          git add -- full
-          git commit -m "backup: encrypted users and data, restore verified $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          git pull --rebase origin main
-          git push origin HEAD:main
+          if [ -d full ]; then
+            git add -- full
+            if ! git diff --cached --quiet; then
+              git commit -m "backup: encrypted recovery files $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+              git pull --rebase origin main
+              git push origin HEAD:main
+            fi
+          fi
       - name: Always remove sensitive rehearsal containers and temporary dumps
         if: always()
         run: |
