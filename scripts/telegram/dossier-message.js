@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const { buildDossierCard, windLabel } = require('./dossier-card');
+const { renderDossierCard } = require('./render-dossier-card');
 
 const escape = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const dateTime = iso => new Date(iso).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
@@ -13,6 +15,7 @@ function weatherLines(d) {
     lines.push('Прогноз на первые 2 часа гонки:');
     lines.push(`Воздух: ${w.air ? w.air[0] === w.air[1] ? `${n(w.air[0])} °C` : `${n(w.air[0])}…${n(w.air[1])} °C` : 'нет данных'}.`);
     lines.push(`Дождь: ${w.rainMax == null ? 'нет данных' : `до ${n(w.rainMax)}% по часам`}. Ветер: ${w.windMax == null ? 'нет данных' : `до ${n(w.windMax)} м/с`}.`);
+    lines.push(`Ветер на старте: ${windLabel(w.windDirection)} (откуда дует).`);
     lines.push(`Open-Meteo · получено ${dateTime(w.fetchedAt)} МСК.`);
   }
   const track = d.trackTemperature;
@@ -62,23 +65,31 @@ function buildDossierMessage(race, d, { mode = 'raceweek', missing } = {}) {
   const fallbackHtml = '<b>ЛИГА ПРОРОКОВ</b>\n\n' + sections.map(s => `<b>${escape(s.title)}</b>\n${s.lines.map(escape).join('\n')}`).join('\n\n') +
     `\n\n<a href="${buttonUrl}">Сделать прогноз</a>`;
   if (fallbackHtml.length > 4096) throw new Error('Досье превышает лимит обычного сообщения');
-  return { richHtml, fallbackHtml, banner };
+  const photoCaption = `${opening ? '🏁 Приём прогнозов открыт' : '⏳ Не забудь сделать прогноз'}\n${sections[0].lines.join('\n')}` +
+    (!opening && Array.isArray(missing) ? `\n\n${missing.length ? `Ещё не сделали прогноз: ${missing.join(', ').slice(0, 650)}` : 'Все уже сделали прогноз!'}` : '');
+  return { richHtml, fallbackHtml, banner, cardHtml: buildDossierCard(race, d), photoCaption: photoCaption.slice(0, 1024) };
 }
 
-async function deliverDossier(message, { token, chatId, replyMarkup, fetchImpl = fetch, onFallback = () => {} }) {
-  const rich = { html: message.richHtml };
-  if (message.banner) rich.media = [{ id: 'dossier_banner', media: { type: 'photo', media: 'attach://banner' } }];
-  const form = new FormData();
-  form.append('chat_id', String(chatId));
-  form.append('rich_message', JSON.stringify(rich));
-  if (replyMarkup) form.append('reply_markup', JSON.stringify(replyMarkup));
-  if (message.banner) form.append('banner', new Blob([message.banner], { type: 'image/png' }), 'dossier.png');
-  // Не повторяем запрос при таймауте/5xx: сообщение могло быть доставлено.
-  const response = await fetchImpl(`https://api.telegram.org/bot${token}/sendRichMessage`, { method: 'POST', body: form, signal: AbortSignal.timeout(20000) });
-  const data = await response.json();
-  if (data.ok) return data;
-  if (![400, 404].includes(data.error_code)) throw new Error(`Telegram Rich Message: ${data.error_code || response.status}`);
-  onFallback(`Rich Message отклонён Telegram (${data.error_code}); переключение на обычный HTML`);
+async function deliverDossier(message, { token, chatId, replyMarkup, fetchImpl = fetch, renderCard = renderDossierCard, onFallback = () => {} }) {
+  let photo;
+  try {
+    photo = await renderCard(message.cardHtml);
+  } catch (error) {
+    onFallback(`Карточка не отрисована: ${error.message}; отправляем текст`);
+  }
+  if (photo) {
+    const form = new FormData();
+    form.append('chat_id', String(chatId));
+    form.append('caption', message.photoCaption);
+    if (replyMarkup) form.append('reply_markup', JSON.stringify(replyMarkup));
+    form.append('photo', new Blob([photo], { type: 'image/png' }), 'dossier.png');
+    // Не повторяем запрос при таймауте/5xx: сообщение могло быть доставлено.
+    const response = await fetchImpl(`https://api.telegram.org/bot${token}/sendPhoto`, { method: 'POST', body: form, signal: AbortSignal.timeout(20000) });
+    const data = await response.json();
+    if (data.ok) return data;
+    if (![400, 404].includes(data.error_code)) throw new Error(`Telegram photo: ${data.error_code || response.status}`);
+    onFallback(`Фото отклонено Telegram (${data.error_code}); отправляем текст`);
+  }
   const fallback = await fetchImpl(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(20000),
     body: JSON.stringify({ chat_id: chatId, text: message.fallbackHtml, parse_mode: 'HTML', reply_markup: replyMarkup, link_preview_options: { is_disabled: true } }),

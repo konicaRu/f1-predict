@@ -31,24 +31,25 @@ test('deadline includes updated weather and escaped missing names, omits full hi
   assert.match(m.richHtml, /до 0%/);
   assert.doesNotMatch(m.richHtml, /Последние победители/);
 });
-test('multipart sends exactly one Rich Message with attached PNG and predict keyboard', async () => {
+test('multipart renders the full card and sends exactly one photo with predict keyboard', async () => {
   const calls = [];
-  const message = { richHtml: '<img src="tg://photo?id=dossier_banner"/><p>text</p>', fallbackHtml: 'text', banner: Buffer.from('png') };
-  await deliverDossier(message, { token: 'test-token', chatId: 'test-chat', replyMarkup: { inline_keyboard: [] }, fetchImpl: async (url, options) => {
+  const message = { cardHtml: '<html>card</html>', photoCaption: 'caption', fallbackHtml: 'text' };
+  const replyMarkup = { inline_keyboard: [[{ text: '🏁 Сделать прогноз', url: 'https://t.me/che_f1_predict_bot/predict?startapp=predict_42' }]] };
+  await deliverDossier(message, { token: 'test-token', chatId: 'test-chat', replyMarkup,
+    renderCard: async html => { assert.equal(html, message.cardHtml); return Buffer.from('png'); }, fetchImpl: async (url, options) => {
     calls.push({ url, options }); return { ok: true, json: async () => ({ ok: true, result: { message_id: 1 } }) };
   } });
   assert.equal(calls.length, 1);
-  assert.match(calls[0].url, /sendRichMessage$/);
+  assert.match(calls[0].url, /sendPhoto$/);
   const form = calls[0].options.body;
-  const rich = JSON.parse(form.get('rich_message'));
-  assert.equal(rich.media[0].id, 'dossier_banner');
-  assert.equal(rich.media[0].media.media, 'attach://banner');
-  assert.equal(form.get('banner').type, 'image/png');
+  assert.equal(form.get('photo').type, 'image/png');
+  assert.equal(form.get('caption'), 'caption');
+  assert.deepEqual(JSON.parse(form.get('reply_markup')), replyMarkup);
   assert.equal(form.get('chat_id'), 'test-chat');
 });
 test('explicit API unsupported response falls back once with valid ordinary HTML', async () => {
   const calls = [];
-  await deliverDossier({ richHtml: '<h2>x</h2>', fallbackHtml: '<b>x</b>' }, { token: 't', chatId: 'c', fetchImpl: async (url, options) => {
+  await deliverDossier({ cardHtml: '<h2>x</h2>', photoCaption: 'x', fallbackHtml: '<b>x</b>' }, { token: 't', chatId: 'c', renderCard: async () => Buffer.from('png'), fetchImpl: async (url, options) => {
     calls.push({ url, options });
     return { ok: calls.length > 1, json: async () => calls.length === 1 ? { ok: false, error_code: 404, description: 'Not Found' } : { ok: true } };
   } });
@@ -58,6 +59,42 @@ test('explicit API unsupported response falls back once with valid ordinary HTML
 });
 test('ambiguous network timeout never sends fallback or duplicates', async () => {
   let calls = 0;
-  await assert.rejects(deliverDossier({ richHtml: '<p>x</p>', fallbackHtml: 'x' }, { token: 't', chatId: 'c', fetchImpl: async () => { calls++; throw new Error('timeout'); } }), /timeout/);
+  await assert.rejects(deliverDossier({ cardHtml: '<p>x</p>', fallbackHtml: 'x' }, { token: 't', chatId: 'c', renderCard: async () => Buffer.from('png'), fetchImpl: async () => { calls++; throw new Error('timeout'); } }), /timeout/);
   assert.equal(calls, 1);
+});
+
+test('renderer failure sends text once with the same keyboard and reports a warning', async () => {
+  const calls = [], warnings = [];
+  const keyboard = { inline_keyboard: [[{ text: 'Прогноз', url: 'https://example.com' }]] };
+  await deliverDossier({ cardHtml: 'card', fallbackHtml: '<b>Прогноз открыт</b>' }, {
+    token: 't', chatId: 'c', replyMarkup: keyboard, onFallback: w => warnings.push(w),
+    renderCard: async () => { throw new Error('browser unavailable'); },
+    fetchImpl: async (url, options) => { calls.push({ url, options }); return { json: async () => ({ ok: true }) }; },
+  });
+  assert.equal(calls.length, 1);
+  assert.match(calls[0].url, /sendMessage$/);
+  const body = JSON.parse(calls[0].options.body);
+  assert.equal(body.text, '<b>Прогноз открыт</b>');
+  assert.deepEqual(body.reply_markup, keyboard);
+  assert.match(warnings[0], /browser unavailable/);
+});
+
+test('server error does not send a duplicate through fallback', async () => {
+  let calls = 0;
+  await assert.rejects(deliverDossier({ cardHtml: 'x', fallbackHtml: 'x' }, {
+    token: 't', chatId: 'c', renderCard: async () => Buffer.from('png'),
+    fetchImpl: async () => { calls++; return { status: 503, json: async () => ({ ok: false, error_code: 503 }) }; },
+  }), /503/);
+  assert.equal(calls, 1);
+});
+
+test('automatic messages carry the current full card, caption and safe unavailable date', () => {
+  const m = buildDossierMessage(race, dossier, { mode: 'deadline', missing: ['A<&'] });
+  assert.match(m.cardHtml, /ПОСЛЕДНИЕ ПОБЕДИТЕЛИ/);
+  assert.match(m.cardHtml, /Max &lt;V&gt;/i);
+  assert.match(m.photoCaption, /Не забудь сделать прогноз/);
+  assert.match(m.photoCaption, /A<&/);
+  assert.ok(m.photoCaption.length <= 1024);
+  const empty = buildDossierMessage(race, { circuit: null, sources: [] });
+  assert.doesNotMatch(empty.cardHtml, /Invalid Date|NaN/);
 });

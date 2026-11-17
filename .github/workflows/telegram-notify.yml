@@ -64,12 +64,23 @@ jobs:
           EOF
       - name: npm install
         run: |
-          cd scripts/telegram && npm install
+          cd scripts/telegram && npm ci
           cd ../autoresults && npm install
           cd ../ai-player && npm install
           cd ../import && npm install
+      # raceweek — подстраховочно на каждом режиме, браузер нужен не только в Пн/Чт.
+      - name: Кэш Chromium для карточек
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: chromium-${{ runner.os }}-${{ hashFiles('scripts/telegram/package-lock.json') }}
+      - name: Подготовить браузер для досье
+        working-directory: scripts/telegram
+        run: npx playwright install --with-deps chromium
       - name: Проверить шаблоны и расчёты уведомлений
         run: npm test --prefix scripts/telegram
+      - name: Проверить отрисовку настоящей карточки
+        run: npm run test:render --prefix scripts/telegram
       - name: Запустить режимы
         run: |
           for m in ${{ steps.mode.outputs.modes }}; do

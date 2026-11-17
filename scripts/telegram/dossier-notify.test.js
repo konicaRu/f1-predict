@@ -27,12 +27,14 @@ test('dossier failure still delivers base announcement and records warning', asy
 });
 test('each reminder fetches weather anew, expired races excluded, missing names only on deadline day', async () => {
   let loaded = 0, missing = 0, sent = 0;
+  const historyOptions = [];
   const options = { getRaces: async () => [race, { ...race, deadline_utc: '2026-11-01T00:00:00Z' }], now: new Date('2026-11-19T10:00:00Z'),
-    getDossier: async (_, opts) => { loaded++; assert.equal(opts.includeHistory, false); return empty; },
+    getDossier: async (_, opts) => { loaded++; historyOptions.push(opts.includeHistory); return empty; },
     getMissing: async () => { missing++; return ['Iceman']; },
     send: async m => { sent++; assert.match(m.richHtml, /Iceman/); assert.doesNotMatch(m.richHtml, /Последние победители/); } };
   await deadline(options); await deadline(options);
   assert.deepEqual([loaded, missing, sent], [2, 2, 2]);
+  assert.deepEqual(historyOptions, [true, true]);
   await deadline({ ...options, now: new Date('2026-11-18T10:00:00Z'), send: async m => assert.doesNotMatch(m.richHtml, /Ещё не сделали/) });
   assert.equal(missing, 2);
 });

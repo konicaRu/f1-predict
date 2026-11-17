@@ -4,11 +4,13 @@
   "type": "commonjs",
   "scripts": {
     "test": "node --test dossier.test.js dossier-message.test.js dossier-notify.test.js dossier-card.test.js && node notify.test.js",
+    "test:render": "node --test dossier-render.test.js",
     "raceweek": "node notify.js raceweek",
     "deadline": "node notify.js deadline",
     "results": "node notify.js results"
   },
   "dependencies": {
-    "pg": "^8.22.0"
+    "pg": "^8.22.0",
+    "playwright": "1.65.1"
   }
 }

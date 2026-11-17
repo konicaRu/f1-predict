@@ -15,7 +15,7 @@ function siteLink(path) {
 // BOT_INVALID на Telegram Desktop (известное ограничение платформы) — нужен полный вид ссылки
 // с зарегистрированным Mini App.
 function predictButton(raceId) {
-  return { inline_keyboard: [[{ text: 'Сделать прогноз', url: `https://t.me/${BOT_USERNAME}/${MINI_APP_SHORT_NAME}?startapp=predict_${raceId}` }]] };
+  return { inline_keyboard: [[{ text: '🏁 Сделать прогноз', url: `https://t.me/${BOT_USERNAME}/${MINI_APP_SHORT_NAME}?startapp=predict_${raceId}` }]] };
 }
 
 function escapeHtml(s) {
@@ -251,7 +251,7 @@ async function deadline({ getRaces = thisWeekOpenRaces, getDossier = loadDossier
     return;
   }
   for (const r of races) {
-    const dossier = await prepareDossier(r, getDossier, { now, includeHistory: false }, warnings);
+    const dossier = await prepareDossier(r, getDossier, { now, includeHistory: true }, warnings);
     const missing = isDeadlineDayMsk(r.deadline_utc, now) ? await getMissing(r.id) : undefined;
     await send(buildDossierMessage(r, dossier, { mode: 'deadline', missing }), predictButton(r.id), warning => warnings.push(warning));
     console.log(`deadline: отправлено для ${r.name}`);

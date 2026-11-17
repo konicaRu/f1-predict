@@ -6568,19 +6568,6 @@
       "complexity": "moderate"
     },
     {
-      "id": "pipeline:.github/workflows/telegram-notify.yml",
-      "type": "pipeline",
-      "name": "telegram-notify.yml",
-      "filePath": ".github/workflows/telegram-notify.yml",
-      "summary": "Запускает уведомления, автозабор результатов, GridBot и административную очередь по расписанию или вручную. Устанавливает зависимости, проверяет Telegram-тесты и архивирует результаты.",
-      "tags": [
-        "ci-cd",
-        "race-dossier",
-        "automation"
-      ],
-      "complexity": "moderate"
-    },
-    {
       "id": "document:MEMORY.md",
       "type": "document",
       "name": "MEMORY.md",
@@ -6748,19 +6735,6 @@
         "automation"
       ],
       "complexity": "simple"
-    },
-    {
-      "id": "document:scripts/telegram/README.md",
-      "type": "document",
-      "name": "README.md",
-      "filePath": "scripts/telegram/README.md",
-      "summary": "Описывает настройку Telegram-уведомлений, источники досье, правила погоды и fallback, безопасный предпросмотр и эксплуатационные команды.",
-      "tags": [
-        "documentation",
-        "race-dossier",
-        "automation"
-      ],
-      "complexity": "moderate"
     },
     {
       "id": "document:scripts/telegram/data/GEOMETRY-LICENSE.md",
@@ -6931,15 +6905,98 @@
       "complexity": "simple"
     },
     {
+      "id": "file:scripts/telegram/dossier-render.test.js",
+      "type": "file",
+      "name": "dossier-render.test.js",
+      "filePath": "scripts/telegram/dossier-render.test.js",
+      "summary": "Проверяет полный производственный путь HTML → PNG в настоящем Chromium → подставной sendPhoto без БД и живого Telegram. Сверяет переданные байты изображения, подпись, единственную отправку и допустимые размеры PNG.",
+      "tags": [
+        "test",
+        "telegram",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/telegram/render-dossier-card.js",
+      "type": "file",
+      "name": "render-dossier-card.js",
+      "filePath": "scripts/telegram/render-dossier-card.js",
+      "summary": "Отрисовывает локальный HTML карточки в PNG через Playwright/Chromium. Отключает JavaScript и внешние запросы, ограничивает время и размеры изображения и закрывает браузер в finally.",
+      "tags": [
+        "rendering",
+        "telegram",
+        "race-dossier",
+        "tested"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/render-dossier-card.js:renderDossierCard",
+      "type": "function",
+      "name": "renderDossierCard",
+      "filePath": "scripts/telegram/render-dossier-card.js",
+      "lineRange": [
+        2,
+        18
+      ],
+      "summary": "Запускает Chromium без JavaScript и внешней сети, дожидается шрифтов и возвращает PNG тела страницы шириной 1080 px. Проверяет границы размера и закрывает браузер при успехе и ошибке.",
+      "tags": [
+        "rendering",
+        "playwright",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "pipeline:.github/workflows/telegram-notify.yml",
+      "type": "pipeline",
+      "name": "telegram-notify.yml",
+      "filePath": ".github/workflows/telegram-notify.yml",
+      "summary": "Оркестрирует автоматические уведомления, результаты, GridBot и административную очередь. Перед режимами устанавливает и кэширует Chromium, проверяет тесты и реальный рендер карточки; при сбое уведомляет администратора вне тихих часов.",
+      "tags": [
+        "ci-cd",
+        "telegram",
+        "race-dossier"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:docs/superpowers/plans/2026-11-17-automatic-mobile-card.md",
+      "type": "document",
+      "name": "2026-11-17-automatic-mobile-card.md",
+      "filePath": "docs/superpowers/plans/2026-11-17-automatic-mobile-card.md",
+      "summary": "Описывает подключение графической карточки к автоматическим анонсам и напоминаниям: Chromium, sendPhoto и текстовый fallback без повторов после неоднозначной ошибки. Фиксирует выполненные проверки и активацию публикацией в main.",
+      "tags": [
+        "documentation",
+        "telegram",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:scripts/telegram/README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "scripts/telegram/README.md",
+      "summary": "Документирует графическую карточку, источники истории и погоды, направление ветра и правила текстового fallback. Описывает Chromium в GitHub Actions, безопасные локальные проверки, настройку и запуск уведомлений.",
+      "tags": [
+        "documentation",
+        "telegram",
+        "race-dossier"
+      ],
+      "complexity": "moderate"
+    },
+    {
       "id": "config:scripts/telegram/package.json",
       "type": "config",
       "name": "package.json",
       "filePath": "scripts/telegram/package.json",
-      "summary": "Задаёт CommonJS-пакет уведомлений, зависимость PostgreSQL и команды режимов. Включает проверки направления ветра dossier-card.test.js в общий тестовый запуск.",
+      "summary": "Закрепляет Playwright 1.65.1 для отрисовки карточек, задаёт зависимость PostgreSQL и команды уведомлений. Разделяет обычные тесты и test:render с настоящим Chromium.",
       "tags": [
         "configuration",
-        "race-dossier",
-        "mobile"
+        "telegram",
+        "race-dossier"
       ],
       "complexity": "simple"
     }
@@ -13925,13 +13982,6 @@
       "weight": 0.5
     },
     {
-      "source": "pipeline:.github/workflows/telegram-notify.yml",
-      "target": "file:scripts/telegram/notify.js",
-      "type": "triggers",
-      "direction": "forward",
-      "weight": 0.6
-    },
-    {
       "source": "document:MEMORY.md",
       "target": "file:scripts/telegram/notify.js",
       "type": "documents",
@@ -14030,20 +14080,6 @@
       "weight": 0.8
     },
     {
-      "source": "document:scripts/telegram/README.md",
-      "target": "file:scripts/telegram/dossier.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:scripts/telegram/README.md",
-      "target": "file:scripts/telegram/notify.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
       "source": "document:scripts/telegram/data/GEOMETRY-LICENSE.md",
       "target": "file:scripts/telegram/data/vegas.geojson",
       "type": "documents",
@@ -14136,8 +14172,106 @@
       "weight": 0.5
     },
     {
+      "source": "file:scripts/telegram/render-dossier-card.js",
+      "target": "function:scripts/telegram/render-dossier-card.js:renderDossierCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/render-dossier-card.js",
+      "target": "function:scripts/telegram/render-dossier-card.js:renderDossierCard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/telegram/render-dossier-card.js",
+      "target": "file:scripts/telegram/dossier-render.test.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/telegram/dossier-message.js",
+      "target": "file:scripts/telegram/dossier-render.test.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "pipeline:.github/workflows/telegram-notify.yml",
+      "target": "file:scripts/telegram/notify.js",
+      "type": "triggers",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "pipeline:.github/workflows/telegram-notify.yml",
+      "target": "file:scripts/telegram/dossier-render.test.js",
+      "type": "triggers",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "pipeline:.github/workflows/telegram-notify.yml",
+      "target": "config:scripts/telegram/package.json",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "document:docs/superpowers/plans/2026-11-17-automatic-mobile-card.md",
+      "target": "file:scripts/telegram/render-dossier-card.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/superpowers/plans/2026-11-17-automatic-mobile-card.md",
+      "target": "file:scripts/telegram/dossier-message.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:docs/superpowers/plans/2026-11-17-automatic-mobile-card.md",
+      "target": "pipeline:.github/workflows/telegram-notify.yml",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:scripts/telegram/README.md",
+      "target": "file:scripts/telegram/render-dossier-card.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:scripts/telegram/README.md",
+      "target": "file:scripts/telegram/dossier-message.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:scripts/telegram/README.md",
+      "target": "pipeline:.github/workflows/telegram-notify.yml",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
       "source": "config:scripts/telegram/package.json",
-      "target": "file:scripts/telegram/dossier-card.test.js",
+      "target": "file:scripts/telegram/render-dossier-card.js",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:scripts/telegram/package.json",
+      "target": "file:scripts/telegram/dossier-render.test.js",
       "type": "configures",
       "direction": "forward",
       "weight": 0.6
@@ -14327,6 +14461,22 @@
       "recoveredFromImportMap": true
     },
     {
+      "source": "file:scripts/telegram/dossier-message.js",
+      "target": "file:scripts/telegram/dossier-card.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/dossier-message.js",
+      "target": "file:scripts/telegram/render-dossier-card.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
       "source": "file:scripts/telegram/dossier-message.test.js",
       "target": "config:scripts/telegram/data/circuits.json",
       "type": "imports",
@@ -14345,6 +14495,30 @@
     {
       "source": "file:scripts/telegram/dossier-notify.test.js",
       "target": "file:scripts/telegram/notify.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/dossier-render.test.js",
+      "target": "config:docs/mockups/telegram-dossier-live.json",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/dossier-render.test.js",
+      "target": "file:scripts/telegram/dossier-message.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/dossier-render.test.js",
+      "target": "file:scripts/telegram/render-dossier-card.js",
       "type": "imports",
       "direction": "forward",
       "weight": 0.7,
@@ -15270,8 +15444,8 @@
       "GitHub Actions"
     ],
     "description": "Закрытая лига прогнозов на гонки Формулы-1: участники составляют топ-10, система считает очки и сезонный зачёт. Примечание: в проекте более 100 файлов; для ускорения анализа можно ограничить его отдельным каталогом.",
-    "analyzedAt": "2026-11-17T20:21:11.933Z",
-    "gitCommitHash": "6ea243c73a8719c65ea98cf09429eb1083d399f2"
+    "analyzedAt": "2026-11-17T20:28:12.879Z",
+    "gitCommitHash": "35f97e34622bfd6e78d7207d7dfc03f7b247ecae"
   },
   "layers": [
     {
@@ -15568,7 +15742,8 @@
         "file:docs/mockups/render-dark-dossier.cjs",
         "document:scripts/telegram/data/GEOMETRY-LICENSE.md",
         "file:docs/mockups/telegram-dossier-mobile.html",
-        "document:docs/superpowers/plans/2026-11-17-mobile-dossier-card.md"
+        "document:docs/superpowers/plans/2026-11-17-mobile-dossier-card.md",
+        "document:docs/superpowers/plans/2026-11-17-automatic-mobile-card.md"
       ]
     },
     {
@@ -15597,7 +15772,9 @@
         "pipeline:.github/workflows/full-backup.yml",
         "pipeline:.github/workflows/github-archive.yml",
         "pipeline:.github/workflows/telegram-notify.yml",
-        "config:scripts/export/package.json"
+        "config:scripts/export/package.json",
+        "file:scripts/telegram/dossier-render.test.js",
+        "file:scripts/telegram/render-dossier-card.js"
       ]
     }
   ],

@@ -25,7 +25,8 @@ function buildDossierCard(race, d) {
   }
   const lapRow = (title, value, note, cls = '') => `<div class="lap ${cls}"><div class="lap-title">${title}</div><div class="lap-value">${esc(value?.time || '—')}</div><div class="lap-person">${person(value?.driver)}<small>${esc(note)}</small></div></div>`;
   const start = new Date(race.race_datetime_utc).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }).replace(' в ', ' · ');
-  const updated = new Date(w?.fetchedAt || d.fetchedAt).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  const fetchedAt = w?.fetchedAt || d.fetchedAt;
+  const updated = Number.isFinite(Date.parse(fetchedAt)) ? new Date(fetchedAt).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : 'нет данных';
   const air = w?.air ? w.air[0] === w.air[1] ? num(w.air[0]) : `${num(w.air[0])}–${num(w.air[1])}` : '—';
   const recordSame = f?.record && p?.fastest?.time === f.record.time && p.fastest.driver === f.record.driver;
   return `<!doctype html><html lang="ru"><meta charset="utf-8"><title>Досье трассы</title><style>
