@@ -24,12 +24,12 @@ test('missing sources produce honest message without invented numbers or geometr
   assert.match(m.richHtml, /Почасовой прогноз пока недоступен/);
   assert.doesNotMatch(m.richHtml, /6,201|1:33.365/);
 });
-test('deadline includes updated weather and escaped missing names, omits full history', () => {
+test('deadline includes full history, updated weather and escaped missing names', () => {
   const m = buildDossierMessage(race, dossier, { mode: 'deadline', missing: ['A<&', 'Б'] });
   assert.match(m.richHtml, /Ещё не сделали/);
   assert.match(m.richHtml, /A&lt;&amp;/);
   assert.match(m.richHtml, /до 0%/);
-  assert.doesNotMatch(m.richHtml, /Последние победители/);
+  assert.match(m.richHtml, /Последние победители/);
 });
 test('multipart renders the full card and sends exactly one photo with predict keyboard', async () => {
   const calls = [];
@@ -104,6 +104,7 @@ test('legacy Wednesday sends the previous banner and Rich Message without render
   const calls = [];
   await deliverDossier(message, { token: 't', chatId: 'c', replyMarkup: { inline_keyboard: [] },
     renderCard: async () => { assert.fail('Wednesday must not render the new card'); },
+    renderBanner: async html => { assert.match(html, /22 НОЯБРЯ.*07:00 МСК/); return Buffer.from('banner-png'); },
     fetchImpl: async (url, options) => { calls.push({ url, options }); return { json: async () => ({ ok: true }) }; },
   });
   assert.equal(calls.length, 1);
@@ -128,4 +129,24 @@ test('legacy fallback only follows an explicit rejection, never an ambiguous sen
     if (code === 400 || code === 404) { await sending; assert.equal(calls.length, 2); assert.match(calls[1], /sendMessage$/); }
     else { await assert.rejects(sending); assert.equal(calls.length, 1); }
   }
+});
+
+test('delivery guard runs after banner/card rendering and blocks every outbound request', async () => {
+  for (const format of ['card', 'legacy']) {
+    const events = [];
+    const m = buildDossierMessage(race, dossier, { format });
+    await assert.rejects(deliverDossier(m, { token: 't', chatId: 'c',
+      renderCard: async () => { events.push('render'); return Buffer.from('png'); },
+      renderBanner: async () => { events.push('render'); return Buffer.from('png'); },
+      beforeSend: async () => { events.push('guard'); throw new Error('closed window'); },
+      fetchImpl: async () => { assert.fail('must not start a request'); },
+    }), /closed window/);
+    assert.deepEqual(events, ['render', 'guard']);
+  }
+});
+
+test('fallback preserves source attribution and wind direction is below speed', () => {
+  const m = buildDossierMessage(race, { ...dossier, sources: [{ name: 'Pirelli', url: 'https://press.pirelli.com/' }], weather: { ...dossier.weather, windDirection: 90 } });
+  assert.match(m.fallbackHtml, /Источники[\s\S]*Pirelli/);
+  assert.match(m.richHtml, /Ветер: до 2 м\/с\.<br>Восточный/);
 });

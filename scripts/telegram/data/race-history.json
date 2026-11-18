@@ -1,0 +1,20 @@
+{
+  "vegas": {
+    "2025": {
+      "year": 2025,
+      "safetyCars": 0,
+      "virtualSafetyCars": 2,
+      "redFlags": 0,
+      "strategy": {
+        "typicalStops": 1,
+        "compounds": ["MEDIUM", "HARD", "SOFT"],
+        "mainSequence": ["MEDIUM", "HARD"],
+        "winnerPitLap": 25
+      },
+      "sources": [
+        { "name": "FIA", "url": "https://www.fia.com/sites/default/files/2025_22_usa_f1_r0_timing_raceracecontrolmessages_v01.pdf" },
+        { "name": "Pirelli", "url": "https://press.pirelli.com/verstappen-keeps-the-championship-alive/" }
+      ]
+    }
+  }
+}

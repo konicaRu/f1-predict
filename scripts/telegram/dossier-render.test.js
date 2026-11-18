@@ -8,7 +8,7 @@ const fixture = require('../../docs/mockups/telegram-dossier-live.json');
 
 test('production path renders PNG and sends the actual card bytes to photo transport', { timeout: 60000 }, async () => {
   const race = { ...fixture.race, id: 42 };
-  const d = { ...fixture.dossier, weather: { ...fixture.dossier.weather, windDirection: 47 } };
+  const d = { ...fixture.dossier, previousRaceHistory: require('./data/race-history.json').vegas['2025'], weather: { ...fixture.dossier.weather, windDirection: 47 } };
   const m = buildDossierMessage(race, d, { mode: 'deadline', missing: ['Тестовый участник'] });
   let image, calls = 0;
   await deliverDossier(m, {
@@ -33,4 +33,34 @@ test('production path renders PNG and sends the actual card bytes to photo trans
   assert.ok(image.readUInt32BE(20) > 1500 && image.readUInt32BE(20) < 6000);
   assert.ok(image.length < 10 * 1024 * 1024);
   if (process.env.DOSSIER_RENDER_OUTPUT) fs.writeFileSync(process.env.DOSSIER_RENDER_OUTPUT, image);
+});
+
+test('Wednesday renders the actual start banner and sends complete text with the same keyboard', { timeout: 60000 }, async () => {
+  const race = { ...fixture.race, id: 42 };
+  const d = { ...fixture.dossier, previousRaceHistory: require('./data/race-history.json').vegas['2025'] };
+  const m = buildDossierMessage(race, d, { mode: 'deadline', format: 'legacy' });
+  let image, calls = 0;
+  const keyboard = { inline_keyboard: [[{ text: '🏁 Сделать прогноз', url: 'https://t.me/che_f1_predict_bot/predict?startapp=predict_42' }]] };
+  await deliverDossier(m, { token: 'test-token', chatId: 'test-chat', replyMarkup: keyboard,
+    renderBanner: async html => {
+      assert.match(html, /22 НОЯБРЯ.*07:00 МСК/);
+      image = await renderDossierCard(html, process.env.DOSSIER_CHROME_PATH ? { executablePath: process.env.DOSSIER_CHROME_PATH } : {});
+      return image;
+    },
+    onFallback: warning => assert.fail(warning),
+    fetchImpl: async (url, options) => {
+      calls++; assert.match(url, /sendRichMessage$/);
+      assert.deepEqual(Buffer.from(await options.body.get('banner').arrayBuffer()), image);
+      const rich = JSON.parse(options.body.get('rich_message'));
+      assert.match(rich.html, /Виртуальный сейфти-кар \(VSC\): 2/);
+      assert.match(rich.html, /Основной вариант: 1 пит-стоп/);
+      assert.match(rich.html, /Последние победители/);
+      assert.deepEqual(JSON.parse(options.body.get('reply_markup')), keyboard);
+      return { json: async () => ({ ok: true }) };
+    },
+  });
+  assert.equal(calls, 1);
+  assert.equal(image.readUInt32BE(16), 1080);
+  assert.equal(image.readUInt32BE(20), 540);
+  if (process.env.DOSSIER_RENDER_OUTPUT) fs.writeFileSync(process.env.DOSSIER_RENDER_OUTPUT.replace(/\.png$/, '-banner.png'), image);
 });

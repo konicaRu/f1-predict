@@ -3,7 +3,7 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "test": "node --test dossier.test.js dossier-message.test.js dossier-notify.test.js dossier-card.test.js && node notify.test.js",
+    "test": "node --test dossier.test.js dossier-message.test.js dossier-notify.test.js dossier-card.test.js dossier-history.test.js showcase.test.js && node notify.test.js",
     "test:render": "node --test dossier-render.test.js",
     "raceweek": "node notify.js raceweek",
     "deadline": "node notify.js deadline",

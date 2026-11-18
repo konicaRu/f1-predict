@@ -1,4 +1,5 @@
 const factsByCircuit = require('./data/circuits.json');
+const historyByCircuit = require('./data/race-history.json');
 const JOLPICA = 'https://api.jolpi.ca/ergast/f1';
 const HOUR = 3600000;
 const nameOf = d => [d?.givenName, d?.familyName].filter(Boolean).join(' ');
@@ -53,7 +54,7 @@ function previousYearTimes(results, qualifying, year, circuitId) {
 }
 
 async function loadDossier(race, { fetchImpl = fetch, now = new Date(), includeHistory = true } = {}) {
-  const d = { circuit: null, facts: null, winners: [], previous: null, weather: null, trackTemperature: null,
+  const d = { circuit: null, facts: null, winners: [], previous: null, previousRaceHistory: null, weather: null, trackTemperature: null,
     fetchedAt: now.toISOString(), warnings: [], sources: [] };
   async function json(url) {
     const response = await fetchImpl(url, { headers: { 'User-Agent': 'F1Predict/1.0' }, signal: AbortSignal.timeout(6500) });
@@ -87,6 +88,8 @@ async function loadDossier(race, { fetchImpl = fetch, now = new Date(), includeH
   if (!id || !/^[a-zA-Z0-9_-]+$/.test(id)) { d.warnings.push('Трасса и дата этапа не подтверждены календарём'); return d; }
   d.circuit = { id, name: event.Circuit.circuitName };
   d.facts = factsByCircuit[id] || null;
+  d.previousRaceHistory = historyByCircuit[id]?.[season - 1] || null;
+  if (d.previousRaceHistory) d.sources.push(...d.previousRaceHistory.sources);
   d.sources.push({ name: 'Jolpica', url: `${JOLPICA}/${season}/${round}.json` });
   if (d.facts) d.sources.push({ name: 'Formula 1', url: d.facts.source });
   const latitude = Number(event.Circuit.Location?.lat);

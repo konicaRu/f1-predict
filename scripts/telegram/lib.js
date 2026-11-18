@@ -129,9 +129,9 @@ async function sendTelegramPhoto(photoUrl, caption, replyMarkup) {
   return data;
 }
 
-async function sendTelegramDossier(message, replyMarkup, onFallback) {
+async function sendTelegramDossier(message, replyMarkup, onFallback, { beforeSend } = {}) {
   return require('./dossier-message').deliverDossier(message, {
-    token: readEnv('TELEGRAM_BOT_TOKEN'), chatId: readEnv('TELEGRAM_CHAT_ID'), replyMarkup, onFallback,
+    token: readEnv('TELEGRAM_BOT_TOKEN'), chatId: readEnv('TELEGRAM_CHAT_ID'), replyMarkup, onFallback, beforeSend,
   });
 }
 

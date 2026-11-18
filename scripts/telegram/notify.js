@@ -257,7 +257,7 @@ async function deadline({ getRaces = thisWeekOpenRaces, getDossier = loadDossier
   }
   for (const r of races) {
     const format = dossierFormat(now);
-    const dossier = await prepareDossier(r, getDossier, { now, includeHistory: format === 'card' }, warnings);
+    const dossier = await prepareDossier(r, getDossier, { now, includeHistory: true }, warnings);
     const missing = isDeadlineDayMsk(r.deadline_utc, now) ? await getMissing(r.id) : undefined;
     await send(buildDossierMessage(r, dossier, { mode: 'deadline', missing, format }), predictButton(r.id), warning => warnings.push(warning));
     console.log(`deadline: отправлено для ${r.name}`);
