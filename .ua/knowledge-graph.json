@@ -6374,7 +6374,8 @@
       "tags": [
         "telegram",
         "race-dossier",
-        "mobile"
+        "mobile",
+        "tested"
       ],
       "complexity": "moderate"
     },
@@ -6503,19 +6504,6 @@
       "summary": "Описывает подключение графической карточки к автоматическим анонсам и напоминаниям: Chromium, sendPhoto и текстовый fallback без повторов после неоднозначной ошибки. Фиксирует выполненные проверки и активацию публикацией в main.",
       "tags": [
         "documentation",
-        "telegram",
-        "race-dossier"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "config:scripts/telegram/package.json",
-      "type": "config",
-      "name": "package.json",
-      "filePath": "scripts/telegram/package.json",
-      "summary": "Закрепляет Playwright 1.65.1 для отрисовки карточек, задаёт зависимость PostgreSQL и команды уведомлений. Разделяет обычные тесты и test:render с настоящим Chromium.",
-      "tags": [
-        "configuration",
         "telegram",
         "race-dossier"
       ],
@@ -7005,19 +6993,6 @@
       "complexity": "simple"
     },
     {
-      "id": "document:scripts/telegram/README.md",
-      "type": "document",
-      "name": "README.md",
-      "filePath": "scripts/telegram/README.md",
-      "summary": "Документирует форматы досье по дням Europe/Moscow, источники истории и погоды, Chromium и правила fallback. Описывает настройку уведомлений, безопасный предпросмотр и эксплуатационные команды.",
-      "tags": [
-        "documentation",
-        "race-dossier",
-        "scheduling"
-      ],
-      "complexity": "moderate"
-    },
-    {
       "id": "document:MEMORY.md",
       "type": "document",
       "name": "MEMORY.md",
@@ -7029,6 +7004,222 @@
         "race-dossier"
       ],
       "complexity": "complex"
+    },
+    {
+      "id": "file:scripts/telegram/dossier-history.test.js",
+      "type": "file",
+      "name": "dossier-history.test.js",
+      "filePath": "scripts/telegram/dossier-history.test.js",
+      "summary": "Проверяет одинаковую историческую сводку обоих форматов, неизвестные значения и привязку истории только к подтверждённой трассе предыдущего сезона.",
+      "tags": [
+        "test",
+        "race-history",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:scripts/telegram/race-history.js",
+      "type": "file",
+      "name": "race-history.js",
+      "filePath": "scripts/telegram/race-history.js",
+      "summary": "Предоставляет общие функции проверки года истории, отображения счётчиков и формирования строк шинной стратегии для обоих форматов досье.",
+      "tags": [
+        "utility",
+        "race-history",
+        "formatting"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/race-history.js:count",
+      "type": "function",
+      "name": "count",
+      "filePath": "scripts/telegram/race-history.js",
+      "lineRange": [
+        2,
+        2
+      ],
+      "summary": "Показывает целое неотрицательное число либо пометку об отсутствии данных.",
+      "tags": [
+        "utility",
+        "formatting",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/race-history.js:previousHistory",
+      "type": "function",
+      "name": "previousHistory",
+      "filePath": "scripts/telegram/race-history.js",
+      "lineRange": [
+        3,
+        6
+      ],
+      "summary": "Возвращает историю только при совпадении её года с сезоном непосредственно перед текущей гонкой.",
+      "tags": [
+        "utility",
+        "race-history",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/race-history.js:strategyLines",
+      "type": "function",
+      "name": "strategyLines",
+      "filePath": "scripts/telegram/race-history.js",
+      "lineRange": [
+        7,
+        15
+      ],
+      "summary": "Формирует строки подтверждённой шинной стратегии: число остановок, последовательность составов и круг пит-стопа победителя.",
+      "tags": [
+        "utility",
+        "race-history",
+        "formatting"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:scripts/telegram/showcase.js",
+      "type": "file",
+      "name": "showcase.js",
+      "filePath": "scripts/telegram/showcase.js",
+      "summary": "Запускает отдельную демонстрацию двух форматов в окне 19 ноября 2026 года 09:00–10:00 МСК. Резервирует каждый формат до отправки через job_runs и поддерживает проверку без отправки.",
+      "tags": [
+        "entry-point",
+        "telegram",
+        "deduplication",
+        "tested"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:scripts/telegram/showcase.js:isShowcaseWindow",
+      "type": "function",
+      "name": "isShowcaseWindow",
+      "filePath": "scripts/telegram/showcase.js",
+      "lineRange": [
+        8,
+        11
+      ],
+      "summary": "Проверяет попадание времени в единственное разрешённое окно демонстрации 19 ноября 2026 года 06:00–07:00 UTC.",
+      "tags": [
+        "utility",
+        "scheduling",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:scripts/telegram/showcase.js:runShowcase",
+      "type": "function",
+      "name": "runShowcase",
+      "filePath": "scripts/telegram/showcase.js",
+      "lineRange": [
+        26,
+        54
+      ],
+      "summary": "Проверяет гонку и историю, готовит оба формата и резервирует каждый перед доставкой. Повторно контролирует окно перед отправкой, сохраняет результат и агрегирует ошибки без повторной доставки.",
+      "tags": [
+        "telegram",
+        "orchestration",
+        "deduplication"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:scripts/telegram/showcase.test.js",
+      "type": "file",
+      "name": "showcase.test.js",
+      "filePath": "scripts/telegram/showcase.test.js",
+      "summary": "Проверяет временное окно демонстрации, реальные кнопки гонки, резервирование при параллельных запусках и отсутствие повторов после неоднозначного сбоя. Контролирует запрет поздней отправки после загрузки и рендеринга.",
+      "tags": [
+        "test",
+        "telegram",
+        "deduplication"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "pipeline:.github/workflows/telegram-showcase.yml",
+      "type": "pipeline",
+      "name": "telegram-showcase.yml",
+      "filePath": ".github/workflows/telegram-showcase.yml",
+      "summary": "Отдельный GitHub Actions workflow разовой демонстрации 19 ноября 2026 года: устанавливает Chromium, выполняет тесты и запускает showcase. Ручной запуск только проверяет данные; ошибки сообщаются владельцу.",
+      "tags": [
+        "ci-cd",
+        "telegram",
+        "scheduling"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:docs/superpowers/plans/2026-11-18-dossier-formats.md",
+      "type": "document",
+      "name": "2026-11-18-dossier-formats.md",
+      "filePath": "docs/superpowers/plans/2026-11-18-dossier-formats.md",
+      "summary": "Планирует общую историю и два формата досье, затем отдельную разовую демонстрацию. Фиксирует ограничения расписания, дедупликацию и проверки транспорта.",
+      "tags": [
+        "documentation",
+        "implementation-plan",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:docs/superpowers/specs/2026-11-18-dossier-formats-design.md",
+      "type": "document",
+      "name": "2026-11-18-dossier-formats-design.md",
+      "filePath": "docs/superpowers/specs/2026-11-18-dossier-formats-design.md",
+      "summary": "Описывает согласованные форматы карточки и текстового досье, исторические источники и разовую демонстрацию с ограниченным окном и резервированием перед отправкой.",
+      "tags": [
+        "documentation",
+        "design",
+        "race-dossier"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:scripts/telegram/data/race-history.json",
+      "type": "config",
+      "name": "race-history.json",
+      "filePath": "scripts/telegram/data/race-history.json",
+      "summary": "Хранит подтверждённую историю Лас-Вегаса-2025: нейтрализации, стратегию шин, круг остановки победителя и первичные ссылки FIA/Pirelli.",
+      "tags": [
+        "race-history",
+        "data-source",
+        "configuration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:scripts/telegram/README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "scripts/telegram/README.md",
+      "summary": "Документирует оба формата досье, источники истории и погоды, правила fallback и расписание Europe/Moscow. Объясняет безопасный предпросмотр, настройку уведомлений и разовую демонстрацию с проверкой без отправки.",
+      "tags": [
+        "documentation",
+        "race-dossier",
+        "scheduling"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:scripts/telegram/package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "scripts/telegram/package.json",
+      "summary": "Задаёт команды уведомлений и тестов Telegram, включая историю и разовую демонстрацию. Закрепляет Playwright 1.65.1 для Chromium и зависимость PostgreSQL.",
+      "tags": [
+        "configuration",
+        "telegram",
+        "build-system"
+      ],
+      "complexity": "simple"
     }
   ],
   "edges": [
@@ -13627,13 +13818,6 @@
       "weight": 0.6
     },
     {
-      "source": "pipeline:.github/workflows/telegram-notify.yml",
-      "target": "config:scripts/telegram/package.json",
-      "type": "depends_on",
-      "direction": "forward",
-      "weight": 0.6
-    },
-    {
       "source": "document:docs/superpowers/plans/2026-11-17-automatic-mobile-card.md",
       "target": "file:scripts/telegram/render-dossier-card.js",
       "type": "documents",
@@ -13646,20 +13830,6 @@
       "type": "documents",
       "direction": "forward",
       "weight": 0.5
-    },
-    {
-      "source": "config:scripts/telegram/package.json",
-      "target": "file:scripts/telegram/render-dossier-card.js",
-      "type": "configures",
-      "direction": "forward",
-      "weight": 0.6
-    },
-    {
-      "source": "config:scripts/telegram/package.json",
-      "target": "file:scripts/telegram/dossier-render.test.js",
-      "type": "configures",
-      "direction": "forward",
-      "weight": 0.6
     },
     {
       "source": "file:scripts/telegram/dossier-message.js",
@@ -14271,20 +14441,6 @@
       "weight": 0.5
     },
     {
-      "source": "document:scripts/telegram/README.md",
-      "target": "file:scripts/telegram/notify.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:scripts/telegram/README.md",
-      "target": "file:scripts/telegram/dossier-message.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
       "source": "file:scripts/telegram/notify.js",
       "target": "file:scripts/telegram/notify.test.js",
       "type": "tested_by",
@@ -14299,6 +14455,125 @@
       "direction": "forward",
       "weight": 0.5,
       "description": "Path-based pairing (deterministic)"
+    },
+    {
+      "source": "document:MEMORY.md",
+      "target": "file:scripts/telegram/notify.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:MEMORY.md",
+      "target": "file:scripts/telegram/dossier-message.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:MEMORY.md",
+      "target": "pipeline:.github/workflows/telegram-notify.yml",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/telegram/dossier-card.js",
+      "target": "file:scripts/telegram/dossier-history.test.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/telegram/dossier-message.js",
+      "target": "file:scripts/telegram/dossier-history.test.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/telegram/dossier.js",
+      "target": "file:scripts/telegram/dossier-history.test.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:scripts/telegram/race-history.js",
+      "target": "function:scripts/telegram/race-history.js:count",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/race-history.js",
+      "target": "function:scripts/telegram/race-history.js:count",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/telegram/race-history.js",
+      "target": "function:scripts/telegram/race-history.js:previousHistory",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/race-history.js",
+      "target": "function:scripts/telegram/race-history.js:previousHistory",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/telegram/race-history.js",
+      "target": "function:scripts/telegram/race-history.js:strategyLines",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/race-history.js",
+      "target": "function:scripts/telegram/race-history.js:strategyLines",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/telegram/showcase.js",
+      "target": "function:scripts/telegram/showcase.js:isShowcaseWindow",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/showcase.js",
+      "target": "function:scripts/telegram/showcase.js:isShowcaseWindow",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/telegram/showcase.js",
+      "target": "function:scripts/telegram/showcase.js:runShowcase",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:scripts/telegram/showcase.js",
+      "target": "function:scripts/telegram/showcase.js:runShowcase",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:scripts/telegram/showcase.js",
+      "target": "file:scripts/telegram/showcase.test.js",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
     },
     {
       "source": "file:scripts/ai-player/predict.js",
@@ -14477,6 +14752,14 @@
       "recoveredFromImportMap": true
     },
     {
+      "source": "file:scripts/telegram/dossier-card.js",
+      "target": "file:scripts/telegram/race-history.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
       "source": "file:scripts/telegram/dossier-card.test.js",
       "target": "file:scripts/telegram/dossier.js",
       "type": "imports",
@@ -14485,8 +14768,56 @@
       "recoveredFromImportMap": true
     },
     {
+      "source": "file:scripts/telegram/dossier-history.test.js",
+      "target": "config:docs/mockups/telegram-dossier-live.json",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/dossier-history.test.js",
+      "target": "file:scripts/telegram/dossier-card.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/dossier-history.test.js",
+      "target": "file:scripts/telegram/dossier-message.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/dossier-history.test.js",
+      "target": "file:scripts/telegram/dossier.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/dossier-message.js",
+      "target": "file:scripts/telegram/dossier-banner.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
       "source": "file:scripts/telegram/dossier-message.js",
       "target": "file:scripts/telegram/dossier-card.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/dossier-message.js",
+      "target": "file:scripts/telegram/race-history.js",
       "type": "imports",
       "direction": "forward",
       "weight": 0.7,
@@ -14534,6 +14865,14 @@
     },
     {
       "source": "file:scripts/telegram/dossier-render.test.js",
+      "target": "config:scripts/telegram/data/race-history.json",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/dossier-render.test.js",
       "target": "file:scripts/telegram/dossier-message.js",
       "type": "imports",
       "direction": "forward",
@@ -14551,6 +14890,14 @@
     {
       "source": "file:scripts/telegram/dossier.js",
       "target": "config:scripts/telegram/data/circuits.json",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/dossier.js",
+      "target": "config:scripts/telegram/data/race-history.json",
       "type": "imports",
       "direction": "forward",
       "weight": 0.7,
@@ -14655,6 +15002,62 @@
     {
       "source": "file:scripts/telegram/render-dossier-banner.js",
       "target": "file:scripts/telegram/dossier-banner.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/showcase.js",
+      "target": "file:scripts/telegram/dossier-message.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/showcase.js",
+      "target": "file:scripts/telegram/dossier.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/showcase.js",
+      "target": "file:scripts/telegram/lib.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/showcase.js",
+      "target": "file:scripts/telegram/notify.js",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/showcase.test.js",
+      "target": "config:docs/mockups/telegram-dossier-live.json",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/showcase.test.js",
+      "target": "config:scripts/telegram/data/race-history.json",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7,
+      "recoveredFromImportMap": true
+    },
+    {
+      "source": "file:scripts/telegram/showcase.test.js",
+      "target": "file:scripts/telegram/showcase.js",
       "type": "imports",
       "direction": "forward",
       "weight": 0.7,
@@ -15443,27 +15846,6 @@
       "direction": "forward",
       "weight": 0.7,
       "recoveredFromImportMap": true
-    },
-    {
-      "source": "document:MEMORY.md",
-      "target": "file:scripts/telegram/notify.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:MEMORY.md",
-      "target": "file:scripts/telegram/dossier-message.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:MEMORY.md",
-      "target": "pipeline:.github/workflows/telegram-notify.yml",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
     }
   ],
   "version": "1.0.0",
@@ -15489,8 +15871,8 @@
       "GitHub Actions"
     ],
     "description": "Закрытая лига прогнозов на гонки Формулы-1: участники составляют топ-10, система считает очки и сезонный зачёт. Примечание: в проекте более 100 файлов; для ускорения анализа можно ограничить его отдельным каталогом.",
-    "analyzedAt": "2026-11-17T20:34:38.710Z",
-    "gitCommitHash": "d3f6796bff3d4ffa04eec4602bb8e993cc0705ef"
+    "analyzedAt": "2026-11-18T20:22:01.288Z",
+    "gitCommitHash": "82805df21df8be7f48e816a8bb1ed8d724471eca"
   },
   "layers": [
     {
@@ -15647,7 +16029,12 @@
         "file:scripts/telegram/dossier-banner.js",
         "file:scripts/telegram/render-dossier-banner.js",
         "file:scripts/telegram/dossier-card.test.js",
-        "file:scripts/telegram/dossier-card.js"
+        "file:scripts/telegram/dossier-card.js",
+        "file:scripts/telegram/dossier-history.test.js",
+        "file:scripts/telegram/race-history.js",
+        "file:scripts/telegram/showcase.js",
+        "file:scripts/telegram/showcase.test.js",
+        "config:scripts/telegram/data/race-history.json"
       ]
     },
     {
@@ -15789,7 +16176,9 @@
         "file:docs/mockups/telegram-dossier-mobile.html",
         "document:docs/superpowers/plans/2026-11-17-mobile-dossier-card.md",
         "document:docs/superpowers/plans/2026-11-17-automatic-mobile-card.md",
-        "document:docs/superpowers/plans/2026-11-17-dossier-weekdays.md"
+        "document:docs/superpowers/plans/2026-11-17-dossier-weekdays.md",
+        "document:docs/superpowers/plans/2026-11-18-dossier-formats.md",
+        "document:docs/superpowers/specs/2026-11-18-dossier-formats-design.md"
       ]
     },
     {
@@ -15820,7 +16209,8 @@
         "pipeline:.github/workflows/telegram-notify.yml",
         "config:scripts/export/package.json",
         "file:scripts/telegram/dossier-render.test.js",
-        "file:scripts/telegram/render-dossier-card.js"
+        "file:scripts/telegram/render-dossier-card.js",
+        "pipeline:.github/workflows/telegram-showcase.yml"
       ]
     }
   ],
