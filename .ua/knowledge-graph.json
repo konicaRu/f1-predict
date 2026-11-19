@@ -6993,19 +6993,6 @@
       "complexity": "simple"
     },
     {
-      "id": "document:MEMORY.md",
-      "type": "document",
-      "name": "MEMORY.md",
-      "filePath": "MEMORY.md",
-      "summary": "?????? ?????? ??????? ? ?????????? ???????? ?????????: ???????? ?? ??/?? ? Europe/Moscow, ??????? Rich Message ? ????????? ???, ??????????? ????? ? ??????????. ????????? ??? ? ????????? ??????????? Ubuntu-?????? GitHub Actions ? ??????????? Telegram; ??????? ?????? ????????? ??? ???????.",
-      "tags": [
-        "documentation",
-        "handoff",
-        "race-dossier"
-      ],
-      "complexity": "complex"
-    },
-    {
       "id": "file:scripts/telegram/dossier-history.test.js",
       "type": "file",
       "name": "dossier-history.test.js",
@@ -7220,6 +7207,20 @@
         "build-system"
       ],
       "complexity": "simple"
+    },
+    {
+      "id": "document:MEMORY.md",
+      "type": "document",
+      "name": "MEMORY.md",
+      "filePath": "MEMORY.md",
+      "summary": "Журнал решений, проверок и передачи контекста проекта: актуальные форматы Telegram-досье, задержка запуска GitHub Actions и проверка планировщика Supabase. Фиксирует разрешённые задержанные уведомления до закрытия голосования, предел четверга 23:00 МСК, отмену разового показа и следующую проверку штатной отправки; обсуждённые изменения расписания ещё не реализованы.",
+      "tags": [
+        "документация",
+        "передача-контекста",
+        "уведомления",
+        "расписание"
+      ],
+      "complexity": "complex"
     }
   ],
   "edges": [
@@ -14457,27 +14458,6 @@
       "description": "Path-based pairing (deterministic)"
     },
     {
-      "source": "document:MEMORY.md",
-      "target": "file:scripts/telegram/notify.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:MEMORY.md",
-      "target": "file:scripts/telegram/dossier-message.js",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "document:MEMORY.md",
-      "target": "pipeline:.github/workflows/telegram-notify.yml",
-      "type": "documents",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
       "source": "file:scripts/telegram/dossier-card.js",
       "target": "file:scripts/telegram/dossier-history.test.js",
       "type": "tested_by",
@@ -15871,8 +15851,8 @@
       "GitHub Actions"
     ],
     "description": "Закрытая лига прогнозов на гонки Формулы-1: участники составляют топ-10, система считает очки и сезонный зачёт. Примечание: в проекте более 100 файлов; для ускорения анализа можно ограничить его отдельным каталогом.",
-    "analyzedAt": "2026-11-18T20:22:01.288Z",
-    "gitCommitHash": "82805df21df8be7f48e816a8bb1ed8d724471eca"
+    "analyzedAt": "2026-11-19T09:14:32.913Z",
+    "gitCommitHash": "6e9fc71e1ed4ab3c56af7102427ba3cdb4022de0"
   },
   "layers": [
     {

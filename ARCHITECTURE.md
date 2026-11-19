@@ -260,6 +260,15 @@ Mini App влита в `main` 2026-09-03 (Task 1-9 готовы, **Task 10 — �
 промпта и настройки — `README.md` § GridBot, дизайн/план — `docs/superpowers/specs/2026-07-24-ai-player-design.md`.
 
 ## Changelog
+### 2026-11-19 (проверка расписания уведомлений; без изменений кода)
+- Код и workflow не менялись. Зафиксировано наблюдение: GitHub `schedule` второй день подряд
+  пропускает/задерживает слоты `telegram-notify.yml` (19.11 нет запуска 07:05 UTC и ряда слотов
+  «каждые 2 часа»; среда 19:05 МСК стартовала в 01:54 МСК). Cron в файле корректен.
+- Рендер карточки — `scripts/telegram/render-dossier-card.js` (локальный Playwright Chromium,
+  скриншот `body`); перенос отправки в Supabase Edge Function требует внешнего рендера или SVG→PNG.
+- Планы (не внедрены): `beforeSend` в `deadline()` для перепроверки дедлайна после рендера;
+  при повторных пропусках — Supabase Cron → `workflow_dispatch`. Контроль: штатный запуск Пн 23.11.
+
 ### 2026-10-14 (Google Analytics 4)
 - По просьбе пользователя («видеть, кто заходит и что делает»). Тег потока `G-MB31GCLRLB` в `index.html`:
   `gtag()` определён всегда, внешний `gtag.js` грузится только на `konicaru.github.io` (localhost не
