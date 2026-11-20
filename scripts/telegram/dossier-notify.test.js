@@ -39,6 +39,16 @@ test('each reminder fetches weather anew, expired races excluded, missing names 
   assert.equal(missing, 2);
 });
 
+test('deadline passes a pre-send guard that blocks delivery once voting has closed', async () => {
+  let guard;
+  const base = { getRaces: async () => [race], getDossier: async () => empty, getMissing: async () => [],
+    now: new Date('2026-11-19T19:58:00Z'), send: async (_m, _b, _w, transport) => { guard = transport.beforeSend; } };
+  await deadline({ ...base, clock: () => new Date('2026-11-19T19:59:59Z') });
+  assert.doesNotThrow(() => guard());
+  await deadline({ ...base, clock: () => new Date('2026-11-19T20:00:00Z') });
+  assert.throws(() => guard(), /закрыто/);
+});
+
 test('new card is used only Monday and Thursday in Moscow, Wednesday retains the previous format', async () => {
   for (const [at, format] of [
     ['2026-11-16T07:05:00Z', 'card'],

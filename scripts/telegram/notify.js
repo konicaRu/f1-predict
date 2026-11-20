@@ -249,7 +249,7 @@ async function missingNames(raceId) {
 }
 
 async function deadline({ getRaces = thisWeekOpenRaces, getDossier = loadDossier, send = sendTelegramDossier,
-  getMissing = missingNames, now = new Date(), warnings = [] } = {}) {
+  getMissing = missingNames, now = new Date(), clock = () => new Date(), warnings = [] } = {}) {
   const races = (await getRaces()).filter((r) => new Date(r.deadline_utc) > now);
   if (races.length === 0) {
     console.log('deadline: нет открытой гонки с дедлайном впереди, ничего не шлём');
@@ -259,7 +259,10 @@ async function deadline({ getRaces = thisWeekOpenRaces, getDossier = loadDossier
     const format = dossierFormat(now);
     const dossier = await prepareDossier(r, getDossier, { now, includeHistory: true }, warnings);
     const missing = isDeadlineDayMsk(r.deadline_utc, now) ? await getMissing(r.id) : undefined;
-    await send(buildDossierMessage(r, dossier, { mode: 'deadline', missing, format }), predictButton(r.id), warning => warnings.push(warning));
+    // Дедлайн перепроверяется прямо перед отправкой: рендер PNG и сеть могут затянуться
+    // за 23:00 МСК. Опоздавшие, но успевающие до закрытия голосования, по-прежнему уходят.
+    const ensureOpen = () => { if (new Date(r.deadline_utc) <= clock()) throw new Error(`Голосование закрыто, не отправляем: ${r.name}`); };
+    await send(buildDossierMessage(r, dossier, { mode: 'deadline', missing, format }), predictButton(r.id), warning => warnings.push(warning), { beforeSend: ensureOpen });
     console.log(`deadline: отправлено для ${r.name}`);
   }
 }
